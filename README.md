@@ -4,7 +4,7 @@
 
 ---
 
-A simple self-hosted business value centric application to organize and priorize ideas / tasks across multiple teams, for those that come up with ideas regularly and want to store them safely in a central and easy accessible place.
+A simple self-hostable (business) value centric application to organize and priorize ideas / tasks across multiple teams, for those that come up with ideas regularly and want to store them safely in a central and easy accessible place.
 
 This application was inspired by the [staffeng.com](https://staffeng.com/guides/work-on-what-matters/) blog and is a simple tool to keep track of useful tasks / ideas that positively impact your project(s) and therefore - _work on what matters_.
 
