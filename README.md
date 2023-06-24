@@ -2,6 +2,8 @@
   <img height="40" width="165" src="./src/WebUI/ClientApp/public/chrono.png" />
 </p>
 
+[![CI](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml/badge.svg)](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/philipp-meier/Chrono/blob/main/LICENSE)
 ---
 
 A simple self-hostable (business) value centric application to organize and priorize ideas / tasks across multiple teams or projects.
