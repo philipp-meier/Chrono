@@ -4,17 +4,17 @@
 
 ---
 
-A simple self-hosted business value centric application to organize and priorize ideas / tasks across multiple teams, for those that come up with ideas regularly and want to store them safely in a central and easy accessible place.
+A simple self-hostable (business) value centric application to organize and priorize ideas / tasks across multiple teams or projects.
 
-This application was inspired by the [staffeng.com](https://staffeng.com/guides/work-on-what-matters/) blog and is a simple tool to keep track of useful tasks / ideas that positively impact your project(s) and therefore - _work on what matters_.
+This application was inspired by the [staffeng.com](https://staffeng.com/guides/work-on-what-matters/) blog and is a simple tool to keep track of useful ideas that positively impact your project(s) and therefore - _work on what matters_.
 
 ## Current features
 
 - Manage task categories (e.g. "Quality Improvement", "Time Saving", "Documentation", "Security"...).
 - Manage task lists (e.g. "Team 1", "Team 2", "Architecture Board",...).
-- Manage tasks (Ranking, Categorizing, Explain business value / impact,...).
-- Audit features (Created, Last modified).
-- Filtering (Done, Category, Task list,...).
+- Manage tasks (rank, categorize, describe business value / impact,...).
+- Audit features (created, last modified).
+- Filtering (done, category, task list,...).
 - Responsive for smaller devices (e.g. mobile phones and tablets).
 - Multi-user capable with OpenID Connect authentication.
 - **Why**-centric for maximizing impact.
@@ -81,6 +81,6 @@ The architecture of this project mostly follows the [Clean Architecture Solution
 | Infrastructure | This layer contains classes for accessing external resources such as file systems, web services, smtp and so on. These classes should be based on interfaces defined within the application layer.                                                                                                                                                                                |
 | WebUI          | This layer is a single page application based on React and ASP.NET Core. It depends on both the Application and Infrastructure layers, however, the dependency on Infrastructure is only to support dependency injection. Therefore only Startup.cs should reference Infrastructure.                                                                                              |
 
-## Notice
+## Why?
 
-A personal goal for this project was to get myself familiar and comfortable with the clean architecture template by Jason Taylor and see how it affects projects in the long-run. Besides that, I am also trying to learn React with this project to compare it to other frameworks I have already used before.
+A personal goal for this project is to get myself familiar and comfortable with the clean architecture template by Jason Taylor and see how it affects projects in the long-run. Besides that, I am also trying to learn React with this project to compare it to other frameworks I have already used before.
