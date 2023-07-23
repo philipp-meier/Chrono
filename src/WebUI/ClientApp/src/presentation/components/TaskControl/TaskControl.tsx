@@ -238,7 +238,7 @@ const TaskControl = (props: {
       </Form>
       <Confirm
         open={showDeleteConfirm}
-        content={`Do you really want to delete the task \"${name}\"?`}
+        content={`Do you really want to delete the task "${name}"?`}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
           deleteTask(props.id!).then((isDeleted) => {
