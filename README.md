@@ -5,6 +5,9 @@
 [![CI](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml/badge.svg)](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/philipp-meier/Chrono/blob/main/LICENSE)
 ---
+[![CI](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml/badge.svg)](https://github.com/philipp-meier/Chrono/actions/workflows/dotnet.yml)
+[![CodeScene Code Health](https://codescene.io/projects/41477/status-badges/code-health)](https://codescene.io/projects)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/philipp-meier/Chrono/blob/main/LICENSE)
 
 A simple self-hostable (business) value centric application to organize and priorize ideas / tasks across multiple teams or projects.
 
