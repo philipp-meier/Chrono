@@ -45,9 +45,9 @@ const MasterDataListControl = (props: {
       </Container>
       <Confirm
         open={showDeleteConfirm}
-        content={`Do you really want to delete the item \"${
+        content={`Do you really want to delete the item "${
           currentItem ? currentItem.name : "-"
-        }\"?`}
+        }"?`}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
           props.onDelete(currentItem!);
