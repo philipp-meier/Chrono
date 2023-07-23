@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/src/WebUI/ClientApp"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "nuget"
+    directory: "/src"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
