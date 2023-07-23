@@ -1,14 +1,6 @@
-import {
-  Button,
-  Confirm,
-  Container,
-  Form,
-  Header,
-  Input,
-  List,
-  Modal,
-} from "semantic-ui-react";
+import { Button, Confirm, Container, List } from "semantic-ui-react";
 import React, { useState } from "react";
+import AddItemModal from "./AddItemModal";
 
 export type MasterDataItem = {
   id: number;
@@ -23,8 +15,6 @@ const MasterDataListControl = (props: {
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentItem, setCurrentItem] = useState(null as MasterDataItem | null);
-  const [open, setOpen] = useState(false);
-  const [newItemName, setNewItemName] = useState("");
 
   const masterDataItems = props.items.map((x, idx) => (
     <List.Item key={idx}>
@@ -45,49 +35,7 @@ const MasterDataListControl = (props: {
   return (
     <>
       <Container textAlign="right" style={{ marginBottom: "1em" }}>
-        <Modal
-          onClose={() => setOpen(false)}
-          onOpen={() => setOpen(true)}
-          open={open}
-          trigger={<Button primary>Add {props.itemTitle}</Button>}
-        >
-          <Modal.Header>Add {props.itemTitle}</Modal.Header>
-          <Modal.Content>
-            <Modal.Description>
-              <Form>
-                <Form.Field
-                  control={Input}
-                  label="Name"
-                  placeholder="Name"
-                  value={newItemName}
-                  onChange={(e: any) => {
-                    setNewItemName(e.target.value);
-                  }}
-                  required
-                ></Form.Field>
-              </Form>
-            </Modal.Description>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button
-              onClick={() => {
-                setOpen(false);
-                setNewItemName("");
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              primary
-              content="Add"
-              onClick={() => {
-                props.onAdd(newItemName);
-                setOpen(false);
-                setNewItemName("");
-              }}
-            />
-          </Modal.Actions>
-        </Modal>
+        <AddItemModal itemTitle={props.itemTitle} onAdd={props.onAdd} />
       </Container>
 
       <Container>
