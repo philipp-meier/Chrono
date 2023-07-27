@@ -20,6 +20,7 @@ public class TaskListsController : ApiControllerBase
 
     [HttpGet("{id:int}")]
     [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaskListDto>> Get(int id)
     {
@@ -28,6 +29,7 @@ public class TaskListsController : ApiControllerBase
 
     [HttpGet("{id:int}/options")]
     [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaskListOptionsDto>> GetOptions(int id)
     {
@@ -61,6 +63,7 @@ public class TaskListsController : ApiControllerBase
     [HttpDelete("{id:int}")]
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Delete(int id)
     {
         await Mediator.Send(new DeleteTaskListCommand(id));
