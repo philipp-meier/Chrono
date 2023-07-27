@@ -1,20 +1,14 @@
 using System.Reflection;
+using Chrono.Application.Common.Interfaces;
 using Chrono.Domain.Entities;
+using Chrono.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Task = Chrono.Domain.Entities.Task;
-using Chrono.Application.Common.Interfaces;
-using Chrono.Infrastructure.Persistence.Interceptors;
 
 namespace Chrono.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    public DbSet<Task> Tasks => Set<Task>();
-    public DbSet<TaskList> TaskLists => Set<TaskList>();
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
-    public DbSet<User> Users => Set<User>();
-
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
     private readonly TaskSaveChangesInterceptor _taskSaveChangesInterceptor;
 
@@ -27,6 +21,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _taskSaveChangesInterceptor = taskSaveChangesInterceptor;
     }
+
+    public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<TaskList> TaskLists => Set<TaskList>();
+    public DbSet<TaskListOptions> TaskListOptions => Set<TaskListOptions>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

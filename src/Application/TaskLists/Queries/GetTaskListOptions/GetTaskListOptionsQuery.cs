@@ -22,7 +22,6 @@ public class GetTaskListOptionsQueryHandler : IRequestHandler<GetTaskListOptions
     public async Task<TaskListOptionsDto> Handle(GetTaskListOptionsQuery request, CancellationToken cancellationToken)
     {
         var taskList = await _context.TaskLists
-            .Include(x => x.Options)
             .SingleOrDefaultAsync(x => x.Id == request.ListId, cancellationToken);
 
         if (taskList == null)

@@ -3,6 +3,7 @@ using Chrono.Application.TaskLists.Commands.DeleteTaskList;
 using Chrono.Application.TaskLists.Queries.GetTaskList;
 using Chrono.Application.TaskLists.Queries.GetTaskListOptions;
 using Chrono.Application.TaskLists.Queries.GetTaskLists;
+using Chrono.Application.Tasks.Commands.UpdateTaskList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +39,23 @@ public class TaskListsController : ApiControllerBase
     public async Task<ActionResult<int>> Create(CreateTaskListCommand command)
     {
         return await Mediator.Send(command);
+    }
+
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Update(int id, UpdateTaskListCommand command)
+    {
+        if (id != command.TaskListId)
+        {
+            return BadRequest();
+        }
+
+        await Mediator.Send(command);
+
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]

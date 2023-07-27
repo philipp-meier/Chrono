@@ -1,6 +1,5 @@
-import { Button, Confirm, Container, List } from "semantic-ui-react";
-import React, { useState } from "react";
-import AddItemModal from "./AddItemModal";
+import {Button, Confirm, Container, List} from "semantic-ui-react";
+import React, {ReactElement, useState} from "react";
 
 export type MasterDataItem = {
   id: number;
@@ -10,15 +9,26 @@ export type MasterDataItem = {
 const MasterDataListControl = (props: {
   items: MasterDataItem[];
   itemTitle: string;
-  onAdd: (title: string) => void;
+  addModal: ReactElement;
+  editModal?: ReactElement;
   onDelete: (item: MasterDataItem) => void;
+  refreshDataCallback?: () => void;
 }) => {
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentItem, setCurrentItem] = useState(null as MasterDataItem | null);
 
   const masterDataItems = props.items.map((x, idx) => (
     <List.Item key={idx}>
       <List.Content floated="right">
+        {props.editModal && <Button
+            onClick={() => {
+              setCurrentItem(x);
+              setShowEditModal(true);
+            }}
+        >
+            Edit
+        </Button>}
         <Button
           onClick={() => {
             setCurrentItem(x);
@@ -34,8 +44,8 @@ const MasterDataListControl = (props: {
 
   return (
     <>
-      <Container textAlign="right" style={{ marginBottom: "1em" }}>
-        <AddItemModal itemTitle={props.itemTitle} onAdd={props.onAdd} />
+      <Container textAlign="right" style={{marginBottom: "1em"}}>
+        {props.addModal}
       </Container>
 
       <Container>
@@ -43,6 +53,16 @@ const MasterDataListControl = (props: {
           {masterDataItems}
         </List>
       </Container>
+      {/* Is there a better way to inject custom (edit) modals with properties? */}
+      {showEditModal && React.cloneElement(props.editModal!, {
+        context: currentItem,
+        onButtonClick: (saved: boolean) => {
+          if (saved)
+            props.refreshDataCallback!();
+
+          setShowEditModal(!showEditModal);
+        }
+      })}
       <Confirm
         open={showDeleteConfirm}
         content={`Do you really want to delete the item "${
