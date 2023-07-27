@@ -1,110 +1,108 @@
-import { Tab } from "semantic-ui-react";
-import MasterDataListControl, {
-  MasterDataItem,
-} from "../components/MasterDataList/MasterDataListControl";
-import {
-  createTaskList,
-  deleteTaskList,
-  getTaskLists,
-} from "../../infrastructure/services/TaskListService";
-import { useEffect, useState } from "react";
-import {
-  createCategory,
-  deleteCategory,
-  getCategories,
-} from "../../infrastructure/services/CategoryService";
+import {Tab} from "semantic-ui-react";
+import MasterDataListControl, {MasterDataItem,} from "../components/MasterDataList/MasterDataListControl";
+import {createTaskList, deleteTaskList, getTaskLists,} from "../../infrastructure/services/TaskListService";
+import React from "react";
+import {createCategory, deleteCategory, getCategories,} from "../../infrastructure/services/CategoryService";
+import AddItemModal from "../components/MasterDataList/AddItemModal";
+import TaskListEditModal from "../components/MasterDataList/TaskListEditModal";
 
-const MasterDataPage = () => {
-  const [taskLists, setTaskLists] = useState([] as MasterDataItem[]);
-  const [categories, setCategories] = useState([] as MasterDataItem[]);
+interface MasterDataPageState {
+  taskLists: MasterDataItem[];
+  categories: MasterDataItem[];
+}
 
-  useEffect(() => {
-    const dataFetch = async () => {
-      setTaskLists(
-        (await getTaskLists()).map((x) => {
-          return { id: x.id, name: x.title };
-        })
-      );
-      setCategories(
-        (await getCategories()).map((x) => {
-          return { id: x.id, name: x.name };
-        })
-      );
-    };
+export default class MasterDataPage extends React.Component<any, MasterDataPageState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {taskLists: [], categories: []};
+  }
 
-    dataFetch();
-  }, []);
+  componentDidMount(): void {
+    this.refreshDataAsync();
+  }
 
-  const panes = [
-    {
-      menuItem: "Task lists",
-      render: () => (
-        <Tab.Pane>
-          <MasterDataListControl
-            itemTitle="Task List"
-            items={taskLists.sort((a, b) => a.name.localeCompare(b.name))}
-            onAdd={(title: string) => {
-              createTaskList(title).then((id) => {
-                if (id > 0) {
-                  taskLists.push({ id: id, name: title });
-                  setTaskLists([...taskLists]);
-                }
-              });
-            }}
-            onDelete={(item) => {
-              const index = taskLists.indexOf(item);
-              if (index >= 0) {
-                deleteTaskList(item.id).then((isDeleted) => {
-                  if (isDeleted) {
-                    taskLists.splice(index, 1);
-                    setTaskLists([...taskLists]);
+  async refreshDataAsync() {
+    const taskLists = (await getTaskLists()).map((x) => {
+      return {id: x.id, name: x.title};
+    });
+    const categories = (await getCategories()).map((x) => {
+      return {id: x.id, name: x.name};
+    });
+
+    this.setState({taskLists, categories});
+  }
+
+  render() {
+    const panes = [
+      {
+        menuItem: "Task lists",
+        render: () => (
+          <Tab.Pane>
+            <MasterDataListControl
+              itemTitle="Task List"
+              items={this.state.taskLists.sort((a, b) => a.name.localeCompare(b.name))}
+              addModal={<AddItemModal itemTitle="Task List" onAdd={(title: string) => {
+                createTaskList(title).then((id) => {
+                  if (id > 0) {
+                    this.state.taskLists.push({id: id, name: title});
+                    this.setState({taskLists: this.state.taskLists, categories: this.state.categories});
                   }
                 });
-              }
-            }}
-          />
-        </Tab.Pane>
-      ),
-    },
-    {
-      menuItem: "Categories",
-      render: () => (
-        <Tab.Pane>
-          <MasterDataListControl
-            itemTitle="Category"
-            items={categories.sort((a, b) => a.name.localeCompare(b.name))}
-            onAdd={(title: string) => {
-              createCategory(title).then((id) => {
-                if (id > 0) {
-                  categories.push({ id: id, name: title });
-                  setCategories([...categories]);
+              }}/>}
+              editModal={<TaskListEditModal/>}
+              onDelete={(item) => {
+                const index = this.state.taskLists.indexOf(item);
+                if (index >= 0) {
+                  deleteTaskList(item.id).then((isDeleted) => {
+                    if (isDeleted) {
+                      this.state.taskLists.splice(index, 1);
+                      this.setState({taskLists: this.state.taskLists, categories: this.state.categories});
+                    }
+                  });
                 }
-              });
-            }}
-            onDelete={(item) => {
-              const index = categories.indexOf(item);
-              if (index >= 0) {
-                deleteCategory(item.id).then((isDeleted) => {
-                  if (isDeleted) {
-                    categories.splice(index, 1);
-                    setCategories([...categories]);
+              }}
+              refreshDataCallback={() => this.refreshDataAsync()}
+            />
+          </Tab.Pane>
+        ),
+      },
+      {
+        menuItem: "Categories",
+        render: () => (
+          <Tab.Pane>
+            <MasterDataListControl
+              itemTitle="Category"
+              items={this.state.categories.sort((a, b) => a.name.localeCompare(b.name))}
+              addModal={<AddItemModal itemTitle="Category" onAdd={(title: string) => {
+                createCategory(title).then((id) => {
+                  if (id > 0) {
+                    this.state.categories.push({id: id, name: title});
+                    this.setState({taskLists: this.state.taskLists, categories: this.state.categories});
                   }
                 });
-              }
-            }}
-          />
-        </Tab.Pane>
-      ),
-    },
-  ];
+              }}/>}
+              onDelete={(item) => {
+                const index = this.state.categories.indexOf(item);
+                if (index >= 0) {
+                  deleteCategory(item.id).then((isDeleted) => {
+                    if (isDeleted) {
+                      this.state.categories.splice(index, 1);
+                      this.setState({taskLists: this.state.taskLists, categories: this.state.categories});
+                    }
+                  });
+                }
+              }}
+            />
+          </Tab.Pane>
+        ),
+      },
+    ];
 
-  return (
-    <Tab
-      menu={{ attached: true, tabular: false }}
-      panes={panes}
-      className="masterData tabs"
-    />
-  );
-};
-
-export default MasterDataPage;
+    return (
+      <Tab
+        menu={{attached: true, tabular: false}} panes={panes}
+        className="masterData tabs"
+      />
+    );
+  }
+}

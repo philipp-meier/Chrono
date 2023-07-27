@@ -1,10 +1,11 @@
-using MediatR;
-using Chrono.Domain.Services;
-using Microsoft.EntityFrameworkCore;
 using Chrono.Application.Common.Dtos;
-using Chrono.Application.Common.Security;
 using Chrono.Application.Common.Exceptions;
 using Chrono.Application.Common.Interfaces;
+using Chrono.Application.Common.Security;
+using Chrono.Domain.Services;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Task = Chrono.Domain.Entities.Task;
 
 namespace Chrono.Application.Tasks.Commands.CreateTask;
 
@@ -36,9 +37,16 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>
             .SingleOrDefaultAsync(x => x.Id == request.ListId, cancellationToken);
 
         if (taskList == null)
+        {
             throw new NotFoundException($"Task list \"{request.ListId}\" not found.");
+        }
 
-        var entity = new Domain.Entities.Task
+        if (!taskList.IsPermitted(_currentUserService.UserId))
+        {
+            throw new ForbiddenAccessException();
+        }
+
+        var entity = new Task
         {
             Name = request.Name,
             Position = request.Position,
@@ -48,13 +56,13 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>
         var newCategoryNames = request.Categories.Select(x => x.Name).ToArray();
         TaskService.SetCategories(entity,
             _context.Categories
-            .Where(x => newCategoryNames.Contains(x.Name))
-            .AsEnumerable()
-            .Where(x => x.IsPermitted(_currentUserService.UserId))
-            .ToArray()
+                .Where(x => newCategoryNames.Contains(x.Name))
+                .AsEnumerable()
+                .Where(x => x.IsPermitted(_currentUserService.UserId))
+                .ToArray()
         );
 
-        TaskListService.InsertAt(request.Position, entity, targetTaskList: taskList);
+        TaskListService.InsertAt(request.Position, entity, taskList);
 
         _context.Tasks.Add(entity);
 
