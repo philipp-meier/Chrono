@@ -1,18 +1,15 @@
 import "./TaskListControl.css";
 import TaskListItem from "./TaskListItem";
-import type { Task } from "../../../domain/models/Task";
-import type { TaskListBrief } from "../../../domain/models/TaskListBrief";
-import type { TaskList } from "../../../domain/models/TaskList";
-import type { Category } from "../../../domain/models/Category";
-import { useEffect, useState } from "react";
-import { Button, Checkbox, Container, Dropdown, Icon } from "semantic-ui-react";
-import {
-  getTaskList,
-  getTaskLists,
-} from "../../../infrastructure/services/TaskListService";
-import { getCategories } from "../../../infrastructure/services/CategoryService";
-import { updateTask } from "../../../infrastructure/services/TaskService";
-import { useMediaQuery } from "react-responsive";
+import type {Task} from "../../../domain/models/Task";
+import type {TaskListBrief} from "../../../domain/models/TaskListBrief";
+import type {TaskList} from "../../../domain/models/TaskList";
+import type {Category} from "../../../domain/models/Category";
+import {useEffect, useState} from "react";
+import {Button, Checkbox, Container, Dropdown, Icon} from "semantic-ui-react";
+import {getTaskList, getTaskLists,} from "../../../infrastructure/services/TaskListService";
+import {getCategories} from "../../../infrastructure/services/CategoryService";
+import {updateTask} from "../../../infrastructure/services/TaskService";
+import {useMediaQuery} from "react-responsive";
 
 const TaskListControl = (props: { taskListId?: number }) => {
   const [taskList, setTaskList] = useState(null as TaskList | null);
@@ -24,7 +21,7 @@ const TaskListControl = (props: { taskListId?: number }) => {
   const [availableCategories, setAvailableCategories] = useState(
     [] as Category[]
   );
-  const isMobileOptimized = useMediaQuery({ query: "(max-width:682px)" });
+  const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -34,15 +31,16 @@ const TaskListControl = (props: { taskListId?: number }) => {
       const categories = await getCategories();
       setAvailableCategories(categories);
 
-      if (taskLists && taskLists.length > 0) {
-        const selectedTaskList = taskLists.find(
-          (x) => x.id === props.taskListId
-        );
-        const taskList = await getTaskList(
-          selectedTaskList?.id ?? taskLists[0].id
-        );
-        setTaskList(taskList);
-      }
+      if (!taskLists || taskLists.length === 0)
+        return;
+     
+      const selectedTaskList = taskLists.find(
+        (x) => x.id === props.taskListId
+      );
+      const taskList = await getTaskList(
+        selectedTaskList?.id ?? taskLists[0].id
+      );
+      setTaskList(taskList);
     };
 
     dataFetch();
@@ -57,21 +55,20 @@ const TaskListControl = (props: { taskListId?: number }) => {
   const [, setTasks] = useState(filteredTasks);
   const handleTaskMove = (task: Task, direction: number) => {
     updateTask(task, task.position + direction).then((isUpdated) => {
-      if (isUpdated) {
-        const curIndex = filteredTasks.indexOf(task);
+      if (!isUpdated || Math.abs(direction) !== 1)
+        return;
 
-        if (
-          (curIndex === 0 && direction < 0) ||
-          (curIndex === filteredTasks.length - 1 && direction > 0) ||
-          Math.abs(direction) !== 1
-        )
-          return;
+      const curIndex = filteredTasks.indexOf(task);
+      const isFirstPosMovingUp = curIndex === 0 && direction < 0;
+      const isLastPosMovingDown = curIndex === filteredTasks.length - 1 && direction > 0;
 
-        filteredTasks[curIndex].position += direction;
-        filteredTasks[curIndex + direction].position -= direction;
+      if (isFirstPosMovingUp || isLastPosMovingDown)
+        return;
 
-        setTasks([...filteredTasks]);
-      }
+      filteredTasks[curIndex].position += direction;
+      filteredTasks[curIndex + direction].position -= direction;
+
+      setTasks([...filteredTasks]);
     });
   };
 
@@ -98,7 +95,7 @@ const TaskListControl = (props: { taskListId?: number }) => {
     <Container className={isMobileOptimized ? "tasklist mobile" : "tasklist"}>
       <Container
         textAlign="right"
-        style={{ marginTop: "1em" }}
+        style={{marginTop: "1em"}}
         className="tasklist-menu"
       >
         <div
@@ -109,7 +106,7 @@ const TaskListControl = (props: { taskListId?: number }) => {
               label="Done"
               checked={doneFilter}
               toggle
-              style={{ marginRight: "0.5em" }}
+              style={{marginRight: "0.5em"}}
               onClick={() => {
                 setDoneFilter(!doneFilter);
               }}
@@ -121,9 +118,9 @@ const TaskListControl = (props: { taskListId?: number }) => {
             clearable
             selection
             options={availableCategories.map((x) => {
-              return { key: x.name, text: x.name, value: x.name };
+              return {key: x.name, text: x.name, value: x.name};
             })}
-            style={{ marginRight: "0.5em" }}
+            style={{marginRight: "0.5em"}}
             onChange={(e: any) => {
               setCategory(e.target.innerText);
             }}
@@ -133,9 +130,9 @@ const TaskListControl = (props: { taskListId?: number }) => {
             search={!isMobileOptimized}
             selection
             options={availableTaskLists.map((x) => {
-              return { key: x.id, text: x.title, value: x.title };
+              return {key: x.id, text: x.title, value: x.title};
             })}
-            style={{ marginRight: "0.5em" }}
+            style={{marginRight: "0.5em"}}
             defaultValue={taskList ? taskList.title : undefined}
             onChange={async (e: any) => {
               const selectedId = availableTaskLists.find(
@@ -151,7 +148,7 @@ const TaskListControl = (props: { taskListId?: number }) => {
               label="Done"
               checked={doneFilter}
               toggle
-              style={{ marginRight: "0.5em", marginTop: "0.5em" }}
+              style={{marginRight: "0.5em", marginTop: "0.5em"}}
               onClick={() => {
                 setDoneFilter(!doneFilter);
               }}
@@ -169,7 +166,7 @@ const TaskListControl = (props: { taskListId?: number }) => {
             disabled={!taskList}
             primary
           >
-            {isMobileOptimized ? <Icon name="add" /> : "Add Task"}
+            {isMobileOptimized ? <Icon name="add"/> : "Add Task"}
           </Button>
         </div>
       </Container>

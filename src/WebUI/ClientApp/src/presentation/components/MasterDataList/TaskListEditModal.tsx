@@ -25,7 +25,7 @@ const TaskListEditModal = (props: {
   }, [props]);
 
   return (
-    <Modal open={true}>
+    <Modal open={dataLoaded}>
       <Modal.Header>Edit {title || 'item'}</Modal.Header>
       <Modal.Content>
         <Modal.Description>
@@ -41,22 +41,22 @@ const TaskListEditModal = (props: {
               }}
               required
             ></Form.Field>
-            {dataLoaded && <Form.Field
-                control={Checkbox}
-                label="Require Business Value"
-                checked={requireBusinessValue}
-                onClick={() => {
-                  setRequireBusinessValue(!requireBusinessValue);
-                }}
-            />}
-            {dataLoaded && <Form.Field
-                control={Checkbox}
-                label="Require Description"
-                checked={requireDescription}
-                onClick={() => {
-                  setRequireDescription(!requireDescription);
-                }}
-            />}
+            <Form.Field
+              control={Checkbox}
+              label="Require Business Value"
+              checked={requireBusinessValue}
+              onClick={() => {
+                setRequireBusinessValue(!requireBusinessValue);
+              }}
+            />
+            <Form.Field
+              control={Checkbox}
+              label="Require Description"
+              checked={requireDescription}
+              onClick={() => {
+                setRequireDescription(!requireDescription);
+              }}
+            />
           </Form>
         </Modal.Description>
       </Modal.Content>
