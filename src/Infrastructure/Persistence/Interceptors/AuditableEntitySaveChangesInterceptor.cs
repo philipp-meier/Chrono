@@ -22,11 +22,15 @@ public class AuditableEntitySaveChangesInterceptor : BaseSaveChangesInterceptor
             return;
         }
 
-        var changedAuditableEntities = dbContext.ChangeTracker.Entries<BaseAuditableEntity>();
-        var currentUser = dbContext.Users.FirstOrDefault(x => x.UserId == _currentUserService.UserId);
         var currentUtcDate = DateTime.UtcNow;
+        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == _currentUserService.UserId);
+        if (currentUser == null && !string.IsNullOrEmpty(_currentUserService.UserId))
+        {
+            currentUser = new User { UserId = _currentUserService.UserId, Name = _currentUserService.UserName };
+            dbContext.Users.Add(currentUser);
+        }
 
-        foreach (var entry in changedAuditableEntities)
+        foreach (var entry in dbContext.ChangeTracker.Entries<BaseAuditableEntity>())
         {
             if (entry.State == EntityState.Added)
             {
