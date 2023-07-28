@@ -1,5 +1,5 @@
-import { Button, Form, Input, Modal } from "semantic-ui-react";
-import React, { useState } from "react";
+import {Button, Form, Input, Modal} from "semantic-ui-react";
+import React, {useState} from "react";
 
 const AddItemModal = (props: {
   itemTitle: string;
@@ -20,6 +20,7 @@ const AddItemModal = (props: {
         <Modal.Description>
           <Form>
             <Form.Field
+              autoFocus
               control={Input}
               label="Name"
               placeholder="Name"

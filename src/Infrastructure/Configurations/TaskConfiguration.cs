@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Task = Chrono.Domain.Entities.Task;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Task = Chrono.Domain.Entities.Task;
 
 namespace Chrono.Infrastructure.Configurations;
 
@@ -10,9 +10,6 @@ public class TaskConfiguration : IEntityTypeConfiguration<Task>
     {
         builder.Property(x => x.Name)
             .HasMaxLength(200)
-            .IsRequired();
-
-        builder.Property(x => x.BusinessValue)
             .IsRequired();
 
         builder.Property(x => x.Position)

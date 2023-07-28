@@ -3,6 +3,7 @@ using System;
 using Chrono.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chrono.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230726173405_AddedTaskListOptions")]
+    partial class AddedTaskListOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
@@ -266,8 +269,7 @@ namespace Chrono.Infrastructure.Migrations
                 {
                     b.HasOne("Chrono.Domain.Entities.TaskList", "TaskList")
                         .WithOne("Options")
-                        .HasForeignKey("Chrono.Domain.Entities.TaskListOptions", "TaskListId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("Chrono.Domain.Entities.TaskListOptions", "TaskListId");
 
                     b.Navigation("TaskList");
                 });
