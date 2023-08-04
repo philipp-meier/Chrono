@@ -1,6 +1,6 @@
-using Chrono.Domain.Entities;
+using Chrono.Application.Entities;
 using Microsoft.EntityFrameworkCore;
-using Task = Chrono.Domain.Entities.Task;
+using Task = Chrono.Application.Entities.Task;
 
 namespace Chrono.Application.Common.Interfaces;
 

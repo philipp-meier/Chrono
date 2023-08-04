@@ -1,8 +1,5 @@
 using Chrono.Application.Common.Dtos;
-using Chrono.Application.Tasks.Commands.CreateTask;
-using Chrono.Application.Tasks.Commands.DeleteTask;
-using Chrono.Application.Tasks.Commands.UpdateTask;
-using Chrono.Application.Tasks.Queries.GetTask;
+using Chrono.Application.Features.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,14 +14,14 @@ public class TasksController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaskDto>> Get(int id)
     {
-        return await Mediator.Send(new GetTaskQuery(id));
+        return await Mediator.Send(new GetTask(id));
     }
 
     [HttpPost]
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<int>> Create(CreateTaskCommand command)
+    public async Task<ActionResult<int>> Create(CreateTask command)
     {
         return await Mediator.Send(command);
     }
@@ -35,7 +32,7 @@ public class TasksController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTaskCommand command)
+    public async Task<IActionResult> Update(int id, UpdateTask command)
     {
         if (id != command.Id)
         {
@@ -55,7 +52,7 @@ public class TasksController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        await Mediator.Send(new DeleteTaskCommand(id));
+        await Mediator.Send(new DeleteTask(id));
         return NoContent();
     }
 }

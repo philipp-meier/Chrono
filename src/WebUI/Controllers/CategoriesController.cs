@@ -1,7 +1,5 @@
-using Chrono.Application.Categories.Commands.CreateCategory;
-using Chrono.Application.Categories.Commands.DeleteCategory;
-using Chrono.Application.Categories.Queries.GetCategories;
 using Chrono.Application.Common.Dtos;
+using Chrono.Application.Features.Categories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +11,12 @@ public class CategoriesController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<CategoryDto[]>> Get()
     {
-        return await Mediator.Send(new GetCategoriesQuery());
+        return await Mediator.Send(new GetCategories());
     }
 
     [HttpPost]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateCategoryCommand command)
+    public async Task<ActionResult<int>> Create(CreateCategory command)
     {
         return await Mediator.Send(command);
     }
@@ -30,7 +28,7 @@ public class CategoriesController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        await Mediator.Send(new DeleteCategoryCommand(id));
+        await Mediator.Send(new DeleteCategory(id));
         return NoContent();
     }
 }
