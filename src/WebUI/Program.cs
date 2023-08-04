@@ -1,4 +1,4 @@
-using Chrono.Infrastructure.Persistence;
+using Chrono.Application.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseKestrel(option => option.AddServerHeader = false);

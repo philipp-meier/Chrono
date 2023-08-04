@@ -1,11 +1,11 @@
-using MediatR;
-using FluentValidation;
 using System.Reflection;
 using Chrono.Application.Common.Behaviors;
+using FluentValidation;
+using MediatR;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ConfigureServices
+public static partial class ConfigureServices
 {
     public static void AddApplicationServices(this IServiceCollection services, bool isDevelopment)
     {
@@ -16,7 +16,9 @@ public static class ConfigureServices
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             if (isDevelopment)
+            {
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+            }
         });
     }
 }
