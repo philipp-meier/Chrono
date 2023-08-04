@@ -1,4 +1,4 @@
-using Task = Chrono.Domain.Entities.Task;
+using Task = Chrono.Application.Entities.Task;
 
 namespace Chrono.Application.Common.Dtos;
 
@@ -30,7 +30,6 @@ public class TaskDto
             Categories = task.Categories
                 .Select(CategoryDto.FromEntity)
                 .ToArray(),
-
             LastModified = DateTime.SpecifyKind(task.LastModified, DateTimeKind.Utc),
             LastModifiedBy = task.LastModifiedBy.Name
         };

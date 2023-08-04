@@ -1,9 +1,4 @@
-using Chrono.Application.TaskLists.Commands.CreateTaskList;
-using Chrono.Application.TaskLists.Commands.DeleteTaskList;
-using Chrono.Application.TaskLists.Queries.GetTaskList;
-using Chrono.Application.TaskLists.Queries.GetTaskListOptions;
-using Chrono.Application.TaskLists.Queries.GetTaskLists;
-using Chrono.Application.Tasks.Commands.UpdateTaskList;
+using Chrono.Application.Features.TaskLists;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +10,7 @@ public class TaskListsController : ApiControllerBase
     [HttpGet]
     public async Task<ActionResult<TaskListBriefDto[]>> Get()
     {
-        return await Mediator.Send(new GetTaskListsQuery());
+        return await Mediator.Send(new GetTaskLists());
     }
 
     [HttpGet("{id:int}")]
@@ -24,7 +19,7 @@ public class TaskListsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaskListDto>> Get(int id)
     {
-        return await Mediator.Send(new GetTaskListQuery(id));
+        return await Mediator.Send(new GetTaskList(id));
     }
 
     [HttpGet("{id:int}/options")]
@@ -33,12 +28,12 @@ public class TaskListsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaskListOptionsDto>> GetOptions(int id)
     {
-        return await Mediator.Send(new GetTaskListOptionsQuery(id));
+        return await Mediator.Send(new GetTaskListOptions(id));
     }
 
     [HttpPost]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateTaskListCommand command)
+    public async Task<ActionResult<int>> Create(CreateTaskList command)
     {
         return await Mediator.Send(command);
     }
@@ -48,7 +43,7 @@ public class TaskListsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTaskListCommand command)
+    public async Task<IActionResult> Update(int id, UpdateTaskList command)
     {
         if (id != command.TaskListId)
         {
@@ -66,7 +61,7 @@ public class TaskListsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Delete(int id)
     {
-        await Mediator.Send(new DeleteTaskListCommand(id));
+        await Mediator.Send(new DeleteTaskList(id));
         return NoContent();
     }
 }
