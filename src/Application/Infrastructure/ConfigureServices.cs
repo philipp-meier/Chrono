@@ -14,8 +14,10 @@ public static partial class ConfigureServices
         services.AddScoped<TaskSaveChangesInterceptor>();
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(configuration.GetConnectionString("DefaultConnection"),
-                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+            options.UseSqlite(configuration.GetConnectionString("DefaultConnection"), builder => {
+                builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+            }));
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
