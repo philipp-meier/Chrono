@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/src/WebUI/ClientApp"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     target-branch: "develop"
     groups:
       dependencies:
