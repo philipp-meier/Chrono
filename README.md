@@ -28,23 +28,33 @@ This application was inspired by the [staffeng.com](https://staffeng.com/guides/
 
 ### Home
 
-![Start](./static/Start.png)
+<kbd>
+  <img src="./static/Start.png">
+</kbd>
 
 ### List
 
-![Lists](./static/List.png)
+<kbd>
+  <img src="./static/List.png">
+</kbd>
 
 ### Adding tasks
 
-![AddTask](./static/AddTask.png)
+<kbd>
+  <img src="./static/AddTask.png">
+</kbd>
 
 ### Master Data
 
-![MasterData](./static/MasterData.png)
+<kbd>
+  <img src="./static/MasterData.png">
+</kbd>
 
 ### Mobile
 
-![Mobile](./static/Mobile.png)
+<kbd>
+  <img src="./static/Mobile.png">
+</kbd>
 
 ## Getting started
 
