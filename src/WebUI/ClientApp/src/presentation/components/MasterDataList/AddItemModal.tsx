@@ -1,5 +1,5 @@
 import {Button, Form, Input, Modal} from "semantic-ui-react";
-import React, {useState} from "react";
+import {useState} from "react";
 
 const AddItemModal = (props: {
   itemTitle: string;
