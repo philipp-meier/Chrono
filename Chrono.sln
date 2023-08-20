@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1B56785E-8524-4444-B576-23AB945131D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{A76820C9-BFA4-4CC1-98A2-74104D96D658}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{268A3319-C632-40CB-A35E-1DDE745B2E81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "src\WebUI\WebUI.csproj", "{9BA631F2-D082-437D-8100-99F826858941}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docs", "_docs", "{79449CD2-6C8D-4E22-BD09-1AB18846078C}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "static", "static", "{11D354DB-4870-4256-A40C-44781E39CA2A}"
+	ProjectSection(SolutionItems) = preProject
+		static\AddTask.png = static\AddTask.png
+		static\List.png = static\List.png
+		static\MasterData.png = static\MasterData.png
+		static\Mobile.png = static\Mobile.png
+		static\Start.png = static\Start.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_config", "_config", "{C6C4884B-F513-4419-8326-6DA9F3CE3189}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitkeep = .gitkeep
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{56763119-C6D6-40E9-9D27-A16C2A2C132E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{E59B02BF-6028-4353-BB9D-2270F7A95541}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A76820C9-BFA4-4CC1-98A2-74104D96D658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A76820C9-BFA4-4CC1-98A2-74104D96D658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A76820C9-BFA4-4CC1-98A2-74104D96D658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A76820C9-BFA4-4CC1-98A2-74104D96D658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA631F2-D082-437D-8100-99F826858941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA631F2-D082-437D-8100-99F826858941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA631F2-D082-437D-8100-99F826858941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA631F2-D082-437D-8100-99F826858941}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A76820C9-BFA4-4CC1-98A2-74104D96D658} = {1B56785E-8524-4444-B576-23AB945131D4}
+		{5DE651B8-3CF2-4EBC-8956-3EBC85A8E8E0} = {268A3319-C632-40CB-A35E-1DDE745B2E81}
+		{9BA631F2-D082-437D-8100-99F826858941} = {268A3319-C632-40CB-A35E-1DDE745B2E81}
+		{11D354DB-4870-4256-A40C-44781E39CA2A} = {79449CD2-6C8D-4E22-BD09-1AB18846078C}
+		{56763119-C6D6-40E9-9D27-A16C2A2C132E} = {C6C4884B-F513-4419-8326-6DA9F3CE3189}
+		{E59B02BF-6028-4353-BB9D-2270F7A95541} = {56763119-C6D6-40E9-9D27-A16C2A2C132E}
+	EndGlobalSection
+EndGlobal

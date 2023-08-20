@@ -28,7 +28,7 @@ public class LoginController : ApiControllerBase
         SignOut("cookie", "oidc");
 
         // To ensure that all auth. cookies are being deleted, since ASP.NET Core uses the ChunkingCookieManager for cookie authentication by default.
-        new ChunkingCookieManager().DeleteCookie(HttpContext, _configuration["IdentityProvider:CookieName"], new CookieOptions());
+        new ChunkingCookieManager().DeleteCookie(HttpContext, _configuration["IdentityProvider:CookieName"]!, new CookieOptions());
 
         return Redirect(idpHost + "oidc/logout?id_token_hint=" + idToken + "&post_logout_redirect_uri=" + HttpUtility.UrlEncode(redirectUrl));
     }
