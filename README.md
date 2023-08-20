@@ -30,9 +30,9 @@ This application was inspired by the [staffeng.com](https://staffeng.com/guides/
 
 <kbd><img src="./static/Start.png" alt="Home"></kbd>
 
-### List
+### Lists
 
-<kbd><img src="./static/List.png" alt="List"></kbd>
+<kbd><img src="./static/List.png" alt="Lists"></kbd>
 
 ### Adding tasks
 
