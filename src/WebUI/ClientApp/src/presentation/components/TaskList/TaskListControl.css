@@ -1,110 +1,120 @@
 div.items.list.ui.container
-  > div.ui.container.item.tasklist-item
-  > div.ui.container.content
-  > div.ui.container.header {
-  display: flex;
-  margin-left: 0px !important;
+> div.ui.container.item.tasklist-item
+> div.ui.container.content
+> div.ui.container.header {
+    display: flex;
+    margin-left: 0px !important;
 }
 
 div.ui.container.item.tasklist-item
-  > div.content
-  > div.header
-  > div.container.headline {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
+> div.content
+> div.header
+> div.container.headline {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
 div.ui.container.item.tasklist-item
-  > div.content
-  > div.header
-  > div.container.headline
-  > a.task-name {
-  margin-left: 0.15em;
-  vertical-align: middle;
+> div.content
+> div.header
+> div.container.headline
+> a.task-name {
+    margin-left: 0.15em;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
 }
 
 /* Overwrite Semantic UI media queries */
 div.ui.container.item.tasklist-item {
-  width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
+
 div.ui.container.item.tasklist-item > div.ui.container.content {
-  width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
+
 div.ui.container.item.tasklist-item
-  > div.ui.container.content
-  > div.ui.container.header {
-  width: 100% !important;
-  justify-content: space-between;
+> div.ui.container.content
+> div.ui.container.header {
+    width: 100% !important;
+    justify-content: space-between;
 }
 
 div.ui.right.aligned.container.tasklist-menu {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 div.tasklist
-  > div.list
-  > div.tasklist-item
-  > div.content
-  > div.header
-  > div.actions {
-  min-width: 115px;
+> div.list
+> div.tasklist-item
+> div.content
+> div.header
+> div.actions {
+    min-width: 115px;
 }
+
 div.tasklist > div.list > div.tasklist-item > div.content > div,
 div.header > div.headline,
 div.ui.right.aligned.container.actions {
-  margin-left: 0em !important;
-  margin-right: 0em !important;
+    margin-left: 0em !important;
+    margin-right: 0em !important;
 }
+
 div.tasklist
-  > div.list
-  > div.tasklist-item
-  > div.content
-  > div.description
-  > p {
-  white-space: pre-line;
+> div.list
+> div.tasklist-item
+> div.content
+> div.description
+> p {
+    white-space: pre-line;
 }
+
 div.tasklist > div.list > div.tasklist-item > div.content > div.description,
 div.ui.container.extra {
-  margin-left: 0em !important;
-  margin-right: 0em !important;
+    margin-left: 0em !important;
+    margin-right: 0em !important;
 }
 
 /* Mobile view */
 div.tasklist.mobile {
-  margin-left: 0em !important;
-  margin-right: 0em !important;
+    margin-left: 0em !important;
+    margin-right: 0em !important;
 }
+
 div.tasklist.mobile div.ui.right.aligned.container.tasklist-menu {
-  flex-direction: column;
-  align-items: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
 }
+
 div.tasklist.mobile div.ui.right.aligned.container.tasklist-menu > div.buttons {
-  position: fixed;
-  bottom: 7%;
-  right: 5%;
-  z-index: 2;
+    position: fixed;
+    bottom: 7%;
+    right: 5%;
+    z-index: 2;
 }
+
 div.tasklist.mobile div.ui.right.aligned.container.tasklist-menu > div.filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  justify-content: space-between;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
 }
+
 div.tasklist.mobile
-  div.ui.right.aligned.container.tasklist-menu
-  > div.filters
-  > div.dropdown {
-  width: 49.6%;
-  margin: 0em !important;
+div.ui.right.aligned.container.tasklist-menu
+> div.filters
+> div.dropdown {
+    width: 49.6%;
+    margin: 0em !important;
 }
