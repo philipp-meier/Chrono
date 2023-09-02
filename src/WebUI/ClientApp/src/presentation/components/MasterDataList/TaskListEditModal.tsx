@@ -2,6 +2,7 @@ import {MasterDataItem} from "./MasterDataListControl";
 import {Button, Checkbox, Form, Input, Modal} from "semantic-ui-react";
 import {useEffect, useState} from "react";
 import {getTaskListOptions, updateTaskList} from "../../../infrastructure/services/TaskListService";
+import {getCurrentUserSettings, updateCurrentUserSettings} from "../../../infrastructure/services/UserService.ts";
 
 const TaskListEditModal = (props: {
   context?: MasterDataItem,
@@ -11,9 +12,16 @@ const TaskListEditModal = (props: {
   const [requireDescription, setRequireDescription] = useState(true);
   const [requireBusinessValue, setRequireBusinessValue] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [isDefaultList, setDefaultList] = useState(true);
 
   useEffect(() => {
     const dataFetch = async () => {
+
+      if (props.context) {
+        const userSettings = await getCurrentUserSettings();
+        setDefaultList(props.context.id === userSettings.defaultTaskListId);
+      }
+
       const options = props.context ? await getTaskListOptions(props.context.id) : null;
       if (options) {
         setRequireBusinessValue(options.requireBusinessValue);
@@ -61,10 +69,21 @@ const TaskListEditModal = (props: {
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
-        <Button
+        {<Button
+          color="green"
           onClick={() => {
-            props.onButtonClick!(false);
+            const defaultTaskListId = isDefaultList ? undefined : props.context!.id;
+            updateCurrentUserSettings({defaultTaskListId})
+              .then(isDone => {
+                if (isDone)
+                  props.onButtonClick!(true);
+              });
           }}
+        >
+          {isDefaultList ? "Unset default" : "Set as default"}
+        </Button>}
+        <Button
+          onClick={() => props.onButtonClick!(false)}
         >
           Cancel
         </Button>
