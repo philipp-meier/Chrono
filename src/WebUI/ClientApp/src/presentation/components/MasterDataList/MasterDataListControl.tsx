@@ -1,4 +1,4 @@
-import {Button, Confirm, Container, Icon, List} from "semantic-ui-react";
+import {Button, Confirm, Container, List} from "semantic-ui-react";
 import React, {ReactElement, useState} from "react";
 
 export type MasterDataItem = {
@@ -19,34 +19,39 @@ const MasterDataListControl = (props: {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentItem, setCurrentItem] = useState(null as MasterDataItem | null);
 
-  const masterDataItems = props.items.map((x, idx) => (
-    <List.Item key={idx}>
-      <Container style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-        <div>
-          {props.favoriteItemId === x.id && <Icon color="blue" name="favorite"/>}
-          {x.name}
-        </div>
-        <div style={{display: "flex", justifyContent: "flex-end"}}>
-          {props.editModal && <Button
-              onClick={() => {
-                setCurrentItem(x);
-                setShowEditModal(true);
-              }}
-          >
-              Edit
-          </Button>}
-          <Button
-            onClick={() => {
-              setCurrentItem(x);
-              setShowDeleteConfirm(true);
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </Container>
-    </List.Item>
-  ))
+  const masterDataItems = props.items.map((x, idx) => {
+      const favoriteItemHeaderStyle = {color: "#2185d0", fontWeight: "bold", fontSize: "1.1em"};
+      return (
+        <List.Item key={idx}>
+          <Container style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <div>
+              <span style={props.favoriteItemId === x.id ? favoriteItemHeaderStyle : undefined}>
+                {x.name}
+              </span>
+            </div>
+            <div style={{display: "flex", justifyContent: "flex-end"}}>
+              {props.editModal && <Button
+                  onClick={() => {
+                    setCurrentItem(x);
+                    setShowEditModal(true);
+                  }}
+              >
+                  Edit
+              </Button>}
+              <Button
+                onClick={() => {
+                  setCurrentItem(x);
+                  setShowDeleteConfirm(true);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </Container>
+        </List.Item>
+      )
+    }
+  )
 
   return (
     <>
