@@ -1,17 +1,17 @@
-import { useLayoutEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
-import { Menu } from "semantic-ui-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {useLayoutEffect, useState} from "react";
+import {useMediaQuery} from "react-responsive";
+import {Menu} from "semantic-ui-react";
+import {useLocation, useNavigate} from "react-router-dom";
 import MainMenuLg from "./MainMenuLg";
 import MainMenuMd from "./MainMenuMd";
-import { getCurrentUserInfo } from "../../../infrastructure/services/UserService";
-import { UserInfo } from "../../../domain/models/UserInfo";
+import {getCurrentUserInfo} from "../../../infrastructure/services/UserService";
+import {User} from "../../../domain/models/User.ts";
 import MenuItems from "./MenuItems";
 
 const MainMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userInfo, setUserInfo] = useState(null as UserInfo | null);
+  const [userInfo, setUserInfo] = useState(null as User | null);
 
   useLayoutEffect(() => {
     const dataFetch = async () => {
@@ -37,7 +37,7 @@ const MainMenu = () => {
   );
   const handleItemClick = (
     _e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    { name }: any
+    {name}: any
   ) => {
     setActiveItem(name);
 
@@ -58,7 +58,7 @@ const MainMenu = () => {
         (x.displayState === "loggedIn" && isLoggedIn) ||
         (x.displayState === "loggedOut" && !isLoggedIn)
     ).map((menuItem, index) => {
-      const { name, disableNavigation, position, element } = menuItem;
+      const {name, disableNavigation, position, element} = menuItem;
       return (
         <Menu.Item
           key={index}
@@ -75,10 +75,10 @@ const MainMenu = () => {
 
   return (
     <div>
-      {useMediaQuery({ query: "(min-width:576px)" }) ? (
-        <MainMenuLg renderLinks={renderLinks} />
+      {useMediaQuery({query: "(min-width:576px)"}) ? (
+        <MainMenuLg renderLinks={renderLinks}/>
       ) : (
-        <MainMenuMd renderLinks={renderLinks} />
+        <MainMenuMd renderLinks={renderLinks}/>
       )}
     </div>
   );

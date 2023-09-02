@@ -28,6 +28,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<UserSettings> UserSettings => Set<UserSettings>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -5,7 +5,7 @@ interface ILoginProps {
 }
 
 class LoginPage extends Component<ILoginProps> {
-  private _sign: string;
+  private readonly _sign: string;
 
   constructor(props: ILoginProps) {
     super(props);
