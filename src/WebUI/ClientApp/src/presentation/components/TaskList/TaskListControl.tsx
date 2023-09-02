@@ -12,7 +12,7 @@ import {updateTask} from "../../../infrastructure/services/TaskService";
 import {useMediaQuery} from "react-responsive";
 import {getCurrentUserSettings} from "../../../infrastructure/services/UserService.ts";
 
-const TaskListControl = (props: { taskListId?: number }) => {
+const TaskListControl = (props: { taskListId: number }) => {
   const [taskList, setTaskList] = useState(null as TaskList | null);
   const [category, setCategory] = useState("");
   const [doneFilter, setDoneFilter] = useState(false);

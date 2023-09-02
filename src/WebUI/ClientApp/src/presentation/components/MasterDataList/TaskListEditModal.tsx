@@ -74,7 +74,10 @@ const TaskListEditModal = (props: {
           onClick={() => {
             const defaultTaskListId = isDefaultList ? undefined : props.context!.id;
             updateCurrentUserSettings({defaultTaskListId})
-              .then(isDone => props.onButtonClick!(true));
+              .then(isDone => {
+                if (isDone)
+                  props.onButtonClick!(true);
+              });
           }}
         >
           {isDefaultList ? "Unset default" : "Set as default"}
