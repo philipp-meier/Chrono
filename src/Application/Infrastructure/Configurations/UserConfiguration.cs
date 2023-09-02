@@ -16,5 +16,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Name)
             .IsRequired();
+
+        builder.HasOne(x => x.UserSettings)
+            .WithOne(x => x.User)
+            .HasPrincipalKey<User>(x => x.Id)
+            .HasForeignKey<UserSettings>(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }

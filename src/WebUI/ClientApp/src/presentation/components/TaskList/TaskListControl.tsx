@@ -10,6 +10,7 @@ import {getTaskList, getTaskLists,} from "../../../infrastructure/services/TaskL
 import {getCategories} from "../../../infrastructure/services/CategoryService";
 import {updateTask} from "../../../infrastructure/services/TaskService";
 import {useMediaQuery} from "react-responsive";
+import {getCurrentUserSettings} from "../../../infrastructure/services/UserService.ts";
 
 const TaskListControl = (props: { taskListId?: number }) => {
   const [taskList, setTaskList] = useState(null as TaskList | null);
@@ -33,17 +34,16 @@ const TaskListControl = (props: { taskListId?: number }) => {
 
       if (!taskLists || taskLists.length === 0)
         return;
-     
-      const selectedTaskList = taskLists.find(
-        (x) => x.id === props.taskListId
-      );
-      const taskList = await getTaskList(
-        selectedTaskList?.id ?? taskLists[0].id
-      );
+
+      const userSettings = await getCurrentUserSettings();
+      const selectedTaskList = props.taskListId >= 0 ?
+        props.taskListId : userSettings.defaultTaskListId;
+
+      const taskList = await getTaskList(selectedTaskList ?? taskLists[0].id);
       setTaskList(taskList);
     };
 
-    dataFetch();
+    dataFetch()
   }, [props.taskListId]);
 
   const filteredTasks = (taskList?.tasks || [])

@@ -5,10 +5,12 @@ import React from "react";
 import {createCategory, deleteCategory, getCategories,} from "../../infrastructure/services/CategoryService";
 import AddItemModal from "../components/MasterDataList/AddItemModal";
 import TaskListEditModal from "../components/MasterDataList/TaskListEditModal";
+import {getCurrentUserSettings} from "../../infrastructure/services/UserService.ts";
 
 interface MasterDataPageState {
   taskLists: MasterDataItem[];
   categories: MasterDataItem[];
+  favoriteTaskListId?: number;
 }
 
 interface TabPaneRenderOptions {
@@ -17,6 +19,7 @@ interface TabPaneRenderOptions {
   createCallback: (title: string) => Promise<number>;
   deleteCallback: (id: number) => Promise<boolean>;
   editModal?: any;
+  favoriteItemId?: number;
 }
 
 export default class MasterDataPage extends React.Component<any, MasterDataPageState> {
@@ -37,7 +40,9 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
       return {id: x.id, name: x.name};
     });
 
-    this.setState({taskLists, categories});
+    const userSettings = await getCurrentUserSettings();
+
+    this.setState({taskLists, categories, favoriteTaskListId: userSettings.defaultTaskListId});
   }
 
   render() {
@@ -59,7 +64,8 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
           items: this.state.taskLists,
           createCallback: createTaskList,
           deleteCallback: deleteTaskList,
-          editModal: <TaskListEditModal/>
+          editModal: <TaskListEditModal/>,
+          favoriteItemId: this.state.favoriteTaskListId
         }),
       },
       {
@@ -89,6 +95,7 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
           editModal={options.editModal}
           onDelete={(item: MasterDataItem) => this.deleteMasterDataItem(options.items, item, options.deleteCallback)}
           refreshDataCallback={() => this.refreshMasterDataAsync()}
+          favoriteItemId={options.favoriteItemId}
         />
       </Tab.Pane>
     );

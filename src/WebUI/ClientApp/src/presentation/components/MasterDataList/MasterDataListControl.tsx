@@ -1,4 +1,4 @@
-import {Button, Confirm, Container, List} from "semantic-ui-react";
+import {Button, Confirm, Container, Icon, List} from "semantic-ui-react";
 import React, {ReactElement, useState} from "react";
 
 export type MasterDataItem = {
@@ -13,6 +13,7 @@ const MasterDataListControl = (props: {
   editModal?: ReactElement;
   onDelete: (item: MasterDataItem) => void;
   refreshDataCallback?: () => void;
+  favoriteItemId?: number;
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -20,27 +21,32 @@ const MasterDataListControl = (props: {
 
   const masterDataItems = props.items.map((x, idx) => (
     <List.Item key={idx}>
-      <List.Content floated="right">
-        {props.editModal && <Button
+      <Container style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+        <div>
+          {props.favoriteItemId === x.id && <Icon color="blue" name="favorite"/>}
+          {x.name}
+        </div>
+        <div style={{display: "flex", justifyContent: "flex-end"}}>
+          {props.editModal && <Button
+              onClick={() => {
+                setCurrentItem(x);
+                setShowEditModal(true);
+              }}
+          >
+              Edit
+          </Button>}
+          <Button
             onClick={() => {
               setCurrentItem(x);
-              setShowEditModal(true);
+              setShowDeleteConfirm(true);
             }}
-        >
-            Edit
-        </Button>}
-        <Button
-          onClick={() => {
-            setCurrentItem(x);
-            setShowDeleteConfirm(true);
-          }}
-        >
-          Delete
-        </Button>
-      </List.Content>
-      <List.Content>{x.name}</List.Content>
+          >
+            Delete
+          </Button>
+        </div>
+      </Container>
     </List.Item>
-  ));
+  ))
 
   return (
     <>
