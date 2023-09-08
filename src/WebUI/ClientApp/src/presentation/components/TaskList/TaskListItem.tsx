@@ -1,14 +1,15 @@
 import IconLabel from "../IconLabel";
-import { Task } from "../../../domain/models/Task";
-import { useMediaQuery } from "react-responsive";
-import { Category } from "../../../domain/models/Category";
-import { Button, Container, Icon } from "semantic-ui-react";
+import {Task} from "../../../domain/models/Task";
+import {useMediaQuery} from "react-responsive";
+import {Category} from "../../../domain/models/Category";
+import {Button, Container, Icon} from "semantic-ui-react";
+import ReactMarkdown from "react-markdown";
 
 const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
-  const isMobileOptimized = useMediaQuery({ query: "(max-width:682px)" });
+  const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
   const labels = props.task.categories.map(
     (category: Category, index: number) => (
-      <IconLabel key={index} text={category.name} />
+      <IconLabel key={index} text={category.name}/>
     )
   );
   return (
@@ -22,7 +23,7 @@ const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
             <a
               href={`/lists/${props.task.listId}/tasks/${props.task.id}`}
               className="task-name"
-              style={{ marginLeft: "0.25em" }}
+              style={{marginLeft: "0.25em"}}
             >
               {props.task.name}
             </a>
@@ -38,7 +39,7 @@ const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
                 onClick={props.moveUp}
                 disabled={!props.moveUp}
               >
-                <Icon name="angle up" />
+                <Icon name="angle up"/>
               </Button>
               <Button
                 icon
@@ -49,13 +50,13 @@ const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
                 onClick={props.moveDown}
                 disabled={!props.moveDown}
               >
-                <Icon name="angle down" />
+                <Icon name="angle down"/>
               </Button>
             </Container>
           )}
         </Container>
         <Container className="description">
-          <p style={{ overflowWrap: "anywhere" }}>{props.task.description}</p>
+          <ReactMarkdown children={props.task.description}/>
         </Container>
         <Container className="extra">{labels}</Container>
       </Container>
