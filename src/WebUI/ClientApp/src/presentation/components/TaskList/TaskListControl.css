@@ -73,7 +73,7 @@ div.tasklist
 > div.tasklist-item
 > div.content
 > div.description
-> p {
+> * {
     white-space: pre-line;
     overflow-wrap: anywhere;
 }
