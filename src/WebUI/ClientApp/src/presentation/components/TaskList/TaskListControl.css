@@ -75,6 +75,7 @@ div.tasklist
 > div.description
 > p {
     white-space: pre-line;
+    overflow-wrap: anywhere;
 }
 
 div.tasklist > div.list > div.tasklist-item > div.content > div.description,
