@@ -4,6 +4,8 @@ import {useMediaQuery} from "react-responsive";
 import {Category} from "../../../domain/models/Category";
 import {Button, Container, Icon} from "semantic-ui-react";
 import ReactMarkdown from "react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter"
+import {dracula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
@@ -56,7 +58,24 @@ const TaskListItem = (props: { task: Task; moveUp?: any; moveDown?: any }) => {
           )}
         </Container>
         <Container className="description">
-          <ReactMarkdown children={props.task.description}/>
+          <ReactMarkdown children={props.task.description} components={{
+            code({node, inline, className, children, ...props}) {
+              const match = /language-(\w+)/.exec(className || '')
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  {...props}
+                  children={String(children).replace(/\n$/, '')}
+                  style={dracula}
+                  language={match[1]}
+                  PreTag="div"
+                />
+              ) : (
+                <code {...props} className={className}>
+                  {children}
+                </code>
+              )
+            }
+          }}/>
         </Container>
         <Container className="extra">{labels}</Container>
       </Container>
