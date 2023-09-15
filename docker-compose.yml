@@ -1,0 +1,23 @@
+version: "3.4"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:443:443"
+      #- "127.0.0.1:80:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443
+      #- ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=defaultPassword
+      - ConnectionStrings__DefaultConnection=Data Source=../data/chrono.db
+      - IdentityProvider__Authority=https://<HOSTNAME>.auth0.com/
+      - IdentityProvider__ClientId=<CLIENT_ID>
+      - IdentityProvider__ClientSecret=<CLIENT_SECRET>
+    volumes:
+      - ./data:/data
+      - ./https:/https

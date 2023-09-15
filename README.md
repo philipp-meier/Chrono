@@ -51,19 +51,25 @@ simple tool to keep track of useful ideas that positively impact your project(s)
 
 ## Getting started
 
-You will need an empty `sqlite3`-database in the `data`-folder of the project. For this you can execute the following
-command:
+Run `setup.sh` to automatically create all required files (e.g. the SQLite3 database).  
+You also need an OAuth provider like [auth0](https://auth0.com) and configure the `Authority`, `ClientId`
+and `ClientSecret` in the `appsettings.json` file of the `WebUI` project.
 
-```sh
-sqlite3 chrono.db "VACUUM;"
-```
-
-Besides the database, you also need an OAuth provider like [auth0](https://auth0.com) and configure
-the `Authority`, `ClientId` and `ClientSecret` in the `appsettings.json` file of the `WebUI` project.
-
-Once that is done, you can run the application with (for example) `dotnet watch` in the `WebUI` folder.
+Once this is done, you can run the application with (for example) `dotnet watch` in the `WebUI` folder.
 
 **Swagger UI**: https://localhost:7151/swagger/index.html
+
+### Docker
+
+Chrono can also be hosted with Docker. You can configure the OAuth credentials in the `docker-compose.yml` or in
+the `appsettings.json`-file.  
+You also have to provide a https certificate, if you want to serve Chrono directly via https using the Kestrel
+web-server.
+
+A dev-certificate can be created using the following command or running `setup.sh`:  
+`dotnet dev-certs https -ep ./https/aspnetapp.pfx -p <password>`.
+
+To start the application, you can simply use the `docker compose up` command.
 
 ## Useful scripts
 

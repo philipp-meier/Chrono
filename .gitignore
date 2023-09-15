@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+https/*
 .idea
 data/*
 .vscode
