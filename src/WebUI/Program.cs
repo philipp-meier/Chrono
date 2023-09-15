@@ -1,6 +1,7 @@
 using Chrono.Application.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 builder.WebHost.UseKestrel(option => option.AddServerHeader = false);
 
 // Add services to the container.
