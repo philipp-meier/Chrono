@@ -1,0 +1,21 @@
+using Chrono.Features.Categories;
+using Chrono.Features.TaskLists;
+using Chrono.Features.Tasks;
+using Chrono.Features.Users;
+using Microsoft.EntityFrameworkCore;
+using Task = Chrono.Features.Tasks.Task;
+
+namespace Chrono.Common.Interfaces;
+
+public interface IApplicationDbContext
+{
+    DbSet<Task> Tasks { get; }
+    DbSet<TaskList> TaskLists { get; }
+    DbSet<TaskListOptions> TaskListOptions { get; }
+    DbSet<Category> Categories { get; }
+    DbSet<TaskCategory> TaskCategories { get; }
+    DbSet<User> Users { get; }
+    DbSet<UserSettings> UserSettings { get; }
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+}

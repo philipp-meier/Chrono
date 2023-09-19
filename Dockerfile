@@ -17,9 +17,8 @@ RUN apt-get install -y nodejs
 WORKDIR /source
 COPY Chrono.sln .
 COPY src/. ./src
-COPY tests/. ./tests
 RUN dotnet publish -c release -o /app/publish
 
 FROM server-base AS server
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "Chrono.WebUI.dll"]
+ENTRYPOINT ["dotnet", "Chrono.dll"]
