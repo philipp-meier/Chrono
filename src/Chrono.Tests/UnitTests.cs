@@ -3,12 +3,12 @@ using FluentAssertions;
 using NUnit.Framework;
 using Task = Chrono.Entities.Task;
 
-namespace Chrono.UnitTests.Services;
+namespace Chrono.Tests;
 
-public class TaskListServiceTests
+public class UnitTests
 {
     [Test]
-    public void ReorderTaskPositions()
+    public void Reorder_Task_Positions_Within_TaskLists()
     {
         var taskList = new TaskList
         {
@@ -62,7 +62,7 @@ public class TaskListServiceTests
     }
 
     [Test]
-    public void InsertAt()
+    public void Insert_At_Within_TaskLists()
     {
         var taskList = new TaskList
         {

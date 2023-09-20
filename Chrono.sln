@@ -46,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{C21C3E
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chrono.UnitTests", "src\Chrono.UnitTests\Chrono.UnitTests.csproj", "{1AE7C795-15A3-4509-BA1F-CC763BF0435E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chrono.Tests", "src\Chrono.Tests\Chrono.Tests.csproj", "{1AE7C795-15A3-4509-BA1F-CC763BF0435E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
