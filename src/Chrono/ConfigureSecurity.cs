@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Users;
+using Chrono.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;

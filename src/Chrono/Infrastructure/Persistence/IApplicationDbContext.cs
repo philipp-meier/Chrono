@@ -1,9 +1,6 @@
-using Chrono.Features.Categories;
-using Chrono.Features.TaskLists;
-using Chrono.Features.Tasks;
-using Chrono.Features.Users;
+using Chrono.Entities;
 using Microsoft.EntityFrameworkCore;
-using Task = Chrono.Features.Tasks.Task;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.Common.Interfaces;
 

@@ -1,7 +1,7 @@
-using Chrono.Features.TaskLists;
+using Chrono.Entities;
 using FluentAssertions;
 using NUnit.Framework;
-using Task = Chrono.Features.Tasks.Task;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.UnitTests.Services;
 

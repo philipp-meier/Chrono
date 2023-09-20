@@ -1,6 +1,4 @@
-using Chrono.Features.Categories;
-
-namespace Chrono.Features.Tasks;
+namespace Chrono.Entities;
 
 public class TaskCategory
 {
