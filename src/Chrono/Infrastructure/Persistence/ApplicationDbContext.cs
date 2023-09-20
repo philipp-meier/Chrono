@@ -1,12 +1,11 @@
 using System.Reflection;
 using Chrono.Common.Interfaces;
+using Chrono.Entities;
 using Chrono.Features.Audit;
-using Chrono.Features.Categories;
 using Chrono.Features.TaskLists;
 using Chrono.Features.Tasks;
-using Chrono.Features.Users;
 using Microsoft.EntityFrameworkCore;
-using Task = Chrono.Features.Tasks.Task;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.Infrastructure.Persistence;
 

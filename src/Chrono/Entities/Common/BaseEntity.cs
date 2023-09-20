@@ -1,4 +1,4 @@
-namespace Chrono.Common;
+namespace Chrono.Entities.Common;
 
 public abstract class BaseEntity
 {

@@ -1,8 +1,6 @@
-using Chrono.Features.Audit;
-using Chrono.Features.Categories;
-using Chrono.Features.TaskLists;
+using Chrono.Entities.Common;
 
-namespace Chrono.Features.Tasks;
+namespace Chrono.Entities;
 
 public class Task : BaseAuditableEntity
 {

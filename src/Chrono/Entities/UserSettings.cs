@@ -1,7 +1,6 @@
-﻿using Chrono.Common;
-using Chrono.Features.TaskLists;
+﻿using Chrono.Entities.Common;
 
-namespace Chrono.Features.Users;
+namespace Chrono.Entities;
 
 public class UserSettings : BaseEntity
 {

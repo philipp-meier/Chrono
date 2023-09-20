@@ -1,7 +1,7 @@
 using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Audit;
+using Chrono.Entities.Common;
 using Chrono.Features.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,7 +39,7 @@ public class DeleteTaskHandler : IRequestHandler<DeleteTask>
         _currentUserService = currentUserService;
     }
 
-    public async System.Threading.Tasks.Task Handle(DeleteTask request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteTask request, CancellationToken cancellationToken)
     {
         var entity = await _context.Tasks
             .Include(x => x.List)

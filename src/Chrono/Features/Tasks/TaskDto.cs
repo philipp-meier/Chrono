@@ -1,4 +1,5 @@
 using Chrono.Features.Categories;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 

@@ -1,4 +1,4 @@
-﻿namespace Chrono.Features.TaskLists;
+﻿namespace Chrono.Entities;
 
 public class TaskListOptions
 {

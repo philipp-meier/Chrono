@@ -1,7 +1,4 @@
-using Chrono.Common;
-using Chrono.Features.Users;
-
-namespace Chrono.Features.Audit;
+namespace Chrono.Entities.Common;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {
