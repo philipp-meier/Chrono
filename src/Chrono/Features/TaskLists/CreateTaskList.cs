@@ -1,5 +1,6 @@
 using Chrono.Common.Api;
 using Chrono.Common.Interfaces;
+using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

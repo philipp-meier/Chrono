@@ -1,6 +1,6 @@
-using Chrono.Common;
+using Chrono.Entities.Common;
 
-namespace Chrono.Features.Users;
+namespace Chrono.Entities;
 
 public class User : BaseEntity
 {

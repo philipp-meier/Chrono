@@ -1,8 +1,9 @@
 using Chrono.Common;
-using Chrono.Features.TaskLists;
+using Chrono.Entities;
 using Chrono.Features.Users;
 using Chrono.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 

@@ -1,5 +1,6 @@
-using Chrono.Features.Categories;
+using Chrono.Entities;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Infrastructure.Persistence;
 

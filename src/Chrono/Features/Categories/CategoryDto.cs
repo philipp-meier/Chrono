@@ -1,4 +1,4 @@
-using Chrono.Features.Tasks;
+using Chrono.Entities;
 
 namespace Chrono.Features.Categories;
 

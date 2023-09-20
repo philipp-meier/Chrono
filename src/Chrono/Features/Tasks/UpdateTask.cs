@@ -1,15 +1,16 @@
 using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Audit;
+using Chrono.Entities;
+using Chrono.Entities.Common;
 using Chrono.Features.Categories;
-using Chrono.Features.TaskLists;
 using Chrono.Features.Users;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Tasks;
 
@@ -57,7 +58,7 @@ public class UpdateTaskHandler : IRequestHandler<UpdateTask>
         _currentUserService = currentUserService;
     }
 
-    public async System.Threading.Tasks.Task Handle(UpdateTask request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateTask request, CancellationToken cancellationToken)
     {
         var task = await _context.Tasks
             .Include(x => x.List)

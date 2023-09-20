@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 

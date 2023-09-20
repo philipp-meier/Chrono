@@ -1,11 +1,13 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Audit;
+using Chrono.Entities;
+using Chrono.Entities.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Users;
 
