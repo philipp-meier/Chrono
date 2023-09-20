@@ -3,9 +3,9 @@ using FluentAssertions;
 using NUnit.Framework;
 using Task = Chrono.Entities.Task;
 
-namespace Chrono.Tests;
+namespace Chrono.Tests.UnitTests;
 
-public class UnitTests
+public class TaskLists
 {
     [Test]
     public void Reorder_Task_Positions_Within_TaskLists()

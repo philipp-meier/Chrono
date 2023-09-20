@@ -1,4 +1,5 @@
 {
+  "WebAppUrl": "https://localhost:7151",
   "Options": {
     "Headless": false,
     "IgnoreHTTPSErrors": true
