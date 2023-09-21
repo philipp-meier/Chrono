@@ -5,8 +5,10 @@ namespace Chrono.Tests.E2E;
 
 public partial class E2ETests
 {
-    [Test] [Order(3)]
-    public async Task Create_Task()
+    [Test] [Order(5)]
+    [TestCase("Test Task 1")]
+    [TestCase("Test Task 2")]
+    public async Task Add_Tasks_To_TaskList(string taskName)
     {
         await _page.GotoAsync(_config["WebAppUrl"]!);
         await _page.Locator("text=Lists").ClickAsync();
@@ -18,7 +20,7 @@ public partial class E2ETests
         await _page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions
         {
             Name = "Name", Exact = true
-        }).FillAsync("Test Task");
+        }).FillAsync(taskName);
 
         await _page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions
         {
@@ -29,6 +31,26 @@ public partial class E2ETests
         {
             Name = "Description", Exact = true
         }).FillAsync("Test description");
+
+        await _page.GetByRole(AriaRole.Button, new PageGetByRoleOptions
+        {
+            Name = "Save"
+        }).ClickAsync();
+    }
+
+
+    [Test] [Order(6)]
+    [TestCase("Test Task 1")]
+    public async Task Edit_Task_From_TaskList(string taskName)
+    {
+        await _page.GotoAsync(_config["WebAppUrl"]!);
+        await _page.Locator("text=Lists").ClickAsync();
+        await _page.Locator($"text={taskName}").ClickAsync();
+
+        await _page.GetByRole(AriaRole.Textbox, new PageGetByRoleOptions
+        {
+            Name = "Name", Exact = true
+        }).FillAsync(taskName + " - edited");
 
         await _page.GetByRole(AriaRole.Button, new PageGetByRoleOptions
         {

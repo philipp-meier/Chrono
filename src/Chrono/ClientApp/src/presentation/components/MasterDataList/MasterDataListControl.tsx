@@ -31,6 +31,7 @@ const MasterDataListControl = (props: {
             </div>
             <div style={{display: "flex", justifyContent: "flex-end"}}>
               {props.editModal && <Button
+                  data-edit={x.name}
                   onClick={() => {
                     setCurrentItem(x);
                     setShowEditModal(true);
@@ -39,6 +40,7 @@ const MasterDataListControl = (props: {
                   Edit
               </Button>}
               <Button
+                data-delete={x.name}
                 onClick={() => {
                   setCurrentItem(x);
                   setShowDeleteConfirm(true);
