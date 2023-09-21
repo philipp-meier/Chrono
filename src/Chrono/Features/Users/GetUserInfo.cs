@@ -5,18 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Users;
 
-[Authorize] [Route("api/user")]
-public class GetUserInfoController : ApiControllerBase
-{
-    [HttpGet]
-    [AllowAnonymous]
-    [ProducesDefaultResponseType]
-    public async Task<ActionResult<UserInfoDto>> Get()
-    {
-        return await Mediator.Send(new GetUserInfo());
-    }
-}
-
 public record GetUserInfo : IRequest<UserInfoDto>;
 
 public class GetUserInfoHandler : IRequestHandler<GetUserInfo, UserInfoDto>
@@ -41,4 +29,16 @@ public class UserInfoDto
 {
     public string Username { get; init; }
     public bool IsAuthenticated { get; init; }
+}
+
+[Authorize] [Route("api/user")]
+public class GetUserInfoController : ApiControllerBase
+{
+    [HttpGet]
+    [AllowAnonymous]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult<UserInfoDto>> Get()
+    {
+        return await Mediator.Send(new GetUserInfo());
+    }
 }

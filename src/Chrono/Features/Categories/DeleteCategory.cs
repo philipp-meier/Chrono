@@ -10,21 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Categories;
 
-[Authorize] [Route("api/categories")]
-public class DeleteCategoryController : ApiControllerBase
-{
-    [HttpDelete("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await Mediator.Send(new DeleteCategory(id));
-        return NoContent();
-    }
-}
-
 public record DeleteCategory(int Id) : IRequest;
 
 public class DeleteCategoryHandler : IRequestHandler<DeleteCategory>
@@ -59,5 +44,20 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategory>
         _context.Categories.Remove(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
+    }
+}
+
+[Authorize] [Route("api/categories")]
+public class DeleteCategoryController : ApiControllerBase
+{
+    [HttpDelete("{id:int}")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await Mediator.Send(new DeleteCategory(id));
+        return NoContent();
     }
 }

@@ -1,82 +1,40 @@
 using Chrono.Entities.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Chrono.Entities;
 
-public class TaskList : BaseAuditableEntity
+public sealed class TaskList : BaseAuditableEntity
 {
     public string Title { get; set; }
     public IList<Task> Tasks { get; set; } = new List<Task>();
     public TaskListOptions Options { get; set; }
 }
 
-public static class TaskListExtensions
+internal sealed class TaskListConfiguration : IEntityTypeConfiguration<TaskList>
 {
-    public static void ReorderTaskPositions(this TaskList taskList)
+    public void Configure(EntityTypeBuilder<TaskList> builder)
     {
-        if (taskList == null)
-        {
-            throw new ArgumentNullException(nameof(taskList));
-        }
+        builder.Property(x => x.Title)
+            .HasMaxLength(100)
+            .IsRequired();
 
-        var allTasks = taskList.Tasks
-            .OrderBy(x => x.Position)
-            .ToArray();
+        builder.HasMany(x => x.Tasks)
+            .WithOne(x => x.List)
+            .HasForeignKey(x => x.ListId)
+            .HasPrincipalKey(x => x.Id);
 
-        EnsureTaskPositionsWithinGroup(allTasks, x => !x.Done);
-        EnsureTaskPositionsWithinGroup(allTasks, x => x.Done);
+        builder.HasOne(x => x.Options)
+            .WithOne(x => x.TaskList)
+            .HasPrincipalKey<TaskList>(x => x.Id)
+            .HasForeignKey<TaskListOptions>(x => x.TaskListId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
 
-        void EnsureTaskPositionsWithinGroup(IEnumerable<Task> tasks, Func<Task, bool> taskGroupFilter)
-        {
-            var filteredTasks = tasks.Where(taskGroupFilter).ToArray();
-            for (var i = 0; i < filteredTasks.Length; i++)
-            {
-                filteredTasks[i].Position = i + 1;
-            }
-        }
-    }
+        builder.Navigation(x => x.Options)
+            .AutoInclude();
 
-    public static void InsertAt(this TaskList taskList, int position, Task task)
-    {
-        if (taskList != null && task.List != taskList)
-        {
-            task.List = taskList;
-            taskList.Tasks.Add(task);
-        }
-
-        var tasks = taskList!.Tasks
-            .Where(x => x.Done == task.Done)
-            .OrderBy(x => x.Position)
-            .ToArray();
-
-        var newPosition = position;
-        if (newPosition > tasks.Length)
-        {
-            newPosition = tasks.Length;
-        }
-        else if (newPosition < 1)
-        {
-            newPosition = 1;
-        }
-
-        var positionCount = 0;
-        foreach (var currentTask in tasks)
-        {
-            if (currentTask == task)
-            {
-                continue;
-            }
-
-            positionCount++;
-
-            // Skip this position.
-            if (positionCount == newPosition)
-            {
-                positionCount++;
-            }
-
-            currentTask.Position = positionCount;
-        }
-
-        task.Position = newPosition;
+        builder.Navigation(x => x.CreatedBy)
+            .AutoInclude();
     }
 }

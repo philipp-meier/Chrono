@@ -11,19 +11,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.TaskLists;
 
-[Authorize] [Route("api/tasklists")]
-public class GetTaskListOptionsController : ApiControllerBase
-{
-    [HttpGet("{id:int}/options")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaskListOptionsDto>> GetOptions(int id)
-    {
-        return await Mediator.Send(new GetTaskListOptions(id));
-    }
-}
-
 public record GetTaskListOptions(int ListId) : IRequest<TaskListOptionsDto>;
 
 public class GetTaskListOptionsHandler : IRequestHandler<GetTaskListOptions, TaskListOptionsDto>
@@ -67,5 +54,18 @@ public class TaskListOptionsDto
         {
             RequireBusinessValue = taskListOptions?.RequireBusinessValue ?? true, RequireDescription = taskListOptions?.RequireDescription ?? true
         };
+    }
+}
+
+[Authorize] [Route("api/tasklists")]
+public class GetTaskListOptionsController : ApiControllerBase
+{
+    [HttpGet("{id:int}/options")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TaskListOptionsDto>> GetOptions(int id)
+    {
+        return await Mediator.Send(new GetTaskListOptions(id));
     }
 }

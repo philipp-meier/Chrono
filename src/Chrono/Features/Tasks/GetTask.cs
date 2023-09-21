@@ -10,19 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Tasks;
 
-[Authorize] [Route("api/tasks")]
-public class GetTaskController : ApiControllerBase
-{
-    [HttpGet("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaskDto>> Get(int id)
-    {
-        return await Mediator.Send(new GetTask(id));
-    }
-}
-
 public record GetTask(int Id) : IRequest<TaskDto>;
 
 public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
@@ -54,5 +41,18 @@ public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
         }
 
         return TaskDto.FromEntity(task);
+    }
+}
+
+[Authorize] [Route("api/tasks")]
+public class GetTaskController : ApiControllerBase
+{
+    [HttpGet("{id:int}")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TaskDto>> Get(int id)
+    {
+        return await Mediator.Send(new GetTask(id));
     }
 }
