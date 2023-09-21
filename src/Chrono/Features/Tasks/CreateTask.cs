@@ -53,7 +53,7 @@ public class CreateTaskValidator : AbstractValidator<CreateTask>
             .ChildRules(child => child.RuleFor(x => x.Name).NotEmpty());
     }
 
-    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskListId)
+    private static TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskListId)
     {
         return dbContext.TaskLists.FirstOrDefault(x => x.Id == taskListId)?.Options;
     }
