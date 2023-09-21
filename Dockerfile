@@ -15,9 +15,8 @@ RUN apt-get install -y libpng-dev libjpeg-dev curl libxi6 build-essential libgl1
 RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs
 WORKDIR /source
-COPY Chrono.sln .
-COPY src/. ./src
-RUN dotnet publish -c release -o /app/publish
+COPY src/Chrono/. .
+RUN dotnet publish Chrono.csproj -c release -o /app/publish
 
 FROM server-base AS server
 COPY --from=build /app/publish .
