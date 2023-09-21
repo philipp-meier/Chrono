@@ -30,5 +30,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup Condition="Exists('config.Local.json') And '$(Configuration)'=='DEBUG'">
+    <None Remove="config.Local.json"/>
+    <Content Include="config.Local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
