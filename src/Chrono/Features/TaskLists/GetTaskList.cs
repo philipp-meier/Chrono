@@ -12,19 +12,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.TaskLists;
 
-[Authorize] [Route("api/tasklists")]
-public class GetTaskListController : ApiControllerBase
-{
-    [HttpGet("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaskListDto>> Get(int id)
-    {
-        return await Mediator.Send(new GetTaskList(id));
-    }
-}
-
 public record GetTaskList(int ListId) : IRequest<TaskListDto>;
 
 public class GetTaskListHandler : IRequestHandler<GetTaskList, TaskListDto>
@@ -72,5 +59,18 @@ public class TaskListDto
         {
             Id = taskList.Id, Title = taskList.Title, Tasks = taskList.Tasks.Select(TaskDto.FromEntity).ToArray()
         };
+    }
+}
+
+[Authorize] [Route("api/tasklists")]
+public class GetTaskListController : ApiControllerBase
+{
+    [HttpGet("{id:int}")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TaskListDto>> Get(int id)
+    {
+        return await Mediator.Send(new GetTaskList(id));
     }
 }

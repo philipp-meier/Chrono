@@ -8,18 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.TaskLists;
 
-[Authorize] [Route("api/tasklists")]
-public class CreateTaskListController : ApiControllerBase
+public record CreateTaskList(string Title) : IRequest<int>;
+
+public class CreateTaskListValidator : AbstractValidator<CreateTaskList>
 {
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateTaskList command)
+    public CreateTaskListValidator()
     {
-        return await Mediator.Send(command);
+        RuleFor(v => v.Title)
+            .NotEmpty();
     }
 }
-
-public record CreateTaskList(string Title) : IRequest<int>;
 
 public class CreateTaskListHandler : IRequestHandler<CreateTaskList, int>
 {
@@ -44,11 +42,13 @@ public class CreateTaskListHandler : IRequestHandler<CreateTaskList, int>
     }
 }
 
-public class CreateTaskListValidator : AbstractValidator<CreateTaskList>
+[Authorize] [Route("api/tasklists")]
+public class CreateTaskListController : ApiControllerBase
 {
-    public CreateTaskListValidator()
+    [HttpPost]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult<int>> Create(CreateTaskList command)
     {
-        RuleFor(v => v.Title)
-            .NotEmpty();
+        return await Mediator.Send(command);
     }
 }
