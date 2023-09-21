@@ -18,6 +18,7 @@ public static class TaskListExtensions
 
         EnsureTaskPositionsWithinGroup(allTasks, x => !x.Done);
         EnsureTaskPositionsWithinGroup(allTasks, x => x.Done);
+        return;
 
         void EnsureTaskPositionsWithinGroup(IEnumerable<Task> tasks, Func<Task, bool> taskGroupFilter)
         {

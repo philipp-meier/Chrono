@@ -54,7 +54,7 @@ public class UpdateTaskValidator : AbstractValidator<UpdateTask>
             .When(x => GetTaskListOptions(dbContext, x.Id)?.RequireDescription ?? false);
     }
 
-    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskId)
+    private static TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskId)
     {
         var task = dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
         return task?.List?.Options;
