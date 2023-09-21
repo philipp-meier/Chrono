@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Chrono.Tests.E2E;
 
-[Parallelizable(ParallelScope.None)]
+[Parallelizable(ParallelScope.None)] [Category("E2E")]
 public partial class E2ETests : PlaywrightTest
 {
     private IBrowser _browser;
