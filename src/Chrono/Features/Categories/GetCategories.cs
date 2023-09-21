@@ -8,16 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Categories;
 
-[Authorize] [Route("api/categories")]
-public class GetCategoriesController : ApiControllerBase
-{
-    [HttpGet]
-    public async Task<ActionResult<CategoryDto[]>> Get()
-    {
-        return await Mediator.Send(new GetCategories());
-    }
-}
-
 public record GetCategories : IRequest<CategoryDto[]>;
 
 public class GetCategoriesHandler : IRequestHandler<GetCategories, CategoryDto[]>
@@ -41,5 +31,15 @@ public class GetCategoriesHandler : IRequestHandler<GetCategories, CategoryDto[]
             .ToArray();
 
         return Task.FromResult(result);
+    }
+}
+
+[Authorize] [Route("api/categories")]
+public class GetCategoriesController : ApiControllerBase
+{
+    [HttpGet]
+    public async Task<ActionResult<CategoryDto[]>> Get()
+    {
+        return await Mediator.Send(new GetCategories());
     }
 }

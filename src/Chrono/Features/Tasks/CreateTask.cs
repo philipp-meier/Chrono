@@ -4,6 +4,7 @@ using Chrono.Common.Interfaces;
 using Chrono.Entities;
 using Chrono.Entities.Common;
 using Chrono.Features.Categories;
+using Chrono.Features.TaskLists;
 using Chrono.Features.Users;
 using FluentValidation;
 using MediatR;
@@ -14,19 +15,6 @@ using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 
-[Authorize] [Route("api/tasks")]
-public class CreateTaskController : ApiControllerBase
-{
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<int>> Create(CreateTask command)
-    {
-        return await Mediator.Send(command);
-    }
-}
-
 public record CreateTask : IRequest<int>
 {
     public int ListId { get; init; }
@@ -35,6 +23,40 @@ public record CreateTask : IRequest<int>
     public string BusinessValue { get; init; }
     public string Description { get; init; }
     public CategoryDto[] Categories { get; init; }
+}
+
+public class CreateTaskValidator : AbstractValidator<CreateTask>
+{
+    public CreateTaskValidator(IApplicationDbContext dbContext)
+    {
+        RuleFor(v => v.ListId)
+            .NotEmpty();
+
+        RuleFor(v => v.Position)
+            .NotEmpty();
+
+        RuleFor(v => v.Name)
+            .NotEmpty();
+
+        RuleFor(v => v.Categories)
+            .NotNull();
+
+        RuleFor(v => v.BusinessValue)
+            .NotEmpty()
+            .When(x => GetTaskListOptions(dbContext, x.ListId)?.RequireBusinessValue ?? true);
+
+        RuleFor(v => v.Description)
+            .NotEmpty()
+            .When(x => GetTaskListOptions(dbContext, x.ListId)?.RequireDescription ?? true);
+
+        RuleForEach(v => v.Categories)
+            .ChildRules(child => child.RuleFor(x => x.Name).NotEmpty());
+    }
+
+    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskListId)
+    {
+        return dbContext.TaskLists.FirstOrDefault(x => x.Id == taskListId)?.Options;
+    }
 }
 
 public class CreateTaskHandler : IRequestHandler<CreateTask, int>
@@ -87,36 +109,15 @@ public class CreateTaskHandler : IRequestHandler<CreateTask, int>
     }
 }
 
-public class CreateTaskValidator : AbstractValidator<CreateTask>
+[Authorize] [Route("api/tasks")]
+public class CreateTaskController : ApiControllerBase
 {
-    public CreateTaskValidator(IApplicationDbContext dbContext)
+    [HttpPost]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> Create(CreateTask command)
     {
-        RuleFor(v => v.ListId)
-            .NotEmpty();
-
-        RuleFor(v => v.Position)
-            .NotEmpty();
-
-        RuleFor(v => v.Name)
-            .NotEmpty();
-
-        RuleFor(v => v.Categories)
-            .NotNull();
-
-        RuleFor(v => v.BusinessValue)
-            .NotEmpty()
-            .When(x => GetTaskListOptions(dbContext, x.ListId)?.RequireBusinessValue ?? true);
-
-        RuleFor(v => v.Description)
-            .NotEmpty()
-            .When(x => GetTaskListOptions(dbContext, x.ListId)?.RequireDescription ?? true);
-
-        RuleForEach(v => v.Categories)
-            .ChildRules(child => child.RuleFor(x => x.Name).NotEmpty());
-    }
-
-    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskListId)
-    {
-        return dbContext.TaskLists.FirstOrDefault(x => x.Id == taskListId)?.Options;
+        return await Mediator.Send(command);
     }
 }

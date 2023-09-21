@@ -1,6 +1,6 @@
 ﻿namespace Chrono.Entities;
 
-public class TaskListOptions
+public sealed class TaskListOptions
 {
     public int Id { get; set; }
     public bool RequireBusinessValue { get; set; } = true;

@@ -4,6 +4,7 @@ using Chrono.Common.Interfaces;
 using Chrono.Entities;
 using Chrono.Entities.Common;
 using Chrono.Features.Categories;
+using Chrono.Features.TaskLists;
 using Chrono.Features.Users;
 using FluentValidation;
 using MediatR;
@@ -14,28 +15,6 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Tasks;
 
-[Authorize] [Route("api/tasks")]
-public class UpdateTaskController : ApiControllerBase
-{
-    [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTask command)
-    {
-        if (id != command.Id)
-        {
-            return BadRequest();
-        }
-
-        await Mediator.Send(command);
-
-        return NoContent();
-    }
-}
-
 public record UpdateTask : IRequest
 {
     public int Id { get; init; }
@@ -45,6 +24,41 @@ public record UpdateTask : IRequest
     public string Description { get; init; }
     public bool Done { get; init; }
     public CategoryDto[] Categories { get; init; }
+}
+
+public class UpdateTaskValidator : AbstractValidator<UpdateTask>
+{
+    public UpdateTaskValidator(IApplicationDbContext dbContext)
+    {
+        RuleFor(v => v.Id)
+            .NotEmpty();
+
+        RuleFor(v => v.Position)
+            .NotEmpty();
+
+        RuleFor(v => v.Name)
+            .NotEmpty();
+
+        RuleFor(v => v.Categories)
+            .NotNull();
+
+        RuleForEach(v => v.Categories)
+            .ChildRules(child => child.RuleFor(x => x.Name).NotEmpty());
+
+        RuleFor(v => v.BusinessValue)
+            .NotEmpty()
+            .When(x => GetTaskListOptions(dbContext, x.Id)?.RequireBusinessValue ?? false);
+
+        RuleFor(v => v.Description)
+            .NotEmpty()
+            .When(x => GetTaskListOptions(dbContext, x.Id)?.RequireDescription ?? false);
+    }
+
+    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskId)
+    {
+        var task = dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
+        return task?.List?.Options;
+    }
 }
 
 public class UpdateTaskHandler : IRequestHandler<UpdateTask>
@@ -113,37 +127,24 @@ public class UpdateTaskHandler : IRequestHandler<UpdateTask>
     }
 }
 
-public class UpdateTaskValidator : AbstractValidator<UpdateTask>
+[Authorize] [Route("api/tasks")]
+public class UpdateTaskController : ApiControllerBase
 {
-    public UpdateTaskValidator(IApplicationDbContext dbContext)
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Update(int id, UpdateTask command)
     {
-        RuleFor(v => v.Id)
-            .NotEmpty();
+        if (id != command.Id)
+        {
+            return BadRequest();
+        }
 
-        RuleFor(v => v.Position)
-            .NotEmpty();
+        await Mediator.Send(command);
 
-        RuleFor(v => v.Name)
-            .NotEmpty();
-
-        RuleFor(v => v.Categories)
-            .NotNull();
-
-        RuleForEach(v => v.Categories)
-            .ChildRules(child => child.RuleFor(x => x.Name).NotEmpty());
-
-        RuleFor(v => v.BusinessValue)
-            .NotEmpty()
-            .When(x => GetTaskListOptions(dbContext, x.Id)?.RequireBusinessValue ?? false);
-
-        RuleFor(v => v.Description)
-            .NotEmpty()
-            .When(x => GetTaskListOptions(dbContext, x.Id)?.RequireDescription ?? false);
-    }
-
-    private TaskListOptions GetTaskListOptions(IApplicationDbContext dbContext, int taskId)
-    {
-        var task = dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
-        return task?.List?.Options;
+        return NoContent();
     }
 }

@@ -10,16 +10,6 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.TaskLists;
 
-[Authorize] [Route("api/tasklists")]
-public class GetTaskListsController : ApiControllerBase
-{
-    [HttpGet]
-    public async Task<ActionResult<TaskListBriefDto[]>> Get()
-    {
-        return await Mediator.Send(new GetTaskLists());
-    }
-}
-
 public record GetTaskLists : IRequest<TaskListBriefDto[]>;
 
 public class GetTaskListsHandler : IRequestHandler<GetTaskLists, TaskListBriefDto[]>
@@ -57,5 +47,15 @@ public class TaskListBriefDto
         {
             Id = task.Id, Title = task.Title
         };
+    }
+}
+
+[Authorize] [Route("api/tasklists")]
+public class GetTaskListsController : ApiControllerBase
+{
+    [HttpGet]
+    public async Task<ActionResult<TaskListBriefDto[]>> Get()
+    {
+        return await Mediator.Send(new GetTaskLists());
     }
 }

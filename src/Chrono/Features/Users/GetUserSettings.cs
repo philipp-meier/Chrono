@@ -8,17 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Users;
 
-[Authorize] [Route("api/user")]
-public class GetUserSettingsController : ApiControllerBase
-{
-    [HttpGet("settings")]
-    [ProducesDefaultResponseType]
-    public async Task<ActionResult<UserSettingsDto>> GetSettings()
-    {
-        return await Mediator.Send(new GetUserSettings());
-    }
-}
-
 public record GetUserSettings : IRequest<UserSettingsDto>;
 
 public class GetUserSettingsHandler : IRequestHandler<GetUserSettings, UserSettingsDto>
@@ -53,4 +42,15 @@ public class GetUserSettingsHandler : IRequestHandler<GetUserSettings, UserSetti
 public class UserSettingsDto
 {
     public int? DefaultTaskListId { get; init; }
+}
+
+[Authorize] [Route("api/user")]
+public class GetUserSettingsController : ApiControllerBase
+{
+    [HttpGet("settings")]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult<UserSettingsDto>> GetSettings()
+    {
+        return await Mediator.Send(new GetUserSettings());
+    }
 }

@@ -7,17 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Categories;
 
-[Authorize] [Route("api/categories")]
-public class CreateCategoryController : ApiControllerBase
-{
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateCategory command)
-    {
-        return await Mediator.Send(command);
-    }
-}
-
 public record CreateCategory(string Name) : IRequest<int>;
 
 public class CreateCategoryHandler : IRequestHandler<CreateCategory, int>
@@ -40,5 +29,16 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategory, int>
         await _context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
+    }
+}
+
+[Authorize] [Route("api/categories")]
+public class CreateCategoryController : ApiControllerBase
+{
+    [HttpPost]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult<int>> Create(CreateCategory command)
+    {
+        return await Mediator.Send(command);
     }
 }

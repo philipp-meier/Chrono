@@ -11,21 +11,6 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Users;
 
-[Authorize] [Route("api/user")]
-public class UpdateUserSettingsController : ApiControllerBase
-{
-    [HttpPut("settings")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(UpdateUserSettings command)
-    {
-        await Mediator.Send(command);
-        return NoContent();
-    }
-}
-
 public record UpdateUserSettings(int? DefaultTaskListId) : IRequest;
 
 public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
@@ -84,5 +69,20 @@ public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
         }
 
         await _context.SaveChangesAsync(cancellationToken);
+    }
+}
+
+[Authorize] [Route("api/user")]
+public class UpdateUserSettingsController : ApiControllerBase
+{
+    [HttpPut("settings")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Update(UpdateUserSettings command)
+    {
+        await Mediator.Send(command);
+        return NoContent();
     }
 }

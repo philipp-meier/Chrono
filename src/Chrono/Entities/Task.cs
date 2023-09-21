@@ -1,8 +1,10 @@
 using Chrono.Entities.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Chrono.Entities;
 
-public class Task : BaseAuditableEntity
+public sealed class Task : BaseAuditableEntity
 {
     public int ListId { get; set; }
     public int Position { get; set; }
@@ -14,37 +16,21 @@ public class Task : BaseAuditableEntity
     public TaskList List { get; set; }
 }
 
-public static class TaskExtensions
+internal sealed class TaskConfiguration : IEntityTypeConfiguration<Task>
 {
-    public static void SetCategories(this Task task, Category[] newCategories)
+    public void Configure(EntityTypeBuilder<Task> builder)
     {
-        var currentCategories = task.Categories
-            .Select(x => x.Category)
-            .ToArray();
+        builder.Property(x => x.Name)
+            .HasMaxLength(200)
+            .IsRequired();
 
-        foreach (var existing in currentCategories)
-        {
-            if (newCategories.Contains(existing))
-            {
-                continue;
-            }
+        builder.Property(x => x.Position)
+            .IsRequired();
 
-            var assignmentsToRemove = task.Categories.Where(x => x.Category == existing).ToArray();
-            foreach (var toRemove in assignmentsToRemove)
-            {
-                task.Categories.Remove(toRemove);
-            }
-        }
+        builder.Navigation(x => x.CreatedBy)
+            .AutoInclude();
 
-        foreach (var newCategory in newCategories)
-        {
-            if (!currentCategories.Contains(newCategory))
-            {
-                task.Categories.Add(new TaskCategory
-                {
-                    Task = task, Category = newCategory
-                });
-            }
-        }
+        builder.Navigation(x => x.LastModifiedBy)
+            .AutoInclude();
     }
 }

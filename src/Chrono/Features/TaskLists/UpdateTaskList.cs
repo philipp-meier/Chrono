@@ -13,34 +13,30 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.TaskLists;
 
-[Authorize] [Route("api/tasklists")]
-public class UpdateTaskListController : ApiControllerBase
-{
-    [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTaskList command)
-    {
-        if (id != command.TaskListId)
-        {
-            return BadRequest();
-        }
-
-        await Mediator.Send(command);
-
-        return NoContent();
-    }
-}
-
 public record UpdateTaskList : IRequest
 {
     public int TaskListId { get; init; }
     public string Title { get; init; }
     public bool? RequireBusinessValue { get; init; }
     public bool? RequireDescription { get; init; }
+}
+
+public class UpdateTaskListValidator : AbstractValidator<UpdateTaskList>
+{
+    public UpdateTaskListValidator()
+    {
+        RuleFor(v => v.TaskListId)
+            .NotEmpty();
+
+        RuleFor(v => v.Title)
+            .NotEmpty();
+
+        RuleFor(v => v.RequireBusinessValue)
+            .NotNull();
+
+        RuleFor(v => v.RequireDescription)
+            .NotNull();
+    }
 }
 
 public class UpdateTaskListHandler : IRequestHandler<UpdateTaskList>
@@ -91,20 +87,24 @@ public class UpdateTaskListHandler : IRequestHandler<UpdateTaskList>
     }
 }
 
-public class UpdateTaskListValidator : AbstractValidator<UpdateTaskList>
+[Authorize] [Route("api/tasklists")]
+public class UpdateTaskListController : ApiControllerBase
 {
-    public UpdateTaskListValidator()
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Update(int id, UpdateTaskList command)
     {
-        RuleFor(v => v.TaskListId)
-            .NotEmpty();
+        if (id != command.TaskListId)
+        {
+            return BadRequest();
+        }
 
-        RuleFor(v => v.Title)
-            .NotEmpty();
+        await Mediator.Send(command);
 
-        RuleFor(v => v.RequireBusinessValue)
-            .NotNull();
-
-        RuleFor(v => v.RequireDescription)
-            .NotNull();
+        return NoContent();
     }
 }

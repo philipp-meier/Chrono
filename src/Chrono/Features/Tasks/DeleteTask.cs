@@ -10,22 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Tasks;
 
-[Authorize] [Route("api/tasks")]
-public class DeleteTaskController : ApiControllerBase
-{
-    [HttpDelete("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await Mediator.Send(new DeleteTask(id));
-        return NoContent();
-    }
-}
-
 public record DeleteTask(int Id) : IRequest;
 
 public class DeleteTaskHandler : IRequestHandler<DeleteTask>
@@ -67,5 +51,21 @@ public class DeleteTaskHandler : IRequestHandler<DeleteTask>
         _context.Tasks.Remove(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
+    }
+}
+
+[Authorize] [Route("api/tasks")]
+public class DeleteTaskController : ApiControllerBase
+{
+    [HttpDelete("{id:int}")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await Mediator.Send(new DeleteTask(id));
+        return NoContent();
     }
 }
