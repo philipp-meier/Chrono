@@ -75,8 +75,8 @@ To start the application, you can simply use the `docker compose up` command.
 
 ```sh
 sqlite3 chrono.db "VACUUM;"
-dotnet ef migrations add Initial --project ../Application/Application.csproj --startup-project WebUI.csproj
-dotnet ef database update --project ../Application/Application.csproj --startup-project WebUI.csproj
+dotnet ef migrations add Initial 
+dotnet ef database update
 ```
 
 ## Technology
