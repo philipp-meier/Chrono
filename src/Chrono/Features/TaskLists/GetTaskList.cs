@@ -1,10 +1,8 @@
 using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
-using Chrono.Entities;
-using Chrono.Features.Audit;
-using Chrono.Features.Tasks;
-using Chrono.Features.Users;
+using Chrono.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,22 +45,7 @@ public class GetTaskListHandler : IRequestHandler<GetTaskList, TaskListDto>
     }
 }
 
-public class TaskListDto
-{
-    public int Id { get; init; }
-    public string Title { get; init; }
-    public IReadOnlyCollection<TaskDto> Tasks { get; init; }
-
-    public static TaskListDto FromEntity(TaskList taskList)
-    {
-        return new TaskListDto
-        {
-            Id = taskList.Id, Title = taskList.Title, Tasks = taskList.Tasks.Select(TaskDto.FromEntity).ToArray()
-        };
-    }
-}
-
-[Authorize] [Route("api/tasklists")]
+[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
 public class GetTaskListController : ApiControllerBase
 {
     [HttpGet("{id:int}")]

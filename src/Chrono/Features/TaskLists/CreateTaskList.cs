@@ -42,7 +42,7 @@ public class CreateTaskListHandler : IRequestHandler<CreateTaskList, int>
     }
 }
 
-[Authorize] [Route("api/tasklists")]
+[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
 public class CreateTaskListController : ApiControllerBase
 {
     [HttpPost]

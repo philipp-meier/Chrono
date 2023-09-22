@@ -1,8 +1,8 @@
 using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Audit;
-using Chrono.Features.Users;
+using Chrono.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +46,7 @@ public class DeleteTaskListHandler : IRequestHandler<DeleteTaskList>
     }
 }
 
-[Authorize] [Route("api/tasklists")]
+[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
 public class DeleteTaskListsController : ApiControllerBase
 {
     [HttpDelete("{id:int}")]

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Chrono.Features.Users;
+namespace Chrono.Common.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

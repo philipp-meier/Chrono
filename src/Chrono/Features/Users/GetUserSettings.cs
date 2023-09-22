@@ -1,6 +1,7 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
 using Chrono.Common.Interfaces;
+using Chrono.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ public class UserSettingsDto
     public int? DefaultTaskListId { get; init; }
 }
 
-[Authorize] [Route("api/user")]
+[Authorize] [Route("api/user")] [Tags("User")]
 public class GetUserSettingsController : ApiControllerBase
 {
     [HttpGet("settings")]

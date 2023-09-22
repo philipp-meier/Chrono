@@ -1,7 +1,7 @@
 ﻿using Chrono.Entities;
 using Task = Chrono.Entities.Task;
 
-namespace Chrono.Features.TaskLists;
+namespace Chrono.Common.Extensions;
 
 public static class TaskListExtensions
 {

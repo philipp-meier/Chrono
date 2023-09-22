@@ -1,4 +1,4 @@
-using Chrono.Features.Categories;
+using Chrono.Entities;
 using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
@@ -33,6 +33,20 @@ public class TaskDto
                 .ToArray(),
             LastModified = DateTime.SpecifyKind(task.LastModified, DateTimeKind.Utc),
             LastModifiedBy = task.LastModifiedBy.Name
+        };
+    }
+}
+
+public class CategoryDto
+{
+    public int Id { get; init; }
+    public string Name { get; init; }
+
+    public static CategoryDto FromEntity(TaskCategory taskCategory)
+    {
+        return new CategoryDto
+        {
+            Id = taskCategory.Category.Id, Name = taskCategory.Category.Name
         };
     }
 }

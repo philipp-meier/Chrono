@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 
-namespace Chrono.Features.Validation;
+namespace Chrono.Common.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull

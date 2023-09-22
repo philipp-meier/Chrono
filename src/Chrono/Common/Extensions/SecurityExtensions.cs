@@ -1,8 +1,8 @@
 ﻿using Chrono.Entities.Common;
 
-namespace Chrono.Features.Audit;
+namespace Chrono.Common.Extensions;
 
-public static class BaseAuditableEntityExtensions
+public static class SecurityExtensions
 {
     public static bool IsPermitted(this BaseAuditableEntity context, string userId)
     {

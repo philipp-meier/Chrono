@@ -1,7 +1,6 @@
 using System.Reflection;
-using Chrono.Features.Logging;
-using Chrono.Features.Users;
-using Chrono.Features.Validation;
+using Chrono.Common.Behaviors;
+using Chrono.Common.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -33,7 +32,7 @@ public static partial class ConfigureServices
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddControllersWithViews();
-        services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.Name));
+        services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
 
         services.Configure<ForwardedHeadersOptions>(options =>
         {
