@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using MediatR;
 
-namespace Chrono.Features.Logging;
+namespace Chrono.Common.Behaviors;
 
 public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

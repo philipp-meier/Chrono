@@ -1,6 +1,4 @@
-using Chrono.Entities;
 using Microsoft.EntityFrameworkCore;
-using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Infrastructure.Persistence;
 
@@ -25,50 +23,6 @@ public class ApplicationDbContextInitializer
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occured while initializing the database");
-            throw;
-        }
-    }
-
-    public async Task SeedAsync()
-    {
-        try
-        {
-            // Default data
-            if (!_context.Categories.Any())
-            {
-                _context.Categories.AddRange(
-                    new Category
-                    {
-                        Name = "Quality Improvement"
-                    },
-                    new Category
-                    {
-                        Name = "Security"
-                    },
-                    new Category
-                    {
-                        Name = "Performance"
-                    },
-                    new Category
-                    {
-                        Name = "Documentation"
-                    },
-                    new Category
-                    {
-                        Name = "Time Saving"
-                    },
-                    new Category
-                    {
-                        Name = "Mentoring"
-                    }
-                );
-
-                await _context.SaveChangesAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occured while seeding the database");
             throw;
         }
     }

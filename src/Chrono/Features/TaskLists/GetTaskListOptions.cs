@@ -1,9 +1,9 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
+using Chrono.Common.Services;
 using Chrono.Entities;
-using Chrono.Features.Audit;
-using Chrono.Features.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +57,7 @@ public class TaskListOptionsDto
     }
 }
 
-[Authorize] [Route("api/tasklists")]
+[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
 public class GetTaskListOptionsController : ApiControllerBase
 {
     [HttpGet("{id:int}/options")]

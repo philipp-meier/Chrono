@@ -1,11 +1,9 @@
 using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
+using Chrono.Common.Services;
 using Chrono.Entities;
-using Chrono.Features.Audit;
-using Chrono.Features.Categories;
-using Chrono.Features.TaskLists;
-using Chrono.Features.Users;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -109,7 +107,7 @@ public class CreateTaskHandler : IRequestHandler<CreateTask, int>
     }
 }
 
-[Authorize] [Route("api/tasks")]
+[Authorize] [Route("api/tasks")] [Tags("Tasks")]
 public class CreateTaskController : ApiControllerBase
 {
     [HttpPost]

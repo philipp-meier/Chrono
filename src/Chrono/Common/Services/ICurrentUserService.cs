@@ -1,4 +1,4 @@
-namespace Chrono.Features.Users;
+namespace Chrono.Common.Services;
 
 public interface ICurrentUserService
 {

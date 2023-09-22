@@ -1,8 +1,8 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
-using Chrono.Features.Audit;
-using Chrono.Features.Users;
+using Chrono.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +47,7 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategory>
     }
 }
 
-[Authorize] [Route("api/categories")]
+[Authorize] [Route("api/categories")] [Tags("Categories")]
 public class DeleteCategoryController : ApiControllerBase
 {
     [HttpDelete("{id:int}")]

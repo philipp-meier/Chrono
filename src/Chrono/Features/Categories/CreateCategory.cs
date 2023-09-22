@@ -32,7 +32,7 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategory, int>
     }
 }
 
-[Authorize] [Route("api/categories")]
+[Authorize] [Route("api/categories")] [Tags("Categories")]
 public class CreateCategoryController : ApiControllerBase
 {
     [HttpPost]

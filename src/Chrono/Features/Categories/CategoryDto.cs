@@ -14,12 +14,4 @@ public class CategoryDto
             Id = category.Id, Name = category.Name
         };
     }
-
-    public static CategoryDto FromEntity(TaskCategory taskCategory)
-    {
-        return new CategoryDto
-        {
-            Id = taskCategory.Category.Id, Name = taskCategory.Category.Name
-        };
-    }
 }

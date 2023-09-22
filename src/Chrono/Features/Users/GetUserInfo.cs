@@ -1,4 +1,5 @@
 using Chrono.Common.Api;
+using Chrono.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ public class UserInfoDto
     public bool IsAuthenticated { get; init; }
 }
 
-[Authorize] [Route("api/user")]
+[Authorize] [Route("api/user")] [Tags("User")]
 public class GetUserInfoController : ApiControllerBase
 {
     [HttpGet]

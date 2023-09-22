@@ -1,8 +1,9 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Exceptions;
+using Chrono.Common.Extensions;
 using Chrono.Common.Interfaces;
+using Chrono.Common.Services;
 using Chrono.Entities;
-using Chrono.Features.Audit;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +73,7 @@ public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
     }
 }
 
-[Authorize] [Route("api/user")]
+[Authorize] [Route("api/user")] [Tags("User")]
 public class UpdateUserSettingsController : ApiControllerBase
 {
     [HttpPut("settings")]
