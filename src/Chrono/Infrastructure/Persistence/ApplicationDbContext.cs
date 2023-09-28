@@ -32,6 +32,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TaskListOptions> TaskListOptions => Set<TaskListOptions>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
+    public DbSet<Note> Notes => Set<Note>();
     public DbSet<User> Users => Set<User>();
     public DbSet<UserSettings> UserSettings => Set<UserSettings>();
 
