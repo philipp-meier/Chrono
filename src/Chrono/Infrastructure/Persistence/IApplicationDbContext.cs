@@ -11,6 +11,7 @@ public interface IApplicationDbContext
     DbSet<TaskListOptions> TaskListOptions { get; }
     DbSet<Category> Categories { get; }
     DbSet<TaskCategory> TaskCategories { get; }
+    DbSet<Note> Notes { get; }
     DbSet<User> Users { get; }
     DbSet<UserSettings> UserSettings { get; }
 
