@@ -18,9 +18,9 @@ public record UpdateNote : IRequest
     public string Text { get; set; }
 }
 
-public class UpdateTaskValidator : AbstractValidator<UpdateNote>
+public class UpdateNoteValidator : AbstractValidator<UpdateNote>
 {
-    public UpdateTaskValidator(IApplicationDbContext dbContext)
+    public UpdateNoteValidator(IApplicationDbContext dbContext)
     {
         RuleFor(v => v.Id)
             .NotEmpty();
