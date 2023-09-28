@@ -8,54 +8,55 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Task = System.Threading.Tasks.Task;
 
-namespace Chrono.Features.TaskLists;
+namespace Chrono.Features.Notes;
 
-public record GetTaskLists : IRequest<TaskListBriefDto[]>;
+public record GetMyNotes : IRequest<NoteBriefDto[]>;
 
-public class GetTaskListsHandler : IRequestHandler<GetTaskLists, TaskListBriefDto[]>
+public class GetMyNotesHandler : IRequestHandler<GetMyNotes, NoteBriefDto[]>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
 
-    public GetTaskListsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    public GetMyNotesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
     }
 
-    public Task<TaskListBriefDto[]> Handle(GetTaskLists request, CancellationToken cancellationToken)
+    public Task<NoteBriefDto[]> Handle(GetMyNotes request, CancellationToken cancellationToken)
     {
-        var result = _context.TaskLists
-            .OrderBy(x => x.Title)
+        var result = _context.Notes
+            .OrderBy(x => x.LastModified)
             .AsEnumerable()
             .Where(x => x.IsPermitted(_currentUserService.UserId))
-            .Select(TaskListBriefDto.FromEntity)
+            .Select(NoteBriefDto.FromEntity)
             .ToArray();
 
         return Task.FromResult(result);
     }
 }
 
-public class TaskListBriefDto
+public class NoteBriefDto
 {
     public int Id { get; init; }
     public string Title { get; init; }
+    public DateTime LastModified { get; set; }
 
-    public static TaskListBriefDto FromEntity(TaskList task)
+    public static NoteBriefDto FromEntity(Note note)
     {
-        return new TaskListBriefDto
+        return new NoteBriefDto
         {
-            Id = task.Id, Title = task.Title
+            Id = note.Id, Title = note.Title, LastModified = note.LastModified
         };
     }
 }
 
-[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
-public class GetTaskListsController : ApiControllerBase
+[Authorize] [Route("api/notes")] [Tags("Notes")]
+public class GetMyNotesController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<TaskListBriefDto[]>> Get()
+    public async Task<ActionResult<NoteBriefDto[]>> GetMyNotes()
     {
-        return await Mediator.Send(new GetTaskLists());
+        return await Mediator.Send(new GetMyNotes());
     }
 }
