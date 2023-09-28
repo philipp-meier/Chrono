@@ -90,8 +90,8 @@ const NoteEditControl = (props: {
         ></Form.Field>
         <Form.Field
           control={TextArea}
-          label="Text"
-          placeholder="Text"
+          label="Content"
+          placeholder="Content"
           value={text}
           onChange={(e: any) => {
             setText(e.target.value);
