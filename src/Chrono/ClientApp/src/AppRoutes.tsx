@@ -4,6 +4,9 @@ import LoginPage from "./presentation/pages/LoginPage";
 import MasterDataPage from "./presentation/pages/MasterDataPage";
 import TaskPage from "./presentation/pages/TaskPage";
 import TaskListPage from "./presentation/pages/TaskListPage";
+import NotesPage from "./presentation/pages/NotesPage.tsx";
+import NotePage from "./presentation/pages/NotePage.tsx";
+import {NoteControlMode} from "./presentation/components/Notes/NoteControl.tsx";
 
 const AppRoutes = [
   {
@@ -23,6 +26,21 @@ const AppRoutes = [
   {
     path: "lists/:listId/tasks/add",
     element: <TaskPage mode={TaskControlMode.Add}/>,
+    requireAuth: true,
+  },
+  {
+    path: "notes",
+    element: <NotesPage/>,
+    requireAuth: true,
+  },
+  {
+    path: "notes/:id",
+    element: <NotePage mode={NoteControlMode.Edit}/>,
+    requireAuth: true,
+  },
+  {
+    path: "notes/add",
+    element: <NotePage mode={NoteControlMode.Add}/>,
     requireAuth: true,
   },
   {

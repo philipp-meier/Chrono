@@ -15,6 +15,7 @@ public class CreateTaskListValidator : AbstractValidator<CreateTaskList>
     public CreateTaskListValidator()
     {
         RuleFor(v => v.Title)
+            .MaximumLength(100)
             .NotEmpty();
     }
 }

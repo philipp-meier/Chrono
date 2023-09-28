@@ -1,6 +1,7 @@
 ﻿using Chrono.Common.Api;
 using Chrono.Common.Interfaces;
 using Chrono.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Chrono.Features.Notes;
 
 public record CreateNote(string Title, string Text) : IRequest<int>;
+
+public class CreateNoteValidator : AbstractValidator<CreateNote>
+{
+    public CreateNoteValidator(IApplicationDbContext dbContext)
+    {
+        RuleFor(v => v.Title)
+            .MaximumLength(100)
+            .NotEmpty();
+
+        RuleFor(v => v.Text)
+            .NotEmpty();
+    }
+}
 
 public class CreateNoteHandler : IRequestHandler<CreateNote, int>
 {
