@@ -10,20 +10,20 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.TaskLists;
 
-public record GetTaskLists : IRequest<TaskListBriefDto[]>;
+public record GetMyTaskLists : IRequest<TaskListBriefDto[]>;
 
-public class GetTaskListsHandler : IRequestHandler<GetTaskLists, TaskListBriefDto[]>
+public class GetMyTaskListsHandler : IRequestHandler<GetMyTaskLists, TaskListBriefDto[]>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
 
-    public GetTaskListsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    public GetMyTaskListsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
     }
 
-    public Task<TaskListBriefDto[]> Handle(GetTaskLists request, CancellationToken cancellationToken)
+    public Task<TaskListBriefDto[]> Handle(GetMyTaskLists request, CancellationToken cancellationToken)
     {
         var result = _context.TaskLists
             .OrderBy(x => x.Title)
@@ -51,11 +51,11 @@ public class TaskListBriefDto
 }
 
 [Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
-public class GetTaskListsController : ApiControllerBase
+public class GetMyTaskListsController : ApiControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<TaskListBriefDto[]>> Get()
     {
-        return await Mediator.Send(new GetTaskLists());
+        return await Mediator.Send(new GetMyTaskLists());
     }
 }

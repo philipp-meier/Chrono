@@ -31,6 +31,10 @@ const MenuItems: MenuItemDefinition[] = [
     displayState: "loggedIn",
   },
   {
+    name: "notes",
+    displayState: "loggedIn",
+  },
+  {
     name: "masterData",
     displayState: "loggedIn",
   },
