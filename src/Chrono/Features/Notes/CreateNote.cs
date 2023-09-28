@@ -12,7 +12,7 @@ public record CreateNote(string Title, string Text) : IRequest<int>;
 
 public class CreateNoteValidator : AbstractValidator<CreateNote>
 {
-    public CreateNoteValidator(IApplicationDbContext dbContext)
+    public CreateNoteValidator()
     {
         RuleFor(v => v.Title)
             .MaximumLength(100)

@@ -1,9 +1,11 @@
 import "./App.css";
-import "semantic-ui-css/semantic.min.css";
-import PageLayout from "./presentation/components/PageLayout";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import ProtectedRoute from "./presentation/components/ProtectedRoute";
 import AppRoutes from "./AppRoutes";
+import "semantic-ui-css/semantic.min.css";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+
+// Shared
+import ProtectedRoute from "./Shared/Components/ProtectedRoute";
+import PageLayout from "./Shared/PageLayout";
 
 const App = () => {
   return (
