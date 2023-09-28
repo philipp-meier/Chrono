@@ -1,5 +1,5 @@
 import "./NoteOverview.css";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Button, Card, Container, Icon} from "semantic-ui-react";
 import {useMediaQuery} from "react-responsive";
 import {NotePreview} from "../../../domain/models/Note.ts";
