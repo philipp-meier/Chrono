@@ -20,7 +20,7 @@ public record UpdateNote : IRequest
 
 public class UpdateNoteValidator : AbstractValidator<UpdateNote>
 {
-    public UpdateNoteValidator(IApplicationDbContext dbContext)
+    public UpdateNoteValidator()
     {
         RuleFor(v => v.Id)
             .NotEmpty();

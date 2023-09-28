@@ -1,12 +1,12 @@
-import {TaskControlMode} from "./presentation/components/TaskControl/TaskControl";
-import HomePage from "./presentation/pages/HomePage";
-import LoginPage from "./presentation/pages/LoginPage";
-import MasterDataPage from "./presentation/pages/MasterDataPage";
-import TaskPage from "./presentation/pages/TaskPage";
-import TaskListPage from "./presentation/pages/TaskListPage";
-import NotesPage from "./presentation/pages/NotesPage.tsx";
-import NotePage from "./presentation/pages/NotePage.tsx";
-import {NoteControlMode} from "./presentation/components/Notes/NoteControl.tsx";
+import {TaskControlMode} from "./Features/Tasks/TaskEditControl";
+import HomePage from "./Features/HomePage/HomePage";
+import LoginPage from "./Features/Login/LoginPage";
+import MasterDataPage from "./Features/MasterData/MasterDataPage";
+import TaskPage from "./Features/Tasks/TaskPage";
+import TaskListPage from "./Features/TaskLists/TaskListPage";
+import NotePage from "./Features/Notes/NotePage";
+import NoteEditPage from "./Features/Notes/NoteEditPage";
+import {NoteEditControlMode} from "./Features/Notes/NoteEditControl";
 
 const AppRoutes = [
   {
@@ -30,17 +30,17 @@ const AppRoutes = [
   },
   {
     path: "notes",
-    element: <NotesPage/>,
+    element: <NotePage/>,
     requireAuth: true,
   },
   {
     path: "notes/:id",
-    element: <NotePage mode={NoteControlMode.Edit}/>,
+    element: <NoteEditPage mode={NoteEditControlMode.Edit}/>,
     requireAuth: true,
   },
   {
     path: "notes/add",
-    element: <NotePage mode={NoteControlMode.Add}/>,
+    element: <NoteEditPage mode={NoteEditControlMode.Add}/>,
     requireAuth: true,
   },
   {
