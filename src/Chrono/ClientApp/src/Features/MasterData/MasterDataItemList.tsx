@@ -2,9 +2,13 @@ import {Button, Confirm, Container, List} from "semantic-ui-react";
 import React, {ReactElement, useState} from "react";
 import {MasterDataItem} from "./MasterDataItem";
 
+// Shared
+import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
+
 const MasterDataItemList = (props: {
   items: MasterDataItem[];
   itemTitle: string;
+  itemTitlePlural: string;
   addModal: ReactElement;
   editModal?: ReactElement;
   onDelete: (item: MasterDataItem) => void;
@@ -58,9 +62,12 @@ const MasterDataItemList = (props: {
       </Container>
 
       <Container>
-        <List divided verticalAlign="middle">
+        {masterDataItems.length > 0 && <List divided verticalAlign="middle">
           {masterDataItems}
-        </List>
+        </List>}
+        {masterDataItems.length == 0 &&
+            <NoItemsMessage text={`You do not have any ${props.itemTitlePlural.toLowerCase()} yet.`}/>
+        }
       </Container>
       {/* Is there a better way to inject custom (edit) modals with properties? */}
       {showEditModal && React.cloneElement(props.editModal!, {
