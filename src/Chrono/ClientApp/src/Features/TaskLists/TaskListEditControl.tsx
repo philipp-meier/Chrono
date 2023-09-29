@@ -185,7 +185,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
       }
       {isLoaded && taskList && taskListItems.length == 0 &&
           <NoItemsMessage
-              text={`The list \"${taskList.title}\" does not contain any tasks at the moment.`}
+              text={`The list \"${taskList.title}\" does not contain any ${doneFilter ? 'completed' : 'open'} tasks at the moment.`}
               buttonOptions={!doneFilter ? {text: "Add a task", href: `/lists/${taskList?.id}/tasks/add`} : undefined}
           />
       }
