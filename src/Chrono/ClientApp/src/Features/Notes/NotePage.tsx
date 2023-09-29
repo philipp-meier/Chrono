@@ -6,15 +6,18 @@ import {getMyNotes} from "./NoteService";
 
 // Shared
 import {NotePreview} from "../../Shared/Entities/Note";
+import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
 
 const NotePage = () => {
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
   const [notes, setNotes] = useState([] as NotePreview[]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const dataFetch = async () => {
       const response = await getMyNotes();
       setNotes(response.notes);
+      setIsLoaded(true);
     };
     dataFetch()
   }, []);
@@ -55,9 +58,15 @@ const NotePage = () => {
           </Button>
         </div>
       </Container>
-      <Card.Group>{noteItems}</Card.Group>
+      {noteItems.length > 0 && <Card.Group>{noteItems}</Card.Group>}
+      {isLoaded && noteItems.length == 0 &&
+          <NoItemsMessage
+              text="You do not have any notes yet."
+              buttonOptions={{text: "Add a note", href: "/notes/add"}}
+          />
+      }
     </Container>
-  );
-};
+  )
+}
 
 export default NotePage;

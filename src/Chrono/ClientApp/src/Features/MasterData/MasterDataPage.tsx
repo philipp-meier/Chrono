@@ -14,10 +14,12 @@ interface MasterDataPageState {
   taskLists: MasterDataItem[];
   categories: MasterDataItem[];
   favoriteTaskListId?: number;
+  isLoaded: boolean;
 }
 
 interface TabPaneRenderOptions {
   title: string;
+  titlePlural: string;
   items: MasterDataItem[];
   createCallback: (title: string) => Promise<number>;
   deleteCallback: (id: number) => Promise<boolean>;
@@ -28,7 +30,7 @@ interface TabPaneRenderOptions {
 export default class MasterDataPage extends React.Component<any, MasterDataPageState> {
   constructor(props: any) {
     super(props);
-    this.state = {taskLists: [], categories: []};
+    this.state = {taskLists: [], categories: [], isLoaded: false};
   }
 
   async componentDidMount(): Promise<void> {
@@ -45,17 +47,16 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
 
     const userSettings = await getCurrentUserSettings();
 
-    this.setState({taskLists, categories, favoriteTaskListId: userSettings.defaultTaskListId});
+    this.setState({taskLists, categories, favoriteTaskListId: userSettings.defaultTaskListId, isLoaded: true});
   }
 
   render() {
-    return (
+    return this.state.isLoaded ?
       <Tab
         menu={{attached: true, tabular: false}}
         panes={this.buildTabPanes()}
-        className="masterData tabs"
-      />
-    );
+        className="masterData tabs"/>
+      : <></>;
   }
 
   buildTabPanes() {
@@ -64,6 +65,7 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
         menuItem: "Task lists",
         render: this.renderTabPane({
           title: "Task List",
+          titlePlural: "Task Lists",
           items: this.state.taskLists,
           createCallback: createTaskList,
           deleteCallback: deleteTaskList,
@@ -75,6 +77,7 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
         menuItem: "Categories",
         render: this.renderTabPane({
           title: "Category",
+          titlePlural: "Categories",
           items: this.state.categories,
           createCallback: createCategory,
           deleteCallback: deleteCategory
@@ -88,6 +91,7 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
       <Tab.Pane>
         <MasterDataItemList
           itemTitle={options.title}
+          itemTitlePlural={options.titlePlural}
           items={this.sortMasterDataItems(options.items)}
           addModal={
             <MasterDataItemAddModal
@@ -109,7 +113,7 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
   }
 
   updateState() {
-    this.setState({taskLists: this.state.taskLists, categories: this.state.categories});
+    this.setState({taskLists: this.state.taskLists, categories: this.state.categories, isLoaded: true});
   }
 
   createMasterDataItem(items: MasterDataItem[], title: string, createCallback: (title: string) => Promise<number>) {

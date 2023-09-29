@@ -12,6 +12,7 @@ import {getTaskList, getTaskLists,} from "../../Shared/Services/TaskListService"
 import {getCategories} from "../../Shared/Services/CategoryService";
 import {updateTask} from "../../Shared/Services/TaskService";
 import {getCurrentUserSettings} from "../../Shared/Services/UserService";
+import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
 
 const TaskListEditControl = (props: { taskListId: number }) => {
   const [taskList, setTaskList] = useState(null as TaskList | null);
@@ -23,6 +24,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
   const [availableCategories, setAvailableCategories] = useState(
     [] as Category[]
   );
+  const [isLoaded, setIsLoaded] = useState(false);
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
 
   useEffect(() => {
@@ -33,8 +35,10 @@ const TaskListEditControl = (props: { taskListId: number }) => {
       const categories = await getCategories();
       setAvailableCategories(categories);
 
-      if (!taskLists || taskLists.length === 0)
+      if (!taskLists || taskLists.length === 0) {
+        setIsLoaded(true);
         return;
+      }
 
       const userSettings = await getCurrentUserSettings();
       const selectedTaskList = props.taskListId >= 0 ?
@@ -42,6 +46,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
 
       const taskList = await getTaskList(selectedTaskList ?? taskLists[0].id);
       setTaskList(taskList);
+      setIsLoaded(true);
     };
 
     dataFetch()
@@ -171,7 +176,19 @@ const TaskListEditControl = (props: { taskListId: number }) => {
           </Button>
         </div>
       </Container>
-      <Container className="ui divided items list">{taskListItems}</Container>
+      {taskListItems.length > 0 && <Container className="ui divided items list">{taskListItems}</Container>}
+      {isLoaded && !taskList &&
+          <NoItemsMessage
+              text={"Create your first task list in the \"Master Data\" menu."}
+              buttonOptions={{text: "Open Master Data", href: "/masterdata"}}
+          />
+      }
+      {isLoaded && taskList && taskListItems.length == 0 &&
+          <NoItemsMessage
+              text={`The list \"${taskList.title}\" does not contain any tasks at the moment.`}
+              buttonOptions={!doneFilter ? {text: "Add a task", href: `/lists/${taskList?.id}/tasks/add`} : undefined}
+          />
+      }
     </Container>
   );
 };
