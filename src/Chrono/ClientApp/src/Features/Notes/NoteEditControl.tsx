@@ -45,7 +45,7 @@ const NoteEditControl = (props: {
     {
       key: "delete",
       icon: "delete",
-      text: "Delete Note",
+      text: "Delete note",
       value: "delete",
       onClick: () => setShowDeleteConfirm(true),
     },
@@ -77,7 +77,7 @@ const NoteEditControl = (props: {
   return (
     <>
       <Form style={{marginTop: "1em"}} onSubmit={saveNote}>
-        <h1>{title}</h1>
+        <h1>{title ? title : 'New note'}</h1>
         <Form.Field
           control={Input}
           label="Title"
