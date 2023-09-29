@@ -68,7 +68,7 @@ Once this is done, you can run the application with (for example) `dotnet watch`
 
 ### Docker
 
-Chrono can also be run with Docker. You can configure the OAuth credentials in the `docker-compose.yml` or in
+Chrono can also be run by Docker. You can configure the OAuth credentials in the `docker-compose.yml` or in
 the `appsettings.json`-file.  
 You also have to provide a https certificate, if you want to serve Chrono directly via https using the Kestrel
 web-server.
