@@ -130,7 +130,7 @@ const TaskEditControl = (props: {
   return (
     <>
       <Form style={{marginTop: "1em"}} onSubmit={saveTask}>
-        <h1>{name}</h1>
+        <h1>{name ? name : 'New task'}</h1>
         <Form.Field
           control={Input}
           label="Name"
