@@ -1,4 +1,5 @@
-import {Form, Segment, Tab, TextArea,} from "semantic-ui-react";
+import "./MarkdownEditor.css"
+import {Container, Form, Segment, Tab, TextArea,} from "semantic-ui-react";
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -9,10 +10,10 @@ type MarkdownEditorProps = {
   onTextChanged: (e: any) => void;
   textAreaRows?: number;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const MarkdownEditor = (props: MarkdownEditorProps) => {
-
   const tabPanes = [
     {
       menuItem: "Write",
@@ -21,12 +22,12 @@ export const MarkdownEditor = (props: MarkdownEditorProps) => {
           <Tab.Pane>
             <Form.Field
               control={TextArea}
-              label={props.textLabel}
               placeholder={props.textLabel}
               value={props.text}
               onChange={props.onTextChanged}
               rows={props.textAreaRows}
               required={props.required}
+              disabled={props.disabled}
             ></Form.Field>
           </Tab.Pane>
         );
@@ -37,10 +38,7 @@ export const MarkdownEditor = (props: MarkdownEditorProps) => {
       render: () => {
         return (
           <Tab.Pane>
-            <div className={props.required ? "required field" : "field"} style={{marginBottom: "0px"}}>
-              <label>{props.textLabel}</label>
-            </div>
-            <Segment style={{marginTop: "0px", paddingTop: "11px"}}>
+            <Segment className="markdown-preview">
               <ReactMarkdown children={props.text} components={{
                 code({node, inline, className, children, ...props}) {
                   const match = /language-(\w+)/.exec(className || '')
@@ -68,6 +66,9 @@ export const MarkdownEditor = (props: MarkdownEditorProps) => {
   ];
 
   return (
-    <Tab panes={tabPanes} menu={{attached: true, tabular: true}}/>
+    <Container className={props.required ? "required field" : "field"}>
+      <label>{props.textLabel}</label>
+      <Tab panes={tabPanes} menu={{attached: true, tabular: false}}/>
+    </Container>
   );
 };

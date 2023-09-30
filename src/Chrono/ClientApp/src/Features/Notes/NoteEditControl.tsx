@@ -5,7 +5,7 @@ import {createNote, deleteNote, getNote, updateNote} from "./NoteService";
 
 // Shared
 import {Note} from "../../Shared/Entities/Note";
-import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor.tsx";
+import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
 
 enum NoteEditControlMode {
   Add,
