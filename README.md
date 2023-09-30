@@ -18,7 +18,7 @@ enables you to _work on what matters_.
 ## Current features
 
 - **Why**-centric for maximizing impact.
-- Markdown support and **syntax highlighting** for task descriptions.
+- Markdown support with **syntax highlighting**.
 - Manage task lists (e.g. "Team 1", "Team 2", "Architecture Board",...).
 - Manage tasks (rank, categorize, describe business value / impact,...).
 - Manage task categories (e.g. "Quality Improvement", "Time Saving", "Documentation", "Security"...).
@@ -30,7 +30,7 @@ enables you to _work on what matters_.
 - Docker support.
 - Manage notes.
 
-## Preview (29th September 2023)
+## Preview (30th September 2023)
 
 ### Home
 
@@ -51,6 +51,10 @@ enables you to _work on what matters_.
 ### Notes
 
 <kbd><img src="./static/Notes.png" alt="Notes"></kbd>
+
+### Adding notes
+
+<kbd><img src="./static/AddNote.png" alt="Notes"></kbd>
 
 ### Mobile
 
