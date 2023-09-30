@@ -1,7 +1,7 @@
 import "./TaskEditControl.css";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input, TextArea,} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input,} from "semantic-ui-react";
 import TaskCategoryEditControl from "./TaskCategoryEditControl";
 
 // Shared
@@ -10,6 +10,7 @@ import {Category} from "../../Shared/Entities/Category";
 import {TaskListOptions} from "../../Shared/Entities/TaskListOptions";
 import {createTask, deleteTask, getTask, updateTask,} from "../../Shared/Services/TaskService";
 import {getTaskList, getTaskListOptions} from "../../Shared/Services/TaskListService";
+import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
 
 enum TaskControlMode {
   Add,
@@ -153,17 +154,13 @@ const TaskEditControl = (props: {
           required={taskListOptions?.requireBusinessValue}
           disabled={task?.done}
         ></Form.Field>
-        <Form.Field
-          control={TextArea}
-          label="Description"
-          placeholder="Description"
-          value={description}
-          onChange={(e: any) => {
-            setDescription(e.target.value);
-          }}
+        <MarkdownEditor
+          textLabel="Description"
+          text={description}
+          textAreaRows={10}
+          onTextChanged={(e: any) => setDescription(e.target.value)}
           required={taskListOptions?.requireDescription}
-          disabled={task?.done}
-        ></Form.Field>
+          disabled={task?.done}/>
         <Form.Field
           label="Position"
           control={Input}
