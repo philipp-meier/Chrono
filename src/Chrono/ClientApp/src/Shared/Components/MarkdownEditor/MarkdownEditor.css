@@ -5,4 +5,5 @@ div.ui.attached.menu {
 .markdown-preview {
     margin-top: 0 !important;
     padding-top: 11px !important;
+    overflow-wrap: anywhere;
 }
