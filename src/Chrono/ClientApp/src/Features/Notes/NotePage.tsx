@@ -29,7 +29,7 @@ const NotePage = () => {
           <Card.Header>
             <a href={`/notes/${n.id}`}>{n.title}</a>
           </Card.Header>
-          <Card.Meta>{n.lastModified + ""}</Card.Meta>
+          <Card.Meta>{n.created}</Card.Meta>
           <Card.Description>
             {n.preview}
           </Card.Description>
