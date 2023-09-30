@@ -1,5 +1,5 @@
 import "./MarkdownEditor.css"
-import {Container, Form, Segment, Tab, TextArea,} from "semantic-ui-react";
+import {Form, Segment, Tab, TextArea,} from "semantic-ui-react";
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -66,9 +66,9 @@ export const MarkdownEditor = (props: MarkdownEditorProps) => {
   ];
 
   return (
-    <Container className={props.required ? "required field" : "field"}>
+    <div className={props.required ? "required field" : "field"}>
       <label>{props.textLabel}</label>
       <Tab panes={tabPanes} menu={{attached: true, tabular: false}}/>
-    </Container>
+    </div>
   );
 };
