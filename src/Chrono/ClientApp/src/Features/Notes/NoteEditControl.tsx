@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input, TextArea,} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
 import {createNote, deleteNote, getNote, updateNote} from "./NoteService";
 
 // Shared
 import {Note} from "../../Shared/Entities/Note";
+import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor.tsx";
 
 enum NoteEditControlMode {
   Add,
@@ -88,17 +89,13 @@ const NoteEditControl = (props: {
           }}
           required
         ></Form.Field>
-        <Form.Field
-          control={TextArea}
-          label="Content"
-          placeholder="Content"
-          value={text}
-          onChange={(e: any) => {
-            setText(e.target.value);
-          }}
-          rows={20}
-          required
-        ></Form.Field>
+        <MarkdownEditor
+          textLabel="Content"
+          text={text}
+          onTextChanged={(e: any) => setText(e.target.value)}
+          textAreaRows={20}
+          required={true}
+        />
         {note?.lastModifiedBy && (
           <div style={{color: "gray", marginBottom: "0.75em"}}>
             {`Last modified by ${note.lastModifiedBy} on ${new Date(
@@ -148,4 +145,6 @@ const NoteEditControl = (props: {
   );
 };
 
-export {NoteEditControl, NoteEditControlMode};
+export {
+  NoteEditControl, NoteEditControlMode
+};
