@@ -28,7 +28,7 @@ public class GetMyNotesHandler : IRequestHandler<GetMyNotes, GetMyNotesResponse>
     public Task<GetMyNotesResponse> Handle(GetMyNotes request, CancellationToken cancellationToken)
     {
         var result = _context.Notes
-            .OrderByDescending(n => n.LastModified)
+            .OrderByDescending(n => n.Created)
             .AsEnumerable()
             .Where(n => n.IsPermitted(_currentUserService.UserId))
             .Select(n => new NotePreview
@@ -36,7 +36,8 @@ public class GetMyNotesHandler : IRequestHandler<GetMyNotes, GetMyNotesResponse>
                 Id = n.Id,
                 Title = n.Title,
                 Preview = _textService.Truncate(n.Text, MaxTextPreviewLength),
-                LastModified = n.LastModified.ToLocalTime().ToString(CultureInfo.InvariantCulture)
+                // Persisted in UTC.
+                Created = n.Created.ToLocalTime().ToString(CultureInfo.InvariantCulture)
             })
             .ToArray();
 
@@ -57,7 +58,7 @@ public class NotePreview
     public int Id { get; init; }
     public string Title { get; init; }
     public string Preview { get; set; }
-    public string LastModified { get; set; }
+    public string Created { get; set; }
 }
 
 [Authorize] [Route("api/notes")] [Tags("Notes")]

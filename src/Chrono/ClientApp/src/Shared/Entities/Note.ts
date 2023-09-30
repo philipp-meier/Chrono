@@ -2,7 +2,7 @@ export type NotePreview = {
   id: number;
   title: string;
   preview: string;
-  lastModified: string;
+  created: string;
 }
 
 export type GetMyNotesResponse = {
