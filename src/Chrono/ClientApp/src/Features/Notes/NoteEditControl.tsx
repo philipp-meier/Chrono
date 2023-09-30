@@ -96,6 +96,7 @@ const NoteEditControl = (props: {
           onChange={(e: any) => {
             setText(e.target.value);
           }}
+          rows={20}
           required
         ></Form.Field>
         {note?.lastModifiedBy && (
