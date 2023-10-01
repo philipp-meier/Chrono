@@ -27,9 +27,9 @@ const TaskEditControl = (props: {
   const [businessValue, setBusinessValue] = useState("");
   const [description, setDescription] = useState("");
   const [position, setPosition] = useState("1");
-  const [categories, setCategories] = useState([] as Category[]);
-  const [task, setTask] = useState(null as Task | null);
-  const [taskListOptions, setTaskListOptions] = useState(null as TaskListOptions | null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [task, setTask] = useState<Task | null>(null);
+  const [taskListOptions, setTaskListOptions] = useState<TaskListOptions | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {

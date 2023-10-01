@@ -15,15 +15,11 @@ import {getCurrentUserSettings} from "../../Shared/Services/UserService";
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
 
 const TaskListEditControl = (props: { taskListId: number }) => {
-  const [taskList, setTaskList] = useState(null as TaskList | null);
+  const [taskList, setTaskList] = useState<TaskList | null>(null);
   const [category, setCategory] = useState("");
   const [doneFilter, setDoneFilter] = useState(false);
-  const [availableTaskLists, setAvailableTaskLists] = useState(
-    [] as TaskListBrief[]
-  );
-  const [availableCategories, setAvailableCategories] = useState(
-    [] as Category[]
-  );
+  const [availableTaskLists, setAvailableTaskLists] = useState<TaskListBrief[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
 

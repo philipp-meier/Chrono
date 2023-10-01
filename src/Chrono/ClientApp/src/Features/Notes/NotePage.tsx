@@ -10,7 +10,7 @@ import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
 
 const NotePage = () => {
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
-  const [notes, setNotes] = useState([] as NotePreview[]);
+  const [notes, setNotes] = useState<NotePreview[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {

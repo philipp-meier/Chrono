@@ -19,7 +19,7 @@ const NoteEditControl = (props: {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [note, setNote] = useState(null as Note | null);
+  const [note, setNote] = useState<Note | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {

@@ -17,7 +17,7 @@ const MasterDataItemList = (props: {
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null as MasterDataItem | null);
+  const [currentItem, setCurrentItem] = useState<MasterDataItem | null>(null);
 
   const masterDataItems = props.items.map((x, idx) => {
       const favoriteItemHeaderStyle = {color: "#2185d0", fontWeight: "bold", fontSize: "1.1em"};
