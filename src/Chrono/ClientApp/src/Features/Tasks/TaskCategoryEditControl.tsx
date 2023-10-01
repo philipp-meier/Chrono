@@ -14,9 +14,7 @@ const TaskCategoryEditControl = (props: {
   disabled?: boolean;
 }) => {
   const [selection, setSelection] = useState("");
-  const [availableCategories, setAvailableCategories] = useState(
-    [] as Category[]
-  );
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const isMediumScreen = useMediaQuery({query: "(min-width:768px)"});
 
   useEffect(() => {

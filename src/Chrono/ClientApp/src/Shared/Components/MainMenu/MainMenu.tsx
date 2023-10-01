@@ -1,4 +1,4 @@
-import {useLayoutEffect, useState} from "react";
+import React, {useLayoutEffect, useState} from "react";
 import {useMediaQuery} from "react-responsive";
 import {Menu} from "semantic-ui-react";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -11,7 +11,7 @@ import MenuItems from "./MenuItems";
 const MainMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userInfo, setUserInfo] = useState(null as User | null);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
 
   useLayoutEffect(() => {
     const dataFetch = async () => {
