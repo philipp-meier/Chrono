@@ -1,14 +1,17 @@
+import "./HomePage.css"
 import {Container, Image} from "semantic-ui-react";
 
 const HomePage = () => {
   return (
-    <Container text style={{marginTop: "7em"}} textAlign="center">
-      <Image
-        size="small"
-        src="/chrono.png"
-        style={{marginRight: "1.5em", marginBottom: "0.5em"}}
-        verticalAlign="middle"
-      />
+    <Container className="chrono-container" text textAlign="center">
+      <div className="headline">
+        <Image
+          size="small"
+          src="/chrono.png"
+          verticalAlign="middle"
+        />
+        <span className="version-number">v1.4.0</span>
+      </div>
       <p>Work on what matters.</p>
     </Container>
   );
