@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="40" width="165" src="./src/Chrono/ClientApp/public/chrono.png" />
+  <img height="40" width="165" src="./src/Chrono/ClientApp/public/logo.png" />
 </p>
 
 ---

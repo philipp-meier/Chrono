@@ -35,7 +35,7 @@ const MainMenuMd = ({renderLinks}: any) => {
         <Menu.Item>
           <Image
             size="tiny"
-            src="/chrono.png"
+            src="/logo.png"
             style={{margin: "0 auto"}}
             alt=""
           />
