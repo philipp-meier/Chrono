@@ -14,7 +14,7 @@ const MenuItems: MenuItemDefinition[] = [
     element: (
       <Image
         size="tiny"
-        src="/chrono.png"
+        src="/logo.png"
         style={{margin: "0 auto"}}
         alt=""
       />
