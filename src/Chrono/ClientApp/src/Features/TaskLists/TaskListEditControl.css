@@ -78,6 +78,23 @@ div.tasklist
     overflow-wrap: anywhere;
 }
 
+div.tasklist
+> div.list
+> div.tasklist-item
+> div.content
+> div.description ul {
+    white-space: normal;
+    margin-bottom: 0.25em;
+}
+
+div.tasklist
+> div.list
+> div.tasklist-item
+> div.content
+> div.description li {
+    margin-bottom: 0.1em;
+}
+
 div.tasklist > div.list > div.tasklist-item > div.content > div.description,
 div.ui.container.extra {
     margin-left: 0 !important;

@@ -16,6 +16,13 @@ const TaskItemViewControl = (props: { task: Task; moveUp?: any; moveDown?: any }
       <IconLabel key={index} text={category.name}/>
     )
   );
+
+  let description = props.task.description;
+  const maxDescriptionLength = 500;
+  if (description && description.length > maxDescriptionLength) {
+    description = `${description.substring(0, maxDescriptionLength - 3)}...`;
+  }
+
   return (
     <Container className="item tasklist-item">
       <Container className="content">
@@ -60,7 +67,7 @@ const TaskItemViewControl = (props: { task: Task; moveUp?: any; moveDown?: any }
           )}
         </Container>
         <Container className="description">
-          <ReactMarkdown children={props.task.description} components={{
+          <ReactMarkdown children={description} components={{
             code({node, inline, className, children, ...props}) {
               const match = /language-(\w+)/.exec(className || '')
               return !inline && match ? (
