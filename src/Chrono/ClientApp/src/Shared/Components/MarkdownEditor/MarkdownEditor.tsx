@@ -1,4 +1,4 @@
-import "./MarkdownEditor.css"
+import "./MarkdownEditor.less"
 import {Form, Segment, Tab, TextArea,} from "semantic-ui-react";
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ReactMarkdown from "react-markdown";

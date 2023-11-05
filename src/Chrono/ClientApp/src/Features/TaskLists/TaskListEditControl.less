@@ -1,0 +1,105 @@
+div.tasklist {
+  > div.tasklist-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  div.tasklist-items {
+    > div.tasklist-item {
+      /* Overwrite Semantic UI media queries */
+      width: 100% !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+
+      > div.content {
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+
+        div {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+
+        > div.header {
+          width: 100% !important;
+          justify-content: space-between;
+          display: flex;
+          margin-left: 0 !important;
+
+          > div.headline {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+
+            > a.task-name {
+              margin-left: 0.15em;
+              vertical-align: middle;
+              overflow-wrap: anywhere;
+            }
+          }
+
+          > div.actions {
+            min-width: 115px;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+          }
+        }
+
+        > div.description {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+
+          ul, li {
+            white-space: normal;
+            margin-bottom: 0.25em;
+          }
+
+          > * {
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+          }
+        }
+
+        > div.extra {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+      }
+    }
+  }
+
+  // Mobile view
+  &.mobile {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    div.tasklist-menu {
+      flex-direction: column;
+      align-items: flex-end;
+
+      > div.filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+
+        > div.dropdown {
+          width: 49.6%;
+          margin: 0 !important;
+        }
+      }
+
+      > div.buttons {
+        position: fixed;
+        bottom: 7%;
+        right: 5%;
+        z-index: 2;
+      }
+    }
+  }
+}

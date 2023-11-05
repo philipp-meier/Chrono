@@ -1,4 +1,4 @@
-import "./TaskListEditControl.css";
+import "./TaskListEditControl.less";
 import TaskItemViewControl from "./TaskItemViewControl";
 import {useEffect, useState} from "react";
 import {useMediaQuery} from "react-responsive";
@@ -172,7 +172,8 @@ const TaskListEditControl = (props: { taskListId: number }) => {
           </Button>
         </div>
       </Container>
-      {taskListItems.length > 0 && <Container className="ui divided items list">{taskListItems}</Container>}
+      {taskListItems.length > 0 &&
+          <Container className="ui divided tasklist-items items list">{taskListItems}</Container>}
       {isLoaded && !taskList &&
           <NoItemsMessage
               text={"Create your first task list in the \"Master Data\" menu."}
