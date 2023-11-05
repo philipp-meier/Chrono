@@ -1,4 +1,4 @@
-import "./NotePage.css";
+import "./NotePage.less";
 import {useEffect, useState} from "react";
 import {Button, Card, Container, Icon} from "semantic-ui-react";
 import {useMediaQuery} from "react-responsive";

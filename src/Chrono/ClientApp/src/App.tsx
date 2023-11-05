@@ -1,4 +1,3 @@
-import "./App.css";
 import AppRoutes from "./AppRoutes";
 import "semantic-ui-css/semantic.min.css";
 import {BrowserRouter, Route, Routes} from "react-router-dom";

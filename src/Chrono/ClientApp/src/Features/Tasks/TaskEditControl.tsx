@@ -1,4 +1,4 @@
-import "./TaskEditControl.css";
+import "./TaskEditControl.less";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Confirm, Container, Dropdown, Form, Icon, Input,} from "semantic-ui-react";

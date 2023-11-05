@@ -1,4 +1,4 @@
-import "./HomePage.css"
+import "./HomePage.less"
 import {Container, Image} from "semantic-ui-react";
 
 const HomePage = () => {
