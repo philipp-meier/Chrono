@@ -1,6 +1,6 @@
 using System.Reflection;
-using Chrono.Common.Audit;
-using Chrono.Common.Interfaces;
+using Chrono.Shared.Audit;
+using Chrono.Shared.Interfaces;
 using Chrono.Entities;
 using Chrono.Features.TaskLists;
 using Chrono.Features.Tasks;

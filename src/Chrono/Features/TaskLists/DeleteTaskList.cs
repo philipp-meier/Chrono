@@ -1,8 +1,8 @@
-using Chrono.Common.Api;
-using Chrono.Common.Exceptions;
-using Chrono.Common.Extensions;
-using Chrono.Common.Interfaces;
-using Chrono.Common.Services;
+using Chrono.Shared.Api;
+using Chrono.Shared.Exceptions;
+using Chrono.Shared.Extensions;
+using Chrono.Shared.Interfaces;
+using Chrono.Shared.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

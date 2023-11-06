@@ -1,4 +1,4 @@
-namespace Chrono.Common.Services;
+namespace Chrono.Shared.Services;
 
 public interface ICurrentUserService
 {

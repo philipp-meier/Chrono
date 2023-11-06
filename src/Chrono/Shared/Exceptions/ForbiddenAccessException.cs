@@ -1,4 +1,4 @@
-﻿namespace Chrono.Common.Exceptions;
+﻿namespace Chrono.Shared.Exceptions;
 
 public class ForbiddenAccessException : Exception
 {

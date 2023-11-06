@@ -1,4 +1,4 @@
-using Chrono.Common.Extensions;
+using Chrono.Shared.Extensions;
 using Chrono.Entities;
 using FluentAssertions;
 using NUnit.Framework;

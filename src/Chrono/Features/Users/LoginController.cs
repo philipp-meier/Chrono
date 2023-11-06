@@ -1,5 +1,5 @@
 using System.Web;
-using Chrono.Common.Api;
+using Chrono.Shared.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
