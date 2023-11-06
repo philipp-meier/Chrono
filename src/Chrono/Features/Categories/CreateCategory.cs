@@ -37,8 +37,9 @@ public class CreateCategoryController : ApiControllerBase
 {
     [HttpPost]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateCategory command)
+    public async Task<IActionResult> Create(CreateCategory command)
     {
-        return await Mediator.Send(command);
+        var result = await Mediator.Send(command);
+        return CreatedAtRoute(null, JSendResponseBuilder.Success(result));
     }
 }

@@ -38,8 +38,9 @@ public class GetCategoriesHandler : IRequestHandler<GetCategories, CategoryDto[]
 public class GetCategoriesController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<CategoryDto[]>> Get()
+    public async Task<IActionResult> Get()
     {
-        return await Mediator.Send(new GetCategories());
+        var result = await Mediator.Send(new GetCategories());
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

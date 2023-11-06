@@ -50,8 +50,9 @@ public class GetUserSettingsController : ApiControllerBase
 {
     [HttpGet("settings")]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<UserSettingsDto>> GetSettings()
+    public async Task<IActionResult> GetSettings()
     {
-        return await Mediator.Send(new GetUserSettings());
+        var result = await Mediator.Send(new GetUserSettings());
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

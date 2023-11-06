@@ -38,8 +38,9 @@ public class GetUserInfoController : ApiControllerBase
     [HttpGet]
     [AllowAnonymous]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<UserInfoDto>> Get()
+    public async Task<IActionResult> Get()
     {
-        return await Mediator.Send(new GetUserInfo());
+        var result = await Mediator.Send(new GetUserInfo());
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }
