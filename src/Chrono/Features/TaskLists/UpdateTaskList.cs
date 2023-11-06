@@ -100,11 +100,11 @@ public class UpdateTaskListController : ApiControllerBase
     {
         if (id != command.TaskListId)
         {
-            return BadRequest();
+            return BadRequest(JSendResponseBuilder.Fail<string>(null, "ID mismatch"));
         }
 
         await Mediator.Send(command);
 
-        return NoContent();
+        return Ok(JSendResponseBuilder.Success<string>(null));
     }
 }

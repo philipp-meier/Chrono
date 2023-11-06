@@ -65,8 +65,9 @@ public class NotePreview
 public class GetMyNotesController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<GetMyNotesResponse>> GetMyNotes()
+    public async Task<IActionResult> GetMyNotes()
     {
-        return await Mediator.Send(new GetMyNotes());
+        var result = await Mediator.Send(new GetMyNotes());
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

@@ -114,8 +114,13 @@ public class CreateTaskController : ApiControllerBase
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<int>> Create(CreateTask command)
+    public async Task<IActionResult> Create(CreateTask command)
     {
-        return await Mediator.Send(command);
+        var result = await Mediator.Send(command);
+
+        return CreatedAtRoute("GetTask", new
+        {
+            id = result
+        }, JSendResponseBuilder.Success(result));
     }
 }

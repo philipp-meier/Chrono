@@ -64,8 +64,9 @@ public class GetTaskListOptionsController : ApiControllerBase
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaskListOptionsDto>> GetOptions(int id)
+    public async Task<IActionResult> GetOptions(int id)
     {
-        return await Mediator.Send(new GetTaskListOptions(id));
+        var result = await Mediator.Send(new GetTaskListOptions(id));
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

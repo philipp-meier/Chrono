@@ -84,11 +84,11 @@ public class UpdateNoteController : ApiControllerBase
     {
         if (id != command.Id)
         {
-            return BadRequest();
+            return BadRequest(JSendResponseBuilder.Fail<string>(null, "ID mismatch"));
         }
 
         await Mediator.Send(command);
 
-        return NoContent();
+        return Ok(JSendResponseBuilder.Success<string>(null));
     }
 }

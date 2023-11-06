@@ -30,56 +30,51 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             case ForbiddenAccessException:
                 HandleForbiddenAccessException(context);
                 break;
+            default:
+                HandleInternalServerErrorException(context);
+                break;
         }
     }
 
     private static void HandleValidationException(ExceptionContext context, ValidationException exception)
     {
-        var errors = exception.Errors
-            .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
-            .ToDictionary(group => group.Key, group => group.ToArray());
-
-        var details = new ValidationProblemDetails(errors)
+        var result = new
         {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            ValidationErrors = exception.Errors
+                .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                .ToDictionary(group => group.Key, group => group.ToArray())
         };
 
-        context.Result = new BadRequestObjectResult(details);
+        context.Result = new BadRequestObjectResult(JSendResponseBuilder.Fail(result));
         context.ExceptionHandled = true;
     }
 
     private static void HandleNotFoundException(ExceptionContext context, Exception exception)
     {
-        var details = new ProblemDetails
-        {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4", Title = "The specified resource was not found.", Detail = exception.Message
-        };
-
-        context.Result = new NotFoundObjectResult(details);
+        context.Result = new NotFoundObjectResult(JSendResponseBuilder.Error<string>(exception.Message));
         context.ExceptionHandled = true;
     }
 
     private static void HandleInvalidOperationException(ExceptionContext context, Exception exception)
     {
-        var details = new ProblemDetails
-        {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1", Detail = exception.Message
-        };
-
-        context.Result = new BadRequestObjectResult(details);
+        context.Result = new BadRequestObjectResult(JSendResponseBuilder.Error<string>(exception.Message));
         context.ExceptionHandled = true;
     }
 
     private static void HandleForbiddenAccessException(ExceptionContext context)
     {
-        var details = new ProblemDetails
-        {
-            Status = StatusCodes.Status403Forbidden, Title = "Forbidden", Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
-        };
-
-        context.Result = new ObjectResult(details)
+        context.Result = new ObjectResult(JSendResponseBuilder.Error<string>("Forbidden"))
         {
             StatusCode = StatusCodes.Status403Forbidden
+        };
+        context.ExceptionHandled = true;
+    }
+
+    private static void HandleInternalServerErrorException(ExceptionContext context)
+    {
+        context.Result = new ObjectResult(JSendResponseBuilder.Error<string>("Internal server error"))
+        {
+            StatusCode = StatusCodes.Status500InternalServerError
         };
         context.ExceptionHandled = true;
     }

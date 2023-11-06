@@ -84,6 +84,6 @@ public class UpdateUserSettingsController : ApiControllerBase
     public async Task<IActionResult> Update(UpdateUserSettings command)
     {
         await Mediator.Send(command);
-        return NoContent();
+        return Ok(JSendResponseBuilder.Success<string>(null));
     }
 }

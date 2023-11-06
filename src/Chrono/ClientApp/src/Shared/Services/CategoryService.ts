@@ -1,38 +1,14 @@
 import {Category} from "../Entities/Category";
+import JSendApiClient, {API_ENDPOINTS} from "./JSendApiClient.ts";
 
 export async function getCategories(): Promise<Category[]> {
-  try {
-    const response = await fetch(`/api/categories`);
-    return response.ok ? await response.json() : [];
-  } catch (error) {
-    return [];
-  }
+  return await JSendApiClient.get<Category[]>(API_ENDPOINTS.Categories) ?? [];
 }
 
 export async function createCategory(name: string): Promise<number> {
-  try {
-    const response = await fetch("/api/categories", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({name: name}),
-    });
-
-    if (response.ok) return await response.json();
-
-    return -1;
-  } catch (error) {
-    return -1;
-  }
+  return await JSendApiClient.create(API_ENDPOINTS.Categories, {name: name});
 }
 
 export async function deleteCategory(id: number): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/categories/${id}`, {
-      method: "DELETE",
-    });
-
-    return response.status === 204;
-  } catch (error) {
-    return false;
-  }
+  return await JSendApiClient.delete(`${API_ENDPOINTS.Categories}/${id}`);
 }
