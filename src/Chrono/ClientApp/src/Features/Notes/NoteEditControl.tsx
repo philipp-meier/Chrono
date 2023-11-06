@@ -1,11 +1,11 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
-import {createNote, deleteNote, getNote, updateNote} from "./NoteService";
 
 // Shared
 import {Note} from "../../Shared/Entities/Note";
 import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
 
 enum NoteEditControlMode {
   Add,
@@ -25,7 +25,7 @@ const NoteEditControl = (props: {
   useEffect(() => {
     const dataFetch = async () => {
       if (props.mode === NoteEditControlMode.Edit && props.id) {
-        const context = await getNote(props.id);
+        const context = await JSendApiClient.get<Note>(`${API_ENDPOINTS.Notes}/${props.id}`);
         if (context) {
           setNote(context);
           setTitle(context.title);
@@ -62,14 +62,21 @@ const NoteEditControl = (props: {
         text: text
       };
 
-      createNote(newNote).then((isUpdated) => {
-        if (isUpdated) navigate("/notes");
+      JSendApiClient.create(API_ENDPOINTS.Notes, {
+        title: newNote.title,
+        text: newNote.text,
+      }).then((id) => {
+        if (id !== -1) navigate("/notes");
       });
     } else if (note) {
       note.title = title;
       note.text = text;
 
-      updateNote(note).then((isUpdated) => {
+      JSendApiClient.update(`${API_ENDPOINTS.Notes}/${note.id}`, {
+        id: note.id,
+        title: note.title,
+        text: note.text,
+      }).then((isUpdated) => {
         if (isUpdated) navigate("/notes");
       });
     }
@@ -133,7 +140,7 @@ const NoteEditControl = (props: {
         content={`Do you really want to delete the note "${title}"?`}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
-          deleteNote(props.id!).then((isDeleted) => {
+          JSendApiClient.delete(`${API_ENDPOINTS.Notes}/${props.id!}`).then((isDeleted) => {
             if (isDeleted) {
               setShowDeleteConfirm(false);
               navigate("/notes");

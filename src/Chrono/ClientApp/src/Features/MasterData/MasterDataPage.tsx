@@ -6,9 +6,10 @@ import MasterDataItemList from "./MasterDataItemList";
 import {MasterDataItem} from "./MasterDataItem";
 
 // Shared
-import {createTaskList, deleteTaskList, getTaskLists,} from "../../Shared/Services/TaskListService";
-import {createCategory, deleteCategory, getCategories,} from "../../Shared/Services/CategoryService";
-import {getCurrentUserSettings} from "../../Shared/Services/UserService";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
+import {UserSettings} from "../../Shared/Entities/User.ts";
+import {Category} from "../../Shared/Entities/Category.ts";
+import {TaskListBrief} from "../../Shared/Entities/TaskList.ts";
 
 interface MasterDataPageState {
   taskLists: MasterDataItem[];
@@ -38,16 +39,15 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
   }
 
   async refreshMasterDataAsync(): Promise<void> {
-    const taskLists = (await getTaskLists()).map((x) => {
+    const taskLists = (await JSendApiClient.get<TaskListBrief[]>(API_ENDPOINTS.TaskLists) ?? []).map((x) => {
       return {id: x.id, name: x.title};
     });
-    const categories = (await getCategories()).map((x) => {
+    const categories = (await JSendApiClient.get<Category[]>(API_ENDPOINTS.Categories) ?? []).map((x) => {
       return {id: x.id, name: x.name};
     });
 
-    const userSettings = await getCurrentUserSettings();
-
-    this.setState({taskLists, categories, favoriteTaskListId: userSettings.defaultTaskListId, isLoaded: true});
+    const userSettings = await JSendApiClient.get<UserSettings>(API_ENDPOINTS.UserSettings);
+    this.setState({taskLists, categories, favoriteTaskListId: userSettings?.defaultTaskListId, isLoaded: true});
   }
 
   render() {
@@ -67,8 +67,8 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
           title: "Task List",
           titlePlural: "Task Lists",
           items: this.state.taskLists,
-          createCallback: createTaskList,
-          deleteCallback: deleteTaskList,
+          createCallback: (title: string) => JSendApiClient.create(API_ENDPOINTS.TaskLists, {title: title}),
+          deleteCallback: (id: number) => JSendApiClient.delete(`${API_ENDPOINTS.TaskLists}/${id}`),
           editModal: <MasterDataItemEditModal/>,
           favoriteItemId: this.state.favoriteTaskListId
         }),
@@ -79,8 +79,8 @@ export default class MasterDataPage extends React.Component<any, MasterDataPageS
           title: "Category",
           titlePlural: "Categories",
           items: this.state.categories,
-          createCallback: createCategory,
-          deleteCallback: deleteCategory
+          createCallback: (name: string) => JSendApiClient.create(API_ENDPOINTS.Categories, {name: name}),
+          deleteCallback: (id: number) => JSendApiClient.delete(`${API_ENDPOINTS.Categories}/${id}`)
         }),
       },
     ]

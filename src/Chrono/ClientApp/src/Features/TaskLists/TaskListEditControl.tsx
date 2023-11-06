@@ -8,11 +8,9 @@ import {Button, Checkbox, Container, Dropdown, Icon} from "semantic-ui-react";
 import type {Task} from "../../Shared/Entities/Task";
 import type {TaskList, TaskListBrief} from "../../Shared/Entities/TaskList";
 import type {Category} from "../../Shared/Entities/Category";
-import {getTaskList, getTaskLists,} from "../../Shared/Services/TaskListService";
-import {getCategories} from "../../Shared/Services/CategoryService";
-import {updateTask} from "../../Shared/Services/TaskService";
-import {getCurrentUserSettings} from "../../Shared/Services/UserService";
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
+import {UserSettings} from "../../Shared/Entities/User.ts";
 
 const TaskListEditControl = (props: { taskListId: number }) => {
   const [taskList, setTaskList] = useState<TaskList | null>(null);
@@ -25,22 +23,23 @@ const TaskListEditControl = (props: { taskListId: number }) => {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const taskLists = await getTaskLists();
-      setAvailableTaskLists(taskLists);
+      const taskLists = await JSendApiClient.get<TaskListBrief[]>(API_ENDPOINTS.TaskLists);
+      setAvailableTaskLists(taskLists ?? []);
 
-      const categories = await getCategories();
-      setAvailableCategories(categories);
+      const categories = await JSendApiClient.get<Category[]>(API_ENDPOINTS.Categories);
+      setAvailableCategories(categories ?? []);
 
       if (!taskLists || taskLists.length === 0) {
         setIsLoaded(true);
         return;
       }
 
-      const userSettings = await getCurrentUserSettings();
-      const selectedTaskList = props.taskListId >= 0 ?
-        props.taskListId : userSettings.defaultTaskListId;
+      const userSettings = await JSendApiClient.get<UserSettings>(API_ENDPOINTS.UserSettings);
 
-      const taskList = await getTaskList(selectedTaskList ?? taskLists[0].id);
+      const selectedTaskList = props.taskListId >= 0 ?
+        props.taskListId : userSettings?.defaultTaskListId;
+
+      const taskList = await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedTaskList ?? taskLists[0].id}`);
       setTaskList(taskList);
       setIsLoaded(true);
     };
@@ -56,7 +55,15 @@ const TaskListEditControl = (props: { taskListId: number }) => {
 
   const [, setTasks] = useState(filteredTasks);
   const handleTaskMove = (task: Task, direction: number) => {
-    updateTask(task, task.position + direction).then((isUpdated) => {
+    JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, {
+      id: task.id,
+      position: task.position + direction,
+      name: task.name,
+      businessValue: task.businessValue,
+      description: task.description,
+      done: task.done,
+      categories: task.categories,
+    }).then((isUpdated) => {
       if (!isUpdated || Math.abs(direction) !== 1)
         return;
 
@@ -141,7 +148,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
                 (x) => x.title === e.target.innerText
               )?.id;
               if (selectedId && selectedId !== taskList?.id) {
-                setTaskList(await getTaskList(selectedId));
+                setTaskList(await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedId}`));
               }
             }}
           />
