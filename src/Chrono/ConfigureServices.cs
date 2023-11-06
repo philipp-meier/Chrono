@@ -1,6 +1,6 @@
 using System.Reflection;
-using Chrono.Common.Behaviors;
-using Chrono.Common.Services;
+using Chrono.Shared.Behaviors;
+using Chrono.Shared.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;

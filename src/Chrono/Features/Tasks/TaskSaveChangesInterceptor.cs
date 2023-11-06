@@ -1,6 +1,6 @@
-using Chrono.Common;
-using Chrono.Common.Extensions;
-using Chrono.Common.Services;
+using Chrono.Shared;
+using Chrono.Shared.Extensions;
+using Chrono.Shared.Services;
 using Chrono.Entities;
 using Chrono.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

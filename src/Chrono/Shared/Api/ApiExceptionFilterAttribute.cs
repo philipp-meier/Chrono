@@ -1,9 +1,9 @@
-using Chrono.Common.Exceptions;
+using Chrono.Shared.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Chrono.Common.Api;
+namespace Chrono.Shared.Api;
 
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {

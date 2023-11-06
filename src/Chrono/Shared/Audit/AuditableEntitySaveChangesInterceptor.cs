@@ -1,10 +1,10 @@
-using Chrono.Common.Services;
 using Chrono.Entities;
 using Chrono.Entities.Common;
 using Chrono.Infrastructure.Persistence;
+using Chrono.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chrono.Common.Audit;
+namespace Chrono.Shared.Audit;
 
 public class AuditableEntitySaveChangesInterceptor : BaseSaveChangesInterceptor
 {

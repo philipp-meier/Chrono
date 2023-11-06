@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Chrono.Common.Api;
+namespace Chrono.Shared.Api;
 
 [ApiController] [ApiExceptionFilter]
 [Route("api/[controller]")]

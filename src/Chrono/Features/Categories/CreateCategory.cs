@@ -1,5 +1,5 @@
-﻿using Chrono.Common.Api;
-using Chrono.Common.Interfaces;
+﻿using Chrono.Shared.Api;
+using Chrono.Shared.Interfaces;
 using Chrono.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

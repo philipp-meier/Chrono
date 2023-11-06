@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Chrono.Common;
+namespace Chrono.Shared;
 
 public abstract class BaseSaveChangesInterceptor : SaveChangesInterceptor
 {

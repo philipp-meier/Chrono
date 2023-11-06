@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System.Text.Json.Serialization;
 
-namespace Chrono.Common.Api;
+namespace Chrono.Shared.Api;
 
 /// <summary>
 ///     Builds API responses following the JSend (see https://github.com/omniti-labs/jsend) specification.

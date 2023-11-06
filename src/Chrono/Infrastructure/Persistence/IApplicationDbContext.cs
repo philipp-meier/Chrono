@@ -2,7 +2,7 @@ using Chrono.Entities;
 using Microsoft.EntityFrameworkCore;
 using Task = Chrono.Entities.Task;
 
-namespace Chrono.Common.Interfaces;
+namespace Chrono.Shared.Interfaces;
 
 public interface IApplicationDbContext
 {
