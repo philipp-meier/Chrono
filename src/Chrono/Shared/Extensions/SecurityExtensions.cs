@@ -1,6 +1,6 @@
 ﻿using Chrono.Entities.Common;
 
-namespace Chrono.Common.Extensions;
+namespace Chrono.Shared.Extensions;
 
 public static class SecurityExtensions
 {
