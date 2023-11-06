@@ -3,8 +3,9 @@ import {MasterDataItem} from "./MasterDataItem";
 import {Button, Checkbox, Form, Input, Modal} from "semantic-ui-react";
 
 // Shared
-import {getTaskListOptions, updateTaskList} from "../../Shared/Services/TaskListService";
-import {getCurrentUserSettings, updateCurrentUserSettings} from "../../Shared/Services/UserService";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
+import {UserSettings} from "../../Shared/Entities/User.ts";
+import {TaskListOptions} from "../../Shared/Entities/TaskListOptions.ts";
 
 /** Does only support TaskList MasterDataItems at the moment. */
 const MasterDataItemEditModal = (props: {
@@ -21,11 +22,14 @@ const MasterDataItemEditModal = (props: {
     const dataFetch = async () => {
 
       if (props.context) {
-        const userSettings = await getCurrentUserSettings();
-        setDefaultList(props.context.id === userSettings.defaultTaskListId);
+        const userSettings = await JSendApiClient.get<UserSettings>(API_ENDPOINTS.UserSettings);
+        setDefaultList(props.context.id === userSettings?.defaultTaskListId);
       }
 
-      const options = props.context ? await getTaskListOptions(props.context.id) : null;
+      const options = props.context ?
+        await JSendApiClient.get<TaskListOptions>(`${API_ENDPOINTS.TaskLists}/${props.context.id}/options`) :
+        null;
+
       if (options) {
         setRequireBusinessValue(options.requireBusinessValue);
         setRequireDescription(options.requireDescription);
@@ -76,7 +80,7 @@ const MasterDataItemEditModal = (props: {
           color="green"
           onClick={() => {
             const defaultTaskListId = isDefaultList ? undefined : props.context!.id;
-            updateCurrentUserSettings({defaultTaskListId})
+            JSendApiClient.update(API_ENDPOINTS.UserSettings, {defaultTaskListId})
               .then(isDone => {
                 if (isDone)
                   props.onButtonClick!(true);
@@ -94,9 +98,11 @@ const MasterDataItemEditModal = (props: {
           primary
           content="Save"
           onClick={() => {
-            updateTaskList(props.context!.id, title || 'Item', {
-              requireDescription,
-              requireBusinessValue
+            JSendApiClient.update(`${API_ENDPOINTS.TaskLists}/${props.context!.id}`, {
+              taskListId: props.context!.id,
+              title: title || 'Item',
+              requireBusinessValue: requireBusinessValue,
+              requireDescription: requireDescription
             }).then((isDone) => {
               if (isDone) {
                 props.onButtonClick!(true);

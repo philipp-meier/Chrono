@@ -4,9 +4,9 @@ import {Menu} from "semantic-ui-react";
 import {useLocation, useNavigate} from "react-router-dom";
 import MainMenuLg from "./MainMenuLg";
 import MainMenuMd from "./MainMenuMd";
-import {getCurrentUserInfo} from "../../Services/UserService";
 import {User} from "../../Entities/User";
 import MenuItems from "./MenuItems";
+import JSendApiClient, {API_ENDPOINTS} from "../../JSendApiClient.ts";
 
 const MainMenu = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const MainMenu = () => {
 
   useLayoutEffect(() => {
     const dataFetch = async () => {
-      const userInfo = await getCurrentUserInfo();
+      const userInfo = await JSendApiClient.get<User>(API_ENDPOINTS.User) ?? {isAuthenticated: false};
       setUserInfo(userInfo);
     };
     dataFetch();

@@ -2,11 +2,11 @@ import "./NotePage.less";
 import {useEffect, useState} from "react";
 import {Button, Card, Container, Icon} from "semantic-ui-react";
 import {useMediaQuery} from "react-responsive";
-import {getMyNotes} from "./NoteService";
 
 // Shared
-import {NotePreview} from "../../Shared/Entities/Note";
+import {GetMyNotesResponse, NotePreview} from "../../Shared/Entities/Note";
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
 
 const NotePage = () => {
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
@@ -15,8 +15,8 @@ const NotePage = () => {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const response = await getMyNotes();
-      setNotes(response.notes);
+      const response = await JSendApiClient.get<GetMyNotesResponse>(API_ENDPOINTS.Notes);
+      setNotes(response?.notes ?? []);
       setIsLoaded(true);
     };
     dataFetch()
