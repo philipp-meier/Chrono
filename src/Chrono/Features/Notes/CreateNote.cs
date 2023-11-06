@@ -51,8 +51,12 @@ public class CreateNoteController : ApiControllerBase
 {
     [HttpPost]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateNote command)
+    public async Task<IActionResult> Create(CreateNote command)
     {
-        return await Mediator.Send(command);
+        var result = await Mediator.Send(command);
+        return CreatedAtRoute("GetNote", new
+        {
+            id = result
+        }, JSendResponseBuilder.Success(result));
     }
 }

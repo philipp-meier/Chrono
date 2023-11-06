@@ -1,47 +1,21 @@
 import {TaskList, TaskListBrief} from "../Entities/TaskList";
 import {TaskListOptions} from "../Entities/TaskListOptions";
+import JSendApiClient, {API_ENDPOINTS} from "./JSendApiClient.ts";
 
 export async function getTaskLists(): Promise<TaskListBrief[]> {
-  try {
-    const response = await fetch("/api/tasklists");
-    return response.ok ? await response.json() : [];
-  } catch (error) {
-    return [];
-  }
+  return await JSendApiClient.get<TaskListBrief[]>(API_ENDPOINTS.TaskLists) ?? [];
 }
 
 export async function getTaskList(id: number): Promise<TaskList | null> {
-  try {
-    const response = await fetch(`/api/tasklists/${id}`);
-    return response.ok ? await response.json() : null;
-  } catch (error) {
-    return null;
-  }
+  return await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${id}`)
 }
 
 export async function getTaskListOptions(id: number): Promise<TaskListOptions | null> {
-  try {
-    const response = await fetch(`/api/tasklists/${id}/options`);
-    return response.ok ? await response.json() : null;
-  } catch (error) {
-    return null;
-  }
+  return await JSendApiClient.get<TaskListOptions>(`${API_ENDPOINTS.TaskLists}/${id}/options`)
 }
 
 export async function createTaskList(title: string): Promise<number> {
-  try {
-    const response = await fetch("/api/tasklists", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({title: title}),
-    });
-
-    if (response.ok) return await response.json();
-
-    return -1;
-  } catch (error) {
-    return -1;
-  }
+  return await JSendApiClient.create(API_ENDPOINTS.TaskLists, {title: title});
 }
 
 export async function updateTaskList(
@@ -49,32 +23,14 @@ export async function updateTaskList(
   title: string,
   options: TaskListOptions
 ): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/tasklists/${id}`, {
-      method: "PUT",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        taskListId: id,
-        title: title,
-        requireBusinessValue: options.requireBusinessValue,
-        requireDescription: options.requireDescription
-      }),
-    });
-
-    return response.status === 204;
-  } catch (error) {
-    return false;
-  }
+  return await JSendApiClient.update(`${API_ENDPOINTS.TaskLists}/${id}`, {
+    taskListId: id,
+    title: title,
+    requireBusinessValue: options.requireBusinessValue,
+    requireDescription: options.requireDescription
+  });
 }
 
 export async function deleteTaskList(id: number): Promise<boolean> {
-  try {
-    const response = await fetch(`/api/tasklists/${id}`, {
-      method: "DELETE",
-    });
-
-    return response.status === 204;
-  } catch (error) {
-    return false;
-  }
+  return await JSendApiClient.delete(`${API_ENDPOINTS.TaskLists}/${id}`);
 }

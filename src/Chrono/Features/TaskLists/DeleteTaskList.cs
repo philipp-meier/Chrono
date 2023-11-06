@@ -56,6 +56,6 @@ public class DeleteTaskListsController : ApiControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         await Mediator.Send(new DeleteTaskList(id));
-        return NoContent();
+        return Ok(JSendResponseBuilder.Success<string>(null));
     }
 }

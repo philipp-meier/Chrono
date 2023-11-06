@@ -47,12 +47,13 @@ public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
 [Authorize] [Route("api/tasks")] [Tags("Tasks")]
 public class GetTaskController : ApiControllerBase
 {
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetTask")]
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaskDto>> Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        return await Mediator.Send(new GetTask(id));
+        var result = await Mediator.Send(new GetTask(id));
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

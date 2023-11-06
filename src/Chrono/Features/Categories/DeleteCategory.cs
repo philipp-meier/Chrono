@@ -58,6 +58,6 @@ public class DeleteCategoryController : ApiControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         await Mediator.Send(new DeleteCategory(id));
-        return NoContent();
+        return Ok(JSendResponseBuilder.Success<string>(null));
     }
 }

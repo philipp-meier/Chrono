@@ -48,8 +48,13 @@ public class CreateTaskListController : ApiControllerBase
 {
     [HttpPost]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Create(CreateTaskList command)
+    public async Task<IActionResult> Create(CreateTaskList command)
     {
-        return await Mediator.Send(command);
+        var result = await Mediator.Send(command);
+
+        return CreatedAtRoute("GetTaskList", new
+        {
+            id = result
+        }, JSendResponseBuilder.Success(result));
     }
 }

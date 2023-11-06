@@ -54,8 +54,9 @@ public class TaskListBriefDto
 public class GetMyTaskListsController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<TaskListBriefDto[]>> Get()
+    public async Task<IActionResult> Get()
     {
-        return await Mediator.Send(new GetMyTaskLists());
+        var result = await Mediator.Send(new GetMyTaskLists());
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }

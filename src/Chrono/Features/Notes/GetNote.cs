@@ -61,12 +61,13 @@ public class NoteDto
 [Authorize] [Route("api/notes")] [Tags("Notes")]
 public class GetNoteController : ApiControllerBase
 {
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetNote")]
     [ProducesDefaultResponseType]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<NoteDto>> Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        return await Mediator.Send(new GetNote(id));
+        var result = await Mediator.Send(new GetNote(id));
+        return Ok(JSendResponseBuilder.Success(result));
     }
 }
