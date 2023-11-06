@@ -5,7 +5,7 @@ import {useMediaQuery} from "react-responsive";
 // Shared
 import IconLabel from "../../Shared/Components/IconLabel";
 import {Category} from "../../Shared/Entities/Category";
-import {getCategories} from "../../Shared/Services/CategoryService";
+import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient.ts";
 
 const TaskCategoryEditControl = (props: {
   currentCategories: Category[];
@@ -19,8 +19,8 @@ const TaskCategoryEditControl = (props: {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const categories = await getCategories();
-      setAvailableCategories(categories);
+      const categories = await JSendApiClient.get<Category[]>(API_ENDPOINTS.Categories);
+      setAvailableCategories(categories ?? []);
     };
 
     dataFetch();
