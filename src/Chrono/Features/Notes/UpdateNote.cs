@@ -31,20 +31,12 @@ public class UpdateNoteValidator : AbstractValidator<UpdateNote>
     }
 }
 
-public class UpdateNoteHandler : IRequestHandler<UpdateNote>
+public class UpdateNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<UpdateNote>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public UpdateNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(UpdateNote request, CancellationToken cancellationToken)
     {
-        var note = await _context.Notes
+        var note = await context.Notes
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (note == null)
@@ -52,7 +44,7 @@ public class UpdateNoteHandler : IRequestHandler<UpdateNote>
             throw new NotFoundException($"Note \"{request.Id}\" not found.");
         }
 
-        if (!note.IsPermitted(_currentUserService.UserId))
+        if (!note.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -67,11 +59,13 @@ public class UpdateNoteHandler : IRequestHandler<UpdateNote>
             note.Text = request.Text;
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/notes")] [Tags("Notes")]
+[Authorize]
+[Route("api/notes")]
+[Tags("Notes")]
 public class UpdateNoteController : ApiControllerBase
 {
     [HttpPut("{id:int}")]

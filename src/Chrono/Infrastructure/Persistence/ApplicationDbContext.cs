@@ -1,32 +1,21 @@
 using System.Reflection;
-using Chrono.Shared.Audit;
-using Chrono.Shared.Interfaces;
 using Chrono.Entities;
 using Chrono.Features.TaskLists;
 using Chrono.Features.Tasks;
+using Chrono.Shared.Audit;
+using Chrono.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Task = Chrono.Entities.Task;
 
 namespace Chrono.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext(
+    DbContextOptions options,
+    AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+    TaskSaveChangesInterceptor taskSaveChangesInterceptor,
+    TaskListSaveChangesInterceptor taskListSaveChangesInterceptor)
+    : DbContext(options), IApplicationDbContext
 {
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-    private readonly TaskListSaveChangesInterceptor _taskListSaveChangesInterceptor;
-    private readonly TaskSaveChangesInterceptor _taskSaveChangesInterceptor;
-
-    public ApplicationDbContext(
-        DbContextOptions options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
-        TaskSaveChangesInterceptor taskSaveChangesInterceptor,
-        TaskListSaveChangesInterceptor taskListSaveChangesInterceptor)
-        : base(options)
-    {
-        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-        _taskSaveChangesInterceptor = taskSaveChangesInterceptor;
-        _taskListSaveChangesInterceptor = taskListSaveChangesInterceptor;
-    }
-
     public DbSet<Task> Tasks => Set<Task>();
     public DbSet<TaskList> TaskLists => Set<TaskList>();
     public DbSet<TaskListOptions> TaskListOptions => Set<TaskListOptions>();
@@ -45,9 +34,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
-        optionsBuilder.AddInterceptors(_taskSaveChangesInterceptor);
-        optionsBuilder.AddInterceptors(_taskListSaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(taskSaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(taskListSaveChangesInterceptor);
         base.OnConfiguring(optionsBuilder);
     }
 }

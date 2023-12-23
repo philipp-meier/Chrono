@@ -12,20 +12,12 @@ namespace Chrono.Features.Notes;
 
 public record GetNote(int Id) : IRequest<NoteDto>;
 
-public class GetNoteHandler : IRequestHandler<GetNote, NoteDto>
+public class GetNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<GetNote, NoteDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task<NoteDto> Handle(GetNote request, CancellationToken cancellationToken)
     {
-        var note = await _context.Notes
+        var note = await context.Notes
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (note == null)
@@ -33,7 +25,7 @@ public class GetNoteHandler : IRequestHandler<GetNote, NoteDto>
             throw new NotFoundException($"Note \"{request.Id}\" not found.");
         }
 
-        if (!note.IsPermitted(_currentUserService.UserId))
+        if (!note.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -58,7 +50,9 @@ public class NoteDto
     public DateTime LastModified { get; init; }
 }
 
-[Authorize] [Route("api/notes")] [Tags("Notes")]
+[Authorize]
+[Route("api/notes")]
+[Tags("Notes")]
 public class GetNoteController : ApiControllerBase
 {
     [HttpGet("{id:int}", Name = "GetNote")]

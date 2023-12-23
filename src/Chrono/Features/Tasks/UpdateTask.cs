@@ -1,9 +1,9 @@
+using Chrono.Entities;
 using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -59,20 +59,12 @@ public class UpdateTaskValidator : AbstractValidator<UpdateTask>
     }
 }
 
-public class UpdateTaskHandler : IRequestHandler<UpdateTask>
+public class UpdateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<UpdateTask>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public UpdateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(UpdateTask request, CancellationToken cancellationToken)
     {
-        var task = await _context.Tasks
+        var task = await context.Tasks
             .Include(x => x.List)
             .ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Categories)
@@ -84,7 +76,7 @@ public class UpdateTaskHandler : IRequestHandler<UpdateTask>
             throw new NotFoundException($"Task item \"{request.Id}\" not found.");
         }
 
-        if (!task.IsPermitted(_currentUserService.UserId))
+        if (!task.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -107,10 +99,10 @@ public class UpdateTaskHandler : IRequestHandler<UpdateTask>
 
             var newCategoryNames = request.Categories.Select(x => x.Name).ToArray();
             task.SetCategories(
-                _context.Categories
+                context.Categories
                     .Where(x => newCategoryNames.Contains(x.Name))
                     .AsEnumerable()
-                    .Where(x => x.IsPermitted(_currentUserService.UserId))
+                    .Where(x => x.IsPermitted(currentUserService.UserId))
                     .ToArray()
             );
 
@@ -121,11 +113,13 @@ public class UpdateTaskHandler : IRequestHandler<UpdateTask>
             }
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/tasks")] [Tags("Tasks")]
+[Authorize]
+[Route("api/tasks")]
+[Tags("Tasks")]
 public class UpdateTaskController : ApiControllerBase
 {
     [HttpPut("{id:int}")]

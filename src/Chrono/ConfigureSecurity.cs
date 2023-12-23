@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using Chrono.Shared.Interfaces;
 using Chrono.Entities;
+using Chrono.Shared.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -26,7 +26,7 @@ public static class ConfigureSecurity
                 //options.Cookie.SameSite = SameSiteMode.Strict;
 
                 options.Cookie.Name = configuration["IdentityProvider:CookieName"];
-                options.Events.OnSigningOut = async e => await e.HttpContext.RevokeUserRefreshTokenAsync();
+                options.Events.OnSigningOut = e => e.HttpContext.RevokeUserRefreshTokenAsync();
             })
             .AddOpenIdConnect(options =>
             {
@@ -75,10 +75,7 @@ public static class ConfigureSecurity
                     var user = db.Users.FirstOrDefault(x => x.UserId == userId);
                     if (user == null)
                     {
-                        db.Users.Add(new User
-                        {
-                            UserId = userId, Name = userName
-                        });
+                        db.Users.Add(new User { UserId = userId, Name = userName });
                     }
                     else
                     {
@@ -93,11 +90,9 @@ public static class ConfigureSecurity
             });
 
         // Ensures endpoints are secured by default.
-        services.AddAuthorization(options =>
-        {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        services.AddAuthorizationBuilder()
+            .SetFallbackPolicy(new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .Build();
-        });
+                .Build());
     }
 }

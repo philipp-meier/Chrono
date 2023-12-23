@@ -1,8 +1,8 @@
 ﻿namespace Chrono.Shared.Services;
 
-public class TextService
+public static class TextService
 {
-    public string Truncate(string text, int length)
+    public static string Truncate(string text, int length)
     {
         if (string.IsNullOrEmpty(text) || text.Length <= length)
         {

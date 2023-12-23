@@ -1,9 +1,9 @@
-﻿using Chrono.Shared.Api;
+﻿using Chrono.Entities;
+using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using Chrono.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,42 +14,31 @@ namespace Chrono.Features.Users;
 
 public record UpdateUserSettings(int? DefaultTaskListId) : IRequest;
 
-public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
+public class UpdateUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<UpdateUserSettings>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public UpdateUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(UpdateUserSettings request, CancellationToken cancellationToken)
     {
-        var currentUser = await _context.Users
+        var currentUser = await context.Users
             .Include(x => x.UserSettings)
-            .SingleOrDefaultAsync(x => x.UserId == _currentUserService.UserId, cancellationToken);
+            .SingleOrDefaultAsync(x => x.UserId == currentUserService.UserId, cancellationToken);
 
         if (currentUser == null)
         {
-            throw new NotFoundException($"User \"{_currentUserService.UserId}\" not found.");
+            throw new NotFoundException($"User \"{currentUserService.UserId}\" not found.");
         }
 
         var userSettings = currentUser.UserSettings;
         if (userSettings == null)
         {
-            userSettings = new UserSettings
-            {
-                User = currentUser, UserId = currentUser.Id
-            };
-            _context.UserSettings.Add(userSettings);
+            userSettings = new UserSettings { User = currentUser, UserId = currentUser.Id };
+            context.UserSettings.Add(userSettings);
         }
 
         if (request.DefaultTaskListId.HasValue)
         {
             var defaultTaskListId = request.DefaultTaskListId.Value;
-            var taskList = await _context.TaskLists
+            var taskList = await context.TaskLists
                 .SingleOrDefaultAsync(x => x.Id == defaultTaskListId, cancellationToken);
 
             if (taskList == null)
@@ -57,7 +46,7 @@ public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
                 throw new NotFoundException($"Task list \"{defaultTaskListId}\" not found.");
             }
 
-            if (!taskList.IsPermitted(_currentUserService.UserId))
+            if (!taskList.IsPermitted(currentUserService.UserId))
             {
                 throw new ForbiddenAccessException();
             }
@@ -69,11 +58,13 @@ public class UpdateUserSettingsHandler : IRequestHandler<UpdateUserSettings>
             userSettings.DefaultTaskList = null;
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/user")] [Tags("User")]
+[Authorize]
+[Route("api/user")]
+[Tags("User")]
 public class UpdateUserSettingsController : ApiControllerBase
 {
     [HttpPut("settings")]

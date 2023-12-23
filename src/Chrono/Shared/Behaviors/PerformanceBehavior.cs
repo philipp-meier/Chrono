@@ -3,18 +3,14 @@ using MediatR;
 
 namespace Chrono.Shared.Behaviors;
 
-public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class PerformanceBehavior<TRequest, TResponse>(ILogger<PerformanceBehavior<TRequest, TResponse>> logger)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
-    private readonly ILogger<PerformanceBehavior<TRequest, TResponse>> _logger;
-    private readonly Stopwatch _timer;
+    private readonly Stopwatch _timer = new();
 
-    public PerformanceBehavior(ILogger<PerformanceBehavior<TRequest, TResponse>> logger)
-    {
-        _timer = new Stopwatch();
-        _logger = logger;
-    }
-
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         _timer.Start();
 
@@ -26,7 +22,7 @@ public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
         var requestName = typeof(TRequest).Name;
 
-        _logger.LogInformation("Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
+        logger.LogInformation("Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
             requestName, elapsedMilliseconds, request);
 
         return response;

@@ -10,10 +10,7 @@ public static class JSendResponseBuilder
 {
     private static JSendResponseBuilder<T> CreateResponse<T>(string status, T? data, string? message = null)
     {
-        return new JSendResponseBuilder<T>(status)
-        {
-            Data = data, Message = message
-        };
+        return new JSendResponseBuilder<T>(status) { Data = data, Message = message };
     }
 
     public static JSendResponseBuilder<T> Success<T>(T data, string? message = null)
@@ -32,14 +29,9 @@ public static class JSendResponseBuilder
     }
 }
 
-public class JSendResponseBuilder<T>
+public class JSendResponseBuilder<T>(string status)
 {
-    public JSendResponseBuilder(string status)
-    {
-        Status = status;
-    }
-
-    public string Status { get; set; }
+    public string Status { get; set; } = status;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? Message { get; set; }

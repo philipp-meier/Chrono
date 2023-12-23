@@ -1,22 +1,15 @@
+using Chrono.Entities;
+using Chrono.Infrastructure.Persistence;
 using Chrono.Shared;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Services;
-using Chrono.Entities;
-using Chrono.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 
-public class TaskSaveChangesInterceptor : BaseSaveChangesInterceptor
+public class TaskSaveChangesInterceptor(ICurrentUserService currentUserService) : BaseSaveChangesInterceptor
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public TaskSaveChangesInterceptor(ICurrentUserService currentUserService)
-    {
-        _currentUserService = currentUserService;
-    }
-
     protected override void UpdateEntities(DbContext context)
     {
         if (context is not ApplicationDbContext dbContext)
@@ -25,7 +18,7 @@ public class TaskSaveChangesInterceptor : BaseSaveChangesInterceptor
         }
 
         var currentUtcDate = DateTime.UtcNow;
-        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == _currentUserService.UserId);
+        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == currentUserService.UserId);
 
         HandleTaskPositionChanges(context);
         HandleTaskCategoryChanges(context, currentUser, currentUtcDate);

@@ -11,40 +11,28 @@ namespace Chrono.Features.Notes;
 
 public record GetMyNotes : IRequest<GetMyNotesResponse>;
 
-public class GetMyNotesHandler : IRequestHandler<GetMyNotes, GetMyNotesResponse>
+public class GetMyNotesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<GetMyNotes, GetMyNotesResponse>
 {
     private const int MaxTextPreviewLength = 80;
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly TextService _textService;
-
-    public GetMyNotesHandler(IApplicationDbContext context, ICurrentUserService currentUserService, TextService textService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-        _textService = textService;
-    }
 
     public Task<GetMyNotesResponse> Handle(GetMyNotes request, CancellationToken cancellationToken)
     {
-        var result = _context.Notes
+        var result = context.Notes
             .OrderByDescending(n => n.Created)
             .AsEnumerable()
-            .Where(n => n.IsPermitted(_currentUserService.UserId))
+            .Where(n => n.IsPermitted(currentUserService.UserId))
             .Select(n => new NotePreview
             {
                 Id = n.Id,
                 Title = n.Title,
-                Preview = _textService.Truncate(n.Text, MaxTextPreviewLength),
+                Preview = TextService.Truncate(n.Text, MaxTextPreviewLength),
                 // Persisted in UTC.
                 Created = n.Created.ToLocalTime().ToString(CultureInfo.InvariantCulture)
             })
             .ToArray();
 
-        return Task.FromResult(new GetMyNotesResponse
-        {
-            Notes = result
-        });
+        return Task.FromResult(new GetMyNotesResponse { Notes = result });
     }
 }
 
@@ -61,7 +49,9 @@ public class NotePreview
     public string Created { get; set; }
 }
 
-[Authorize] [Route("api/notes")] [Tags("Notes")]
+[Authorize]
+[Route("api/notes")]
+[Tags("Notes")]
 public class GetMyNotesController : ApiControllerBase
 {
     [HttpGet]

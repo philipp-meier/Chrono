@@ -12,20 +12,12 @@ namespace Chrono.Features.Tasks;
 
 public record DeleteTask(int Id) : IRequest;
 
-public class DeleteTaskHandler : IRequestHandler<DeleteTask>
+public class DeleteTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<DeleteTask>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public DeleteTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(DeleteTask request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Tasks
+        var entity = await context.Tasks
             .Include(x => x.List)
             .ThenInclude(x => x.Tasks)
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
@@ -35,7 +27,7 @@ public class DeleteTaskHandler : IRequestHandler<DeleteTask>
             throw new NotFoundException($"Task item \"{request.Id}\" not found.");
         }
 
-        if (!entity.IsPermitted(_currentUserService.UserId))
+        if (!entity.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -48,13 +40,15 @@ public class DeleteTaskHandler : IRequestHandler<DeleteTask>
         var taskList = entity.List;
         taskList.Tasks.Remove(entity);
 
-        _context.Tasks.Remove(entity);
+        context.Tasks.Remove(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/tasks")] [Tags("Tasks")]
+[Authorize]
+[Route("api/tasks")]
+[Tags("Tasks")]
 public class DeleteTaskController : ApiControllerBase
 {
     [HttpDelete("{id:int}")]

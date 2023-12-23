@@ -30,7 +30,6 @@ public static partial class ConfigureServices
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<TextService>();
 
         services.AddControllersWithViews();
         services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));

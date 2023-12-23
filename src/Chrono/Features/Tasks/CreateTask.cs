@@ -1,9 +1,9 @@
+using Chrono.Entities;
 using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -57,20 +57,12 @@ public class CreateTaskValidator : AbstractValidator<CreateTask>
     }
 }
 
-public class CreateTaskHandler : IRequestHandler<CreateTask, int>
+public class CreateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<CreateTask, int>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public CreateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task<int> Handle(CreateTask request, CancellationToken cancellationToken)
     {
-        var taskList = await _context.TaskLists
+        var taskList = await context.TaskLists
             .Include(x => x.Tasks)
             .SingleOrDefaultAsync(x => x.Id == request.ListId, cancellationToken);
 
@@ -79,35 +71,40 @@ public class CreateTaskHandler : IRequestHandler<CreateTask, int>
             throw new NotFoundException($"Task list \"{request.ListId}\" not found.");
         }
 
-        if (!taskList.IsPermitted(_currentUserService.UserId))
+        if (!taskList.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
 
         var task = new Task
         {
-            Name = request.Name, Position = request.Position, BusinessValue = request.BusinessValue, Description = request.Description
+            Name = request.Name,
+            Position = request.Position,
+            BusinessValue = request.BusinessValue,
+            Description = request.Description
         };
         var newCategoryNames = request.Categories.Select(x => x.Name).ToArray();
         task.SetCategories(
-            _context.Categories
+            context.Categories
                 .Where(x => newCategoryNames.Contains(x.Name))
                 .AsEnumerable()
-                .Where(x => x.IsPermitted(_currentUserService.UserId))
+                .Where(x => x.IsPermitted(currentUserService.UserId))
                 .ToArray()
         );
 
         taskList.InsertAt(request.Position, task);
 
-        _context.Tasks.Add(task);
+        context.Tasks.Add(task);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return task.Id;
     }
 }
 
-[Authorize] [Route("api/tasks")] [Tags("Tasks")]
+[Authorize]
+[Route("api/tasks")]
+[Tags("Tasks")]
 public class CreateTaskController : ApiControllerBase
 {
     [HttpPost]
@@ -118,9 +115,6 @@ public class CreateTaskController : ApiControllerBase
     {
         var result = await Mediator.Send(command);
 
-        return CreatedAtRoute("GetTask", new
-        {
-            id = result
-        }, JSendResponseBuilder.Success(result));
+        return CreatedAtRoute("GetTask", new { id = result }, JSendResponseBuilder.Success(result));
     }
 }

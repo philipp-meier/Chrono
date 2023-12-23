@@ -11,32 +11,21 @@ namespace Chrono.Features.Users;
 
 public record GetUserSettings : IRequest<UserSettingsDto>;
 
-public class GetUserSettingsHandler : IRequestHandler<GetUserSettings, UserSettingsDto>
+public class GetUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<GetUserSettings, UserSettingsDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task<UserSettingsDto> Handle(GetUserSettings request, CancellationToken cancellationToken)
     {
-        var currentUser = await _context.Users
+        var currentUser = await context.Users
             .Include(x => x.UserSettings)
-            .SingleOrDefaultAsync(x => x.UserId == _currentUserService.UserId, cancellationToken);
+            .SingleOrDefaultAsync(x => x.UserId == currentUserService.UserId, cancellationToken);
 
         if (currentUser == null)
         {
-            throw new NotFoundException($"User \"{_currentUserService.UserId}\" not found.");
+            throw new NotFoundException($"User \"{currentUserService.UserId}\" not found.");
         }
 
-        return new UserSettingsDto
-        {
-            DefaultTaskListId = currentUser.UserSettings?.DefaultTaskList?.Id
-        };
+        return new UserSettingsDto { DefaultTaskListId = currentUser.UserSettings?.DefaultTaskList?.Id };
     }
 }
 
@@ -45,7 +34,9 @@ public class UserSettingsDto
     public int? DefaultTaskListId { get; init; }
 }
 
-[Authorize] [Route("api/user")] [Tags("User")]
+[Authorize]
+[Route("api/user")]
+[Tags("User")]
 public class GetUserSettingsController : ApiControllerBase
 {
     [HttpGet("settings")]
