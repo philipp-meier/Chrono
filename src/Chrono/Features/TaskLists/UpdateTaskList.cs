@@ -1,9 +1,9 @@
-﻿using Chrono.Shared.Api;
+﻿using Chrono.Entities;
+using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,20 +39,12 @@ public class UpdateTaskListValidator : AbstractValidator<UpdateTaskList>
     }
 }
 
-public class UpdateTaskListHandler : IRequestHandler<UpdateTaskList>
+public class UpdateTaskListHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<UpdateTaskList>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public UpdateTaskListHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(UpdateTaskList request, CancellationToken cancellationToken)
     {
-        var taskList = await _context.TaskLists
+        var taskList = await context.TaskLists
             .SingleOrDefaultAsync(x => x.Id == request.TaskListId, cancellationToken);
 
         if (taskList == null)
@@ -60,7 +52,7 @@ public class UpdateTaskListHandler : IRequestHandler<UpdateTaskList>
             throw new NotFoundException($"Task list \"{request.TaskListId}\" not found.");
         }
 
-        if (!taskList.IsPermitted(_currentUserService.UserId))
+        if (!taskList.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -73,21 +65,20 @@ public class UpdateTaskListHandler : IRequestHandler<UpdateTaskList>
         var options = taskList.Options;
         if (options == null)
         {
-            options = new TaskListOptions
-            {
-                TaskList = taskList, TaskListId = taskList.Id
-            };
-            _context.TaskListOptions.Add(options);
+            options = new TaskListOptions { TaskList = taskList, TaskListId = taskList.Id };
+            context.TaskListOptions.Add(options);
         }
 
         options.RequireBusinessValue = request.RequireBusinessValue.GetValueOrDefault();
         options.RequireDescription = request.RequireDescription.GetValueOrDefault();
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
+[Authorize]
+[Route("api/tasklists")]
+[Tags("Tasklists")]
 public class UpdateTaskListController : ApiControllerBase
 {
     [HttpPut("{id:int}")]

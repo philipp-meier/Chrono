@@ -1,6 +1,6 @@
-﻿using Chrono.Shared.Api;
+﻿using Chrono.Entities;
+using Chrono.Shared.Api;
 using Chrono.Shared.Interfaces;
-using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,30 +23,22 @@ public class CreateNoteValidator : AbstractValidator<CreateNote>
     }
 }
 
-public class CreateNoteHandler : IRequestHandler<CreateNote, int>
+public class CreateNoteHandler(IApplicationDbContext context) : IRequestHandler<CreateNote, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateNoteHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateNote request, CancellationToken cancellationToken)
     {
-        var entity = new Note
-        {
-            Title = request.Title, Text = request.Text
-        };
-        _context.Notes.Add(entity);
+        var entity = new Note { Title = request.Title, Text = request.Text };
+        context.Notes.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
     }
 }
 
-[Authorize] [Route("api/notes")] [Tags("Notes")]
+[Authorize]
+[Route("api/notes")]
+[Tags("Notes")]
 public class CreateNoteController : ApiControllerBase
 {
     [HttpPost]
@@ -54,9 +46,6 @@ public class CreateNoteController : ApiControllerBase
     public async Task<IActionResult> Create(CreateNote command)
     {
         var result = await Mediator.Send(command);
-        return CreatedAtRoute("GetNote", new
-        {
-            id = result
-        }, JSendResponseBuilder.Success(result));
+        return CreatedAtRoute("GetNote", new { id = result }, JSendResponseBuilder.Success(result));
     }
 }

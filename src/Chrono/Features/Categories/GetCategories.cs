@@ -10,23 +10,15 @@ namespace Chrono.Features.Categories;
 
 public record GetCategories : IRequest<CategoryDto[]>;
 
-public class GetCategoriesHandler : IRequestHandler<GetCategories, CategoryDto[]>
+public class GetCategoriesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<GetCategories, CategoryDto[]>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetCategoriesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public Task<CategoryDto[]> Handle(GetCategories request, CancellationToken cancellationToken)
     {
-        var result = _context.Categories
+        var result = context.Categories
             .OrderBy(x => x.Name)
             .AsEnumerable()
-            .Where(x => x.IsPermitted(_currentUserService.UserId))
+            .Where(x => x.IsPermitted(currentUserService.UserId))
             .Select(CategoryDto.FromEntity)
             .ToArray();
 
@@ -34,7 +26,9 @@ public class GetCategoriesHandler : IRequestHandler<GetCategories, CategoryDto[]
     }
 }
 
-[Authorize] [Route("api/categories")] [Tags("Categories")]
+[Authorize]
+[Route("api/categories")]
+[Tags("Categories")]
 public class GetCategoriesController : ApiControllerBase
 {
     [HttpGet]

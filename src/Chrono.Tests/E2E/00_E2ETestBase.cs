@@ -5,9 +5,11 @@ using NUnit.Framework;
 
 namespace Chrono.Tests.E2E;
 
-[Parallelizable(ParallelScope.None)] [Category("E2E")]
+[Parallelizable(ParallelScope.None)]
+[Category("E2E")]
 public partial class E2ETests : PlaywrightTest
 {
+    private static readonly string[] PlaywrightArgs = { "install" };
     private IBrowser _browser;
     private IConfiguration _config;
     private IPage _page;
@@ -28,10 +30,7 @@ public partial class E2ETests : PlaywrightTest
     private async Task InitPlaywright()
     {
         // Ensure the required web driver is installed.
-        Program.Main(new[]
-        {
-            "install"
-        });
+        Program.Main(PlaywrightArgs);
 
         await PlaywrightSetup();
 
@@ -52,9 +51,6 @@ public partial class E2ETests : PlaywrightTest
 
         await _page.GetByLabel("Email address").FillAsync(_config["TestUser:Username"]!);
         await _page.GetByLabel("Password").FillAsync(_config["TestUser:Password"]!);
-        await _page.GetByRole(AriaRole.Button, new PageGetByRoleOptions
-        {
-            Name = "Continue"
-        }).ClickAsync();
+        await _page.GetByRole(AriaRole.Button, new PageGetByRoleOptions { Name = "Continue" }).ClickAsync();
     }
 }

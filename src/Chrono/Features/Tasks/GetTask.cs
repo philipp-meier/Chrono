@@ -12,20 +12,12 @@ namespace Chrono.Features.Tasks;
 
 public record GetTask(int Id) : IRequest<TaskDto>;
 
-public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
+public class GetTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<GetTask, TaskDto>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task<TaskDto> Handle(GetTask request, CancellationToken cancellationToken)
     {
-        var task = await _context.Tasks
+        var task = await context.Tasks
             .Include(x => x.Categories)
             .ThenInclude(x => x.Category)
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
@@ -35,7 +27,7 @@ public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
             throw new NotFoundException($"Task \"{request.Id}\" not found.");
         }
 
-        if (!task.IsPermitted(_currentUserService.UserId))
+        if (!task.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
@@ -44,7 +36,9 @@ public class GetTaskHandler : IRequestHandler<GetTask, TaskDto>
     }
 }
 
-[Authorize] [Route("api/tasks")] [Tags("Tasks")]
+[Authorize]
+[Route("api/tasks")]
+[Tags("Tasks")]
 public class GetTaskController : ApiControllerBase
 {
     [HttpGet("{id:int}", Name = "GetTask")]

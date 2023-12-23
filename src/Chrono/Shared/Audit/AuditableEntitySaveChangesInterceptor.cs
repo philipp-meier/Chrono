@@ -6,15 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Shared.Audit;
 
-public class AuditableEntitySaveChangesInterceptor : BaseSaveChangesInterceptor
+public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService) : BaseSaveChangesInterceptor
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService)
-    {
-        _currentUserService = currentUserService;
-    }
-
     protected override void UpdateEntities(DbContext context)
     {
         if (context is not ApplicationDbContext dbContext)
@@ -23,13 +16,10 @@ public class AuditableEntitySaveChangesInterceptor : BaseSaveChangesInterceptor
         }
 
         var currentUtcDate = DateTime.UtcNow;
-        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == _currentUserService.UserId);
-        if (currentUser == null && !string.IsNullOrEmpty(_currentUserService.UserId))
+        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == currentUserService.UserId);
+        if (currentUser == null && !string.IsNullOrEmpty(currentUserService.UserId))
         {
-            currentUser = new User
-            {
-                UserId = _currentUserService.UserId, Name = _currentUserService.UserName
-            };
+            currentUser = new User { UserId = currentUserService.UserId, Name = currentUserService.UserName };
             dbContext.Users.Add(currentUser);
         }
 

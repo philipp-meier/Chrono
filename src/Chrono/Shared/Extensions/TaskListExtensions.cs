@@ -7,10 +7,7 @@ public static class TaskListExtensions
 {
     public static void ReorderTaskPositions(this TaskList taskList)
     {
-        if (taskList == null)
-        {
-            throw new ArgumentNullException(nameof(taskList));
-        }
+        ArgumentNullException.ThrowIfNull(taskList);
 
         var allTasks = taskList.Tasks
             .OrderBy(x => x.Position)

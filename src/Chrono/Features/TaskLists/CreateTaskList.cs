@@ -1,6 +1,6 @@
+using Chrono.Entities;
 using Chrono.Shared.Api;
 using Chrono.Shared.Interfaces;
-using Chrono.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,30 +20,22 @@ public class CreateTaskListValidator : AbstractValidator<CreateTaskList>
     }
 }
 
-public class CreateTaskListHandler : IRequestHandler<CreateTaskList, int>
+public class CreateTaskListHandler(IApplicationDbContext context) : IRequestHandler<CreateTaskList, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateTaskListHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateTaskList request, CancellationToken cancellationToken)
     {
-        var entity = new TaskList
-        {
-            Title = request.Title
-        };
-        _context.TaskLists.Add(entity);
+        var entity = new TaskList { Title = request.Title };
+        context.TaskLists.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
     }
 }
 
-[Authorize] [Route("api/tasklists")] [Tags("Tasklists")]
+[Authorize]
+[Route("api/tasklists")]
+[Tags("Tasklists")]
 public class CreateTaskListController : ApiControllerBase
 {
     [HttpPost]
@@ -52,9 +44,6 @@ public class CreateTaskListController : ApiControllerBase
     {
         var result = await Mediator.Send(command);
 
-        return CreatedAtRoute("GetTaskList", new
-        {
-            id = result
-        }, JSendResponseBuilder.Success(result));
+        return CreatedAtRoute("GetTaskList", new { id = result }, JSendResponseBuilder.Success(result));
     }
 }

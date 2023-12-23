@@ -12,20 +12,12 @@ namespace Chrono.Features.Notes;
 
 public record DeleteNote(int Id) : IRequest;
 
-public class DeleteNoteHandler : IRequestHandler<DeleteNote>
+public class DeleteNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<DeleteNote>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public DeleteNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(DeleteNote request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Notes
+        var entity = await context.Notes
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (entity == null)
@@ -33,18 +25,20 @@ public class DeleteNoteHandler : IRequestHandler<DeleteNote>
             throw new NotFoundException($"Note \"{request.Id}\" not found.");
         }
 
-        if (!entity.IsPermitted(_currentUserService.UserId))
+        if (!entity.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
 
-        _context.Notes.Remove(entity);
+        context.Notes.Remove(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/notes")] [Tags("Notes")]
+[Authorize]
+[Route("api/notes")]
+[Tags("Notes")]
 public class DeleteNoteController : ApiControllerBase
 {
     [HttpDelete("{id:int}")]

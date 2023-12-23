@@ -8,20 +8,13 @@ namespace Chrono.Features.Users;
 
 public record GetUserInfo : IRequest<UserInfoDto>;
 
-public class GetUserInfoHandler : IRequestHandler<GetUserInfo, UserInfoDto>
+public class GetUserInfoHandler(ICurrentUserService currentUserService) : IRequestHandler<GetUserInfo, UserInfoDto>
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public GetUserInfoHandler(ICurrentUserService currentUserService)
+    public Task<UserInfoDto> Handle(GetUserInfo request, CancellationToken cancellationToken)
     {
-        _currentUserService = currentUserService;
-    }
-
-    public async Task<UserInfoDto> Handle(GetUserInfo request, CancellationToken cancellationToken)
-    {
-        return await Task.FromResult(new UserInfoDto
+        return Task.FromResult(new UserInfoDto
         {
-            Username = _currentUserService.UserName, IsAuthenticated = _currentUserService.IsAuthenticated
+            Username = currentUserService.UserName, IsAuthenticated = currentUserService.IsAuthenticated
         });
     }
 }
@@ -32,7 +25,9 @@ public class UserInfoDto
     public bool IsAuthenticated { get; init; }
 }
 
-[Authorize] [Route("api/user")] [Tags("User")]
+[Authorize]
+[Route("api/user")]
+[Tags("User")]
 public class GetUserInfoController : ApiControllerBase
 {
     [HttpGet]

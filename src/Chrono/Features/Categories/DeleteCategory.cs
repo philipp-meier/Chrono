@@ -12,20 +12,12 @@ namespace Chrono.Features.Categories;
 
 public record DeleteCategory(int Id) : IRequest;
 
-public class DeleteCategoryHandler : IRequestHandler<DeleteCategory>
+public class DeleteCategoryHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : IRequestHandler<DeleteCategory>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
-
-    public DeleteCategoryHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _currentUserService = currentUserService;
-    }
-
     public async Task Handle(DeleteCategory request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Categories
+        var entity = await context.Categories
             .Include(x => x.Tasks)
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -34,20 +26,22 @@ public class DeleteCategoryHandler : IRequestHandler<DeleteCategory>
             throw new NotFoundException($"Category \"{request.Id}\" not found.");
         }
 
-        if (!entity.IsPermitted(_currentUserService.UserId))
+        if (!entity.IsPermitted(currentUserService.UserId))
         {
             throw new ForbiddenAccessException();
         }
 
         // Ensures only the TaskCategories are getting deleted and not the actual tasks too.
-        _context.TaskCategories.RemoveRange(entity.Tasks);
-        _context.Categories.Remove(entity);
+        context.TaskCategories.RemoveRange(entity.Tasks);
+        context.Categories.Remove(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-[Authorize] [Route("api/categories")] [Tags("Categories")]
+[Authorize]
+[Route("api/categories")]
+[Tags("Categories")]
 public class DeleteCategoryController : ApiControllerBase
 {
     [HttpDelete("{id:int}")]

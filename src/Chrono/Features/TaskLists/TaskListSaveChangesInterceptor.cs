@@ -1,20 +1,13 @@
-using Chrono.Shared;
-using Chrono.Shared.Services;
 using Chrono.Entities;
 using Chrono.Infrastructure.Persistence;
+using Chrono.Shared;
+using Chrono.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.TaskLists;
 
-public class TaskListSaveChangesInterceptor : BaseSaveChangesInterceptor
+public class TaskListSaveChangesInterceptor(ICurrentUserService currentUserService) : BaseSaveChangesInterceptor
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public TaskListSaveChangesInterceptor(ICurrentUserService currentUserService)
-    {
-        _currentUserService = currentUserService;
-    }
-
     protected override void UpdateEntities(DbContext context)
     {
         if (context is not ApplicationDbContext dbContext)
@@ -23,7 +16,7 @@ public class TaskListSaveChangesInterceptor : BaseSaveChangesInterceptor
         }
 
         var currentUtcDate = DateTime.UtcNow;
-        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == _currentUserService.UserId);
+        var currentUser = dbContext.Users.SingleOrDefault(x => x.UserId == currentUserService.UserId);
 
         var changedTaskListOptions = context.ChangeTracker.Entries<TaskListOptions>();
         foreach (var entry in changedTaskListOptions)
