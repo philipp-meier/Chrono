@@ -56,11 +56,17 @@ public static class ConfigureSecurity
 
                 options.SaveTokens = true;
 
-                options.Events.OnTokenValidated = async context =>
+                options.Events.OnUserInformationReceived = async context =>
                 {
+                    if (!(context.Principal?.Identity?.IsAuthenticated ?? false))
+                    {
+                        return;
+                    }
+
                     var db = context.HttpContext.RequestServices.GetRequiredService<IApplicationDbContext>();
                     var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var userName = context.Principal?.FindFirstValue(ClaimTypes.Name);
+                    var userName = context.Principal?.FindFirstValue(ClaimTypes.Name) ??
+                                   context.User?.RootElement.GetString("name");
 
                     if (userId == null)
                     {
