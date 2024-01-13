@@ -1,4 +1,5 @@
 using Chrono.Infrastructure.Persistence;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -8,6 +9,15 @@ builder.WebHost.UseKestrel(option => option.AddServerHeader = false);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Environment.IsDevelopment());
 builder.Services.AddWebUiServices(builder.Configuration);
+
+// Logging
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 
