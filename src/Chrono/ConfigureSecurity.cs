@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Chrono.Entities;
 using Chrono.Shared.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -51,7 +52,18 @@ public static class ConfigureSecurity
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromSeconds(5)
+                    ClockSkew = TimeSpan.FromSeconds(5),
+                    IssuerSigningKeyResolver = (_, _, _, _) =>
+                    {
+                        var client = new HttpClient();
+                        var response = client
+                            .GetAsync(configuration["IdentityProvider:JwksUri"])
+                            .Result;
+                        var responseString = response.Content.ReadAsStringAsync().Result;
+                        var keys = JsonSerializer.Deserialize<JwkList>(responseString);
+
+                        return keys.Keys;
+                    }
                 };
 
                 options.SaveTokens = true;
@@ -100,5 +112,10 @@ public static class ConfigureSecurity
             .SetFallbackPolicy(new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build());
+    }
+
+    private class JwkList
+    {
+        public List<JsonWebKey> Keys { get; set; }
     }
 }
