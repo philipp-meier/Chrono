@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/src/WebUI/ClientApp"
+    directory: "/src"
     schedule:
       interval: "monthly"
     target-branch: "develop"
