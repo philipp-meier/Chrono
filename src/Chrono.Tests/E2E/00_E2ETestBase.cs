@@ -9,7 +9,7 @@ namespace Chrono.Tests.E2E;
 [Category("E2E")]
 public partial class E2ETests : PlaywrightTest
 {
-    private static readonly string[] PlaywrightArgs = { "install" };
+    private static readonly string[] PlaywrightArgs = ["install"];
     private IBrowser _browser;
     private IConfiguration _config;
     private IPage _page;

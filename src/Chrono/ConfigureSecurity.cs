@@ -57,7 +57,11 @@ public static class ConfigureSecurity
                     {
                         var jsonAsync = new HttpClient().GetStringAsync(configuration["IdentityProvider:JwksUri"]);
                         jsonAsync.Wait();
-                        return JsonWebKeySet.Create(jsonAsync.Result).GetSigningKeys();
+
+                        return JsonWebKeySet.Create(jsonAsync.Result)
+                            .GetSigningKeys()
+                            .Where(x => x.KeyId == kid)
+                            .ToArray();
                     }
                 };
 
@@ -73,7 +77,7 @@ public static class ConfigureSecurity
                     var db = context.HttpContext.RequestServices.GetRequiredService<IApplicationDbContext>();
                     var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
                     var userName = context.Principal?.FindFirstValue(ClaimTypes.Name) ??
-                                   context.User?.RootElement.GetString("name");
+                                   context.User.RootElement.GetString("name");
 
                     if (userId == null)
                     {
