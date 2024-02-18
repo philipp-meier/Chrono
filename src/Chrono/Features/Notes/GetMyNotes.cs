@@ -27,6 +27,7 @@ public class GetMyNotesHandler(IApplicationDbContext context, ICurrentUserServic
                 Id = n.Id,
                 Title = n.Title,
                 Preview = TextService.Truncate(n.Text, MaxTextPreviewLength),
+                IsPinned = n.IsPinned,
                 // Persisted in UTC.
                 Created = n.Created.ToLocalTime().ToString(CultureInfo.InvariantCulture)
             })
@@ -46,6 +47,7 @@ public class NotePreview
     public int Id { get; init; }
     public string Title { get; init; }
     public string Preview { get; set; }
+    public bool IsPinned { get; set; }
     public string Created { get; set; }
 }
 

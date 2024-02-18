@@ -8,6 +8,7 @@ public sealed class Note : BaseAuditableEntity
 {
     public string Title { get; set; }
     public string Text { get; set; }
+    public bool IsPinned { get; set; }
 }
 
 internal sealed class NoteConfiguration : IEntityTypeConfiguration<Note>
