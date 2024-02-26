@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input, Message} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
 import {Note} from "../../Entities/Note";
 
 // Shared
@@ -22,7 +22,7 @@ const NoteEditControl = (props: {
   const [text, setText] = useState("");
   const [note, setNote] = useState<Note | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [lastModifiedText, setLastModifiedText] = useState(note?.lastModified);
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -32,6 +32,7 @@ const NoteEditControl = (props: {
           setNote(context);
           setTitle(context.title);
           setText(context.text);
+          setLastModifiedText(context.lastModified);
         } else {
           // Note not found - redirect to add.
           navigate(`/notes/add`);
@@ -93,9 +94,7 @@ const NoteEditControl = (props: {
       }).then((isUpdated) => {
         if (isUpdated) {
           if (!closeOnSave) {
-            note.lastModified = new Date().toISOString();
-            setIsSaving(true);
-            setTimeout(() => setIsSaving(false), 1500);
+            setLastModifiedText(new Date().toISOString());
           } else {
             navigate("/notes");
           }
@@ -127,7 +126,7 @@ const NoteEditControl = (props: {
         />
         {note?.lastModifiedBy && (
           <div style={{color: "gray", marginBottom: "0.75em"}}>
-            {`Last modified by ${note.lastModifiedBy} on ${DateUtil.formatDateTime(new Date(note.lastModified!))}.`}
+            {`Last modified by ${note.lastModifiedBy} on ${DateUtil.formatDateFromString(lastModifiedText)}.`}
           </div>
         )}
         <Form.Field>
@@ -166,7 +165,6 @@ const NoteEditControl = (props: {
           });
         }}
       />
-      {isSaving && <Message success content="Your changes have been saved"/>}
     </>
   );
 };

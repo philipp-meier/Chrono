@@ -1,7 +1,7 @@
 import "./TaskEditControl.less";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input, Message,} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
 import TaskCategoryEditControl from "./TaskCategoryEditControl";
 import {Task} from "../../Entities/Task";
 import {Category} from "../../Entities/Category";
@@ -32,7 +32,7 @@ const TaskEditControl = (props: {
   const [task, setTask] = useState<Task | null>(null);
   const [taskListOptions, setTaskListOptions] = useState<TaskListOptions | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [lastModifiedText, setLastModifiedText] = useState(task?.lastModified);
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -51,6 +51,7 @@ const TaskEditControl = (props: {
           setDescription(task.description);
           setPosition(task.position.toString());
           setCategories(task.categories);
+          setLastModifiedText(task.lastModified);
         } else {
           // Task not found - redirect to add.
           navigate(`/lists/${props.listId}/tasks/add`);
@@ -142,9 +143,7 @@ const TaskEditControl = (props: {
       JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isUpdated) => {
         if (isUpdated) {
           if (!closeOnSave) {
-            task.lastModified = new Date().toISOString();
-            setIsSaving(true);
-            setTimeout(() => setIsSaving(false), 1500);
+            setLastModifiedText(new Date().toISOString());
           } else {
             navigate(`/lists/${task?.listId}`);
           }
@@ -218,7 +217,7 @@ const TaskEditControl = (props: {
         </Form.Field>
         {task?.lastModifiedBy && (
           <div style={{color: "gray", marginBottom: "0.75em"}}>
-            {`Last modified by ${task.lastModifiedBy} on ${DateUtil.formatDateTime(new Date(task.lastModified!))}.`}
+            {`Last modified by ${task.lastModifiedBy} on ${DateUtil.formatDateFromString(lastModifiedText)}.`}
           </div>
         )}
         {!task?.done && (
@@ -260,7 +259,6 @@ const TaskEditControl = (props: {
           });
         }}
       />
-      {isSaving && <Message success content="Your changes have been saved"/>}
     </>
   );
 };
