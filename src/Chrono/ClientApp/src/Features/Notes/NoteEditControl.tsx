@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input, Message} from "semantic-ui-react";
 import {Note} from "../../Entities/Note";
 
 // Shared
@@ -21,6 +21,7 @@ const NoteEditControl = (props: {
   const [text, setText] = useState("");
   const [note, setNote] = useState<Note | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -44,6 +45,13 @@ const NoteEditControl = (props: {
 
   const buttonOptions = [
     {
+      key: "saveAndClose",
+      icon: "save",
+      text: "Save & Close",
+      value: "saveAndClose",
+      onClick: () => saveNote(true),
+    },
+    {
       key: "delete",
       icon: "delete",
       text: "Delete note",
@@ -52,7 +60,7 @@ const NoteEditControl = (props: {
     },
   ];
 
-  const saveNote = () => {
+  const saveNote = (close: boolean) => {
     const mode = props.mode;
 
     if (mode === NoteEditControlMode.Add) {
@@ -77,7 +85,15 @@ const NoteEditControl = (props: {
         title: note.title,
         text: note.text,
       }).then((isUpdated) => {
-        if (isUpdated) navigate("/notes");
+        if (isUpdated) {
+          if (!close) {
+            note.lastModified = new Date().toISOString();
+            setIsSaving(true);
+            setTimeout(() => setIsSaving(false), 1500);
+          } else {
+            navigate("/notes");
+          }
+        }
       });
     }
   };
@@ -94,7 +110,7 @@ const NoteEditControl = (props: {
 
   return (
     <>
-      <Form style={{marginTop: "1em"}} onSubmit={saveNote}>
+      <Form style={{marginTop: "1em"}}>
         <h1>{title ? title : 'New note'}</h1>
         <Form.Field
           control={Input}
@@ -120,7 +136,7 @@ const NoteEditControl = (props: {
         )}
         <Form.Field>
           <Button.Group primary>
-            <Button type="submit">
+            <Button onClick={() => saveNote(false)}>
               <Icon name="save"/>
               Save
             </Button>
@@ -154,6 +170,7 @@ const NoteEditControl = (props: {
           });
         }}
       />
+      {isSaving && <Message success content="Your changes have been saved"/>}
     </>
   );
 };
