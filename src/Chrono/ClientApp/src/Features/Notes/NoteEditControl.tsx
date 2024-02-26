@@ -6,6 +6,7 @@ import {Note} from "../../Entities/Note";
 // Shared
 import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
 import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import DateUtil from "../../Shared/DateUtil.ts";
 
 enum NoteEditControlMode {
   Add,
@@ -98,16 +99,6 @@ const NoteEditControl = (props: {
     }
   };
 
-  const formatDate = (date: Date): string => {
-    return date.toLocaleString(undefined, {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  };
-
   return (
     <>
       <Form style={{marginTop: "1em"}}>
@@ -131,7 +122,7 @@ const NoteEditControl = (props: {
         />
         {note?.lastModifiedBy && (
           <div style={{color: "gray", marginBottom: "0.75em"}}>
-            {`Last modified by ${note.lastModifiedBy} on ${formatDate(new Date(note.lastModified!))}.`}
+            {`Last modified by ${note.lastModifiedBy} on ${DateUtil.formatDateTime(new Date(note.lastModified!))}.`}
           </div>
         )}
         <Form.Field>

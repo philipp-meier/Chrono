@@ -7,6 +7,7 @@ import {GetMyNotesResponse, NotePreview} from "../../Entities/Note";
 // Shared
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
 import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import DateUtil from "../../Shared/DateUtil.ts";
 
 const NotePage = () => {
   const isMobileOptimized = useMediaQuery({query: "(max-width:682px)"});
@@ -55,13 +56,7 @@ const NotePage = () => {
             <Icon name="map pin" color={n.isPinned ? "blue" : "grey"} size="small" title={n.isPinned ? "Unpin" : "Pin"}
                   onClick={() => togglePinned(n)}/>
           </Card.Header>
-          <Card.Meta>{new Date(n.created).toLocaleString(undefined, {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          })}</Card.Meta>
+          <Card.Meta>{DateUtil.formatDateTime(new Date(n.created))}</Card.Meta>
           <Card.Description>
             {n.preview}
           </Card.Description>
