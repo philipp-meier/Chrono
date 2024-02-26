@@ -1,7 +1,7 @@
 import "./TaskEditControl.less";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Confirm, Container, Dropdown, Form, Icon, Input,} from "semantic-ui-react";
+import {Button, Confirm, Container, Dropdown, Form, Icon, Input, Message,} from "semantic-ui-react";
 import TaskCategoryEditControl from "./TaskCategoryEditControl";
 import {Task} from "../../Entities/Task";
 import {Category} from "../../Entities/Category";
@@ -32,6 +32,7 @@ const TaskEditControl = (props: {
   const [task, setTask] = useState<Task | null>(null);
   const [taskListOptions, setTaskListOptions] = useState<TaskListOptions | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const dataFetch = async () => {
@@ -73,6 +74,13 @@ const TaskEditControl = (props: {
 
   const buttonOptions = [
     {
+      key: "saveAndClose",
+      icon: "save",
+      text: "Save & Close",
+      value: "saveAndClose",
+      onClick: () => saveTask(true),
+    },
+    {
       key: "delete",
       icon: "delete",
       text: "Delete task",
@@ -101,7 +109,7 @@ const TaskEditControl = (props: {
     });
   }
 
-  const saveTask = () => {
+  const saveTask = (closeOnSave: boolean = false) => {
     const mode = props.mode;
 
     if (mode === TaskControlMode.Add) {
@@ -117,7 +125,12 @@ const TaskEditControl = (props: {
       };
 
       JSendApiClient.create(API_ENDPOINTS.Tasks, newTask).then((id) => {
-        if (id !== -1) navigate(`/lists/${props.listId}`);
+        if (id !== -1) {
+          if (closeOnSave)
+            navigate(`/lists/${props.listId}`);
+          else
+            navigate(`/lists/${props.listId}/tasks/${id}`);
+        }
       });
     } else if (task) {
       task.name = name;
@@ -127,14 +140,22 @@ const TaskEditControl = (props: {
       task.categories = categories;
 
       JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isUpdated) => {
-        if (isUpdated) navigate(`/lists/${task?.listId}`);
+        if (isUpdated) {
+          if (!closeOnSave) {
+            task.lastModified = new Date().toISOString();
+            setIsSaving(true);
+            setTimeout(() => setIsSaving(false), 1500);
+          } else {
+            navigate(`/lists/${task?.listId}`);
+          }
+        }
       });
     }
   };
 
   return (
     <>
-      <Form style={{marginTop: "1em"}} onSubmit={saveTask}>
+      <Form style={{marginTop: "1em"}}>
         <h1>{name ? name : 'New task'}</h1>
         <Form.Field
           control={Input}
@@ -203,7 +224,7 @@ const TaskEditControl = (props: {
         {!task?.done && (
           <Form.Field>
             <Button.Group primary>
-              <Button type="submit" disabled={task?.done}>
+              <Button onClick={() => saveTask(false)} disabled={task?.done}>
                 <Icon name="save"/>
                 Save
               </Button>
@@ -239,6 +260,7 @@ const TaskEditControl = (props: {
           });
         }}
       />
+      {isSaving && <Message success content="Your changes have been saved"/>}
     </>
   );
 };

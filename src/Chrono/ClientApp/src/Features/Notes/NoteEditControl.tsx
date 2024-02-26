@@ -61,7 +61,7 @@ const NoteEditControl = (props: {
     },
   ];
 
-  const saveNote = (close: boolean) => {
+  const saveNote = (closeOnSave: boolean = false) => {
     const mode = props.mode;
 
     if (mode === NoteEditControlMode.Add) {
@@ -75,7 +75,12 @@ const NoteEditControl = (props: {
         title: newNote.title,
         text: newNote.text
       }).then((id) => {
-        if (id !== -1) navigate("/notes");
+        if (id !== -1) {
+          if (closeOnSave)
+            navigate("/notes");
+          else
+            navigate(`/notes/${id}`);
+        }
       });
     } else if (note) {
       note.title = title;
@@ -87,7 +92,7 @@ const NoteEditControl = (props: {
         text: note.text,
       }).then((isUpdated) => {
         if (isUpdated) {
-          if (!close) {
+          if (!closeOnSave) {
             note.lastModified = new Date().toISOString();
             setIsSaving(true);
             setTimeout(() => setIsSaving(false), 1500);
