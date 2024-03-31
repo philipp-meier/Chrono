@@ -3,9 +3,5 @@
   "Options": {
     "Headless": false,
     "IgnoreHTTPSErrors": true
-  },
-  "TestUser": {
-    "Username": "<TODO>",
-    "Password": "<TODO>"
   }
 }

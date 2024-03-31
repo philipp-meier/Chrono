@@ -90,6 +90,11 @@ dotnet ef migrations add Initial
 dotnet ef database update
 ```
 
+## E2E Testing
+
+Before running the E2E tests, make sure to start the server with the "Chrono_E2E_Testing" launch profile:  
+`dotnet run --launch-profile Chrono_E2E_Testing`
+
 ## Technology
 
 - **Backend**: ASP.NET Core Web API

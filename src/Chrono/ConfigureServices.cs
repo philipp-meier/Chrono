@@ -1,8 +1,10 @@
 using System.Reflection;
 using Chrono.Shared.Behaviors;
 using Chrono.Shared.Services;
+using Chrono.Shared.Testing;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -27,9 +29,17 @@ public static partial class ConfigureServices
     public static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
         services.AddHttpContextAccessor();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        if (Environment.GetEnvironmentVariable("CHRONO_E2E_TESTING") == "true")
+        {
+            services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+            services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+        }
+        else
+        {
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+        }
 
         services.AddControllersWithViews();
         services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
