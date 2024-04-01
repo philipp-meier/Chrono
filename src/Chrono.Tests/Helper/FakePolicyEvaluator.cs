@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Http;
 
-namespace Chrono.Shared.Testing;
+namespace Chrono.Tests.Helper;
 
 public class FakePolicyEvaluator : IPolicyEvaluator
 {

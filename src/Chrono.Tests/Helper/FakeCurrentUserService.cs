@@ -1,4 +1,6 @@
-namespace Chrono.Shared.Services;
+using Chrono.Shared.Services;
+
+namespace Chrono.Tests.Helper;
 
 public class FakeCurrentUserService : ICurrentUserService
 {

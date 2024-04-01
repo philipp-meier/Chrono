@@ -7,7 +7,8 @@ public class Program
 {
     private static async Task Main(string[] args)
     {
-        var app = BuildApp(args);
+        var appBuilder = CreateBuilder(args);
+        var app = BuildApp(appBuilder);
 
         using (var scope = app.Services.CreateScope())
         {
@@ -18,7 +19,7 @@ public class Program
         await app.RunAsync();
     }
 
-    public static WebApplication BuildApp(string[] args = default)
+    internal static WebApplicationBuilder CreateBuilder(string[] args = default)
     {
         var builder = WebApplication.CreateBuilder(args!);
         builder.Configuration.AddEnvironmentVariables();
@@ -38,6 +39,11 @@ public class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddSerilog(logger);
 
+        return builder;
+    }
+
+    internal static WebApplication BuildApp(WebApplicationBuilder builder)
+    {
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

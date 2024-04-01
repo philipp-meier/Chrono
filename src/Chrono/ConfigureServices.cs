@@ -2,12 +2,11 @@ using System.Reflection;
 using Chrono;
 using Chrono.Shared.Behaviors;
 using Chrono.Shared.Services;
-using Chrono.Shared.Testing;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -33,15 +32,8 @@ public static partial class ConfigureServices
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddHttpContextAccessor();
 
-        if (configuration["CHRONO_E2E_TESTING"] == "true")
-        {
-            services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
-            services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
-        }
-        else
-        {
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-        }
+        // Only add the user service, if there is no other user service (e.g., "FakeCurrentUserService") registered.
+        services.TryAddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddControllers()
             .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Program).Assembly));

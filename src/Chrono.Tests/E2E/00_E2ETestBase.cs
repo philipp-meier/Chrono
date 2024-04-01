@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Chrono.Shared.Services;
+using Chrono.Tests.Helper;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
@@ -25,17 +30,27 @@ public partial class E2ETests : PlaywrightTest
             .AddJsonFile("config.Local.json", true)
             .Build();
 
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-        Environment.SetEnvironmentVariable("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Microsoft.AspNetCore.SpaProxy");
-        Environment.SetEnvironmentVariable("CHRONO_E2E_TESTING", "true");
-        Environment.SetEnvironmentVariable("ConnectionStrings:DefaultConnection",
-            $"Data Source={_config["DatabaseFullPath"]}");
-
-        _host = Program.BuildApp([$"urls={_config["BackendUrl"]!}"]);
+        _host = BuildTestApp();
 
         await _host.StartAsync();
 
         await InitPlaywright();
+    }
+
+    private WebApplication BuildTestApp()
+    {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+        Environment.SetEnvironmentVariable("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Microsoft.AspNetCore.SpaProxy");
+        Environment.SetEnvironmentVariable("ConnectionStrings:DefaultConnection",
+            $"Data Source={_config["DatabaseFullPath"]}");
+
+        var builder = Program.CreateBuilder([$"urls={_config["BackendUrl"]!}"]);
+
+        // Disables Authentication for E2E tests (= no 2FA etc.)
+        builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+        builder.Services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+
+        return Program.BuildApp(builder);
     }
 
     private async Task InitPlaywright()
