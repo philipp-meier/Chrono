@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Chrono.Shared.Services;
+using Chrono.Tests.Helper;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
@@ -12,6 +18,7 @@ public partial class E2ETests : PlaywrightTest
     private static readonly string[] PlaywrightArgs = ["install"];
     private IBrowser _browser;
     private IConfiguration _config;
+    private IHost _host;
     private IPage _page;
 
     [OneTimeSetUp]
@@ -23,14 +30,33 @@ public partial class E2ETests : PlaywrightTest
             .AddJsonFile("config.Local.json", true)
             .Build();
 
+        _host = BuildTestApp();
+
+        await _host.StartAsync();
+
         await InitPlaywright();
-        await Login_User();
+    }
+
+    private WebApplication BuildTestApp()
+    {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+        Environment.SetEnvironmentVariable("ASPNETCORE_HOSTINGSTARTUPASSEMBLIES", "Microsoft.AspNetCore.SpaProxy");
+        Environment.SetEnvironmentVariable("ConnectionStrings:DefaultConnection",
+            $"Data Source={_config["DatabaseFullPath"]}");
+
+        var builder = Program.CreateBuilder([$"urls={_config["BackendUrl"]!}"]);
+
+        // Disables Authentication for E2E tests (= no 2FA etc.)
+        builder.Services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
+        builder.Services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+
+        return Program.BuildApp(builder);
     }
 
     private async Task InitPlaywright()
     {
         // Ensure the required web driver is installed.
-        Program.Main(PlaywrightArgs);
+        Microsoft.Playwright.Program.Main(PlaywrightArgs);
 
         await PlaywrightSetup();
 
@@ -44,13 +70,13 @@ public partial class E2ETests : PlaywrightTest
         });
     }
 
-    private async Task Login_User()
+    [OneTimeTearDown]
+    public async Task TearDownWebApplication()
     {
-        await _page.GotoAsync(_config["WebAppUrl"]!);
-        await _page.Locator("text=Login").ClickAsync();
-
-        await _page.GetByLabel("Email address").FillAsync(_config["TestUser:Username"]!);
-        await _page.GetByLabel("Password").FillAsync(_config["TestUser:Password"]!);
-        await _page.GetByRole(AriaRole.Button, new PageGetByRoleOptions { Name = "Continue" }).ClickAsync();
+        if (_host is not null)
+        {
+            await _host.StopAsync();
+            _host.Dispose();
+        }
     }
 }

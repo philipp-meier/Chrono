@@ -15,7 +15,8 @@ public record UpdateNote : IRequest
 {
     public int Id { get; init; }
     public string Title { get; set; }
-    public string Text { get; set; }
+    public string? Text { get; set; }
+    public bool? IsPinned { get; set; }
 }
 
 public class UpdateNoteValidator : AbstractValidator<UpdateNote>
@@ -54,9 +55,14 @@ public class UpdateNoteHandler(IApplicationDbContext context, ICurrentUserServic
             note.Title = request.Title;
         }
 
-        if (note.Text != request.Text)
+        if (request.Text != null && note.Text != request.Text)
         {
             note.Text = request.Text;
+        }
+
+        if (request.IsPinned.HasValue && note.IsPinned != request.IsPinned)
+        {
+            note.IsPinned = request.IsPinned.Value;
         }
 
         await context.SaveChangesAsync(cancellationToken);

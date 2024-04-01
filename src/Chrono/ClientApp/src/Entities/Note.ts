@@ -2,6 +2,7 @@ export type NotePreview = {
   id: number;
   title: string;
   preview: string;
+  isPinned: boolean;
   created: string;
 }
 

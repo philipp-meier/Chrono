@@ -90,6 +90,11 @@ dotnet ef migrations add Initial
 dotnet ef database update
 ```
 
+## E2E Testing
+
+E2E testing is done via [Playwright](https://playwright.dev/dotnet/docs/writing-tests). The test suite automatically
+spawns the test server and shuts it down after all tests are completed.
+
 ## Technology
 
 - **Backend**: ASP.NET Core Web API

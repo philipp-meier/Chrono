@@ -5,6 +5,18 @@ div.note-container {
 
   > div.ui.cards {
     justify-content: center;
+
+    > div.ui.card > div.content {
+      > div.header.note-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      > div.description {
+        word-wrap: break-word;
+      }
+    }
   }
 
   &.mobile > div.note-menu > div.buttons {

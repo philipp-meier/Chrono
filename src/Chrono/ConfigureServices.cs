@@ -1,9 +1,12 @@
 using System.Reflection;
+using Chrono;
 using Chrono.Shared.Behaviors;
 using Chrono.Shared.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -27,11 +30,14 @@ public static partial class ConfigureServices
     public static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
         services.AddHttpContextAccessor();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-        services.AddControllersWithViews();
+        // Only add the user service, if there is no other user service (e.g., "FakeCurrentUserService") registered.
+        services.TryAddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddControllers()
+            .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Program).Assembly));
+
         services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
 
         services.Configure<ForwardedHeadersOptions>(options =>
