@@ -92,8 +92,8 @@ dotnet ef database update
 
 ## E2E Testing
 
-Before running the E2E tests, make sure to start the server with the "Chrono_E2E_Testing" launch profile:  
-`dotnet run --launch-profile Chrono_E2E_Testing`
+E2E testing is done via [Playwright](https://playwright.dev/dotnet/docs/writing-tests). The test suite automatically
+spawns the test server and shuts it down after all tests are completed.
 
 ## Technology
 
