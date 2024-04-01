@@ -1,4 +1,5 @@
 using System.Reflection;
+using Chrono;
 using Chrono.Shared.Behaviors;
 using Chrono.Shared.Services;
 using Chrono.Shared.Testing;
@@ -6,6 +7,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -31,7 +33,7 @@ public static partial class ConfigureServices
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddHttpContextAccessor();
 
-        if (Environment.GetEnvironmentVariable("CHRONO_E2E_TESTING") == "true")
+        if (configuration["CHRONO_E2E_TESTING"] == "true")
         {
             services.AddScoped<ICurrentUserService, FakeCurrentUserService>();
             services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
@@ -41,7 +43,9 @@ public static partial class ConfigureServices
             services.AddScoped<ICurrentUserService, CurrentUserService>();
         }
 
-        services.AddControllersWithViews();
+        services.AddControllers()
+            .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(Program).Assembly));
+
         services.AddSwaggerGen(options => options.CustomSchemaIds(type => type.FullName));
 
         services.Configure<ForwardedHeadersOptions>(options =>

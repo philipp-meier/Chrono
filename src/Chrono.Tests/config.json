@@ -1,5 +1,7 @@
 {
-  "WebAppUrl": "https://localhost:7151",
+  "BackendUrl": "https://localhost:7151",
+  "WebAppUrl": "https://localhost:44463",
+  "DatabaseFullPath": "/home/.../.../.../data/chrono_test.db",
   "Options": {
     "Headless": false,
     "IgnoreHTTPSErrors": true
