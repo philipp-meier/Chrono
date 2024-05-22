@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Chrono.Tests.Helper;
 
-public class FakePolicyEvaluator : IPolicyEvaluator
+public sealed class FakePolicyEvaluator : IPolicyEvaluator
 {
-    public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
+    public async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
     {
         var principal = new ClaimsPrincipal();
         principal.AddIdentity(new ClaimsIdentity(Array.Empty<Claim>(), "FakeScheme"));
@@ -17,7 +17,7 @@ public class FakePolicyEvaluator : IPolicyEvaluator
             new AuthenticationProperties(), "FakeScheme")));
     }
 
-    public virtual async Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy,
+    public async Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy,
         AuthenticateResult authenticationResult, HttpContext context, object resource)
     {
         return await Task.FromResult(PolicyAuthorizationResult.Success());
