@@ -40,9 +40,10 @@ export const MarkdownEditor = (props: MarkdownEditorProps) => {
           <Tab.Pane>
             <Segment className="markdown-preview">
               <ReactMarkdown children={props.text} components={{
-                code({node, inline, className, children, ...props}) {
+                code({node, className, children, ...props}) {
                   const match = /language-(\w+)/.exec(className || '')
-                  return !inline && match ? (
+                  return match ? (
+                    // @ts-ignore
                     <SyntaxHighlighter
                       {...props}
                       children={String(children).replace(/\n$/, '')}
