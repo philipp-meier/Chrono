@@ -19,16 +19,16 @@ public class LoginController(IConfiguration config) : ApiControllerBase
             return Redirect(redirectUrl);
         }
 
-        var idToken = await HttpContext.GetTokenAsync("id_token");
-        var idpHost = config["IdentityProvider:Authority"];
-
         SignOut("cookie", "oidc");
 
         // To ensure that all auth. cookies are being deleted, since ASP.NET Core uses the ChunkingCookieManager for cookie authentication by default.
         new ChunkingCookieManager().DeleteCookie(HttpContext, config["IdentityProvider:CookieName"]!,
             new CookieOptions());
 
-        return Redirect(idpHost + "oidc/logout?id_token_hint=" + idToken + "&post_logout_redirect_uri=" +
-                        HttpUtility.UrlEncode(redirectUrl));
+        var idToken = await HttpContext.GetTokenAsync("id_token");
+        var logoutUrl = config["IdentityProvider:LogoutUrl"];
+
+        return Redirect(
+            $"{logoutUrl}?id_token_hint={idToken}&post_logout_redirect_uri={HttpUtility.UrlEncode(redirectUrl)}");
     }
 }
