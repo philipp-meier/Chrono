@@ -1,4 +1,5 @@
 import {Image} from "semantic-ui-react";
+import {ThemeService} from "../../ThemeService.ts";
 
 type MenuItemDefinition = {
   name: string;
@@ -12,12 +13,14 @@ const MenuItems: MenuItemDefinition[] = [
   {
     name: "logo",
     element: (
-      <Image
-        size="tiny"
-        src="/logo.png"
-        style={{margin: "0 auto"}}
-        alt=""
-      />
+      <a onClick={() => ThemeService.toggle()}>
+        <Image
+          size="tiny"
+          src="/logo.png"
+          style={{margin: "0 auto"}}
+          alt=""
+        />
+      </a>
     ),
     disableNavigation: true,
     displayState: "always",
