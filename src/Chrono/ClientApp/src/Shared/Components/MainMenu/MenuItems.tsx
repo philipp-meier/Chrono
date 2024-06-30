@@ -1,10 +1,11 @@
-import {Image} from "semantic-ui-react";
+import {Icon, Image} from "semantic-ui-react";
 import {ThemeService} from "../../ThemeService.ts";
 
 type MenuItemDefinition = {
   name: string;
   element?: JSX.Element;
-  disableNavigation?: boolean;
+  clickHandler?: () => void;
+  disableClickHandler?: boolean;
   position?: "left" | "right";
   displayState: "always" | "loggedIn" | "loggedOut";
 };
@@ -13,16 +14,14 @@ const MenuItems: MenuItemDefinition[] = [
   {
     name: "logo",
     element: (
-      <a onClick={() => ThemeService.toggle()}>
-        <Image
-          size="tiny"
-          src="/logo.png"
-          style={{margin: "0 auto"}}
-          alt=""
-        />
-      </a>
+      <Image
+        size="tiny"
+        src="/logo.png"
+        style={{margin: "0 auto"}}
+        alt=""
+      />
     ),
-    disableNavigation: true,
+    disableClickHandler: true,
     displayState: "always",
   },
   {
@@ -43,13 +42,25 @@ const MenuItems: MenuItemDefinition[] = [
   },
   {
     name: "logout",
-    position: "right",
     displayState: "loggedIn",
   },
   {
     name: "login",
-    position: "right",
     displayState: "loggedOut",
+  },
+  {
+    name: "modeToggle",
+    displayState: "always",
+    position: "right",
+    element: (
+      <Icon id="modeIcon" name={ThemeService.isDarkModeEnabled() ? 'sun' : 'moon'} />
+    ),
+    clickHandler: () => {
+      const modeIcon = document.getElementById('modeIcon')!;
+      modeIcon.classList.toggle("sun");
+      modeIcon.classList.toggle("moon");
+      ThemeService.toggle()
+    }
   },
 ];
 
