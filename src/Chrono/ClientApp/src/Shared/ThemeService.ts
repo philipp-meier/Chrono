@@ -1,6 +1,7 @@
 import {
   enable,
   disable,
+  setFetchMethod,
 } from 'darkreader';
 
 const theme = {
@@ -11,7 +12,9 @@ const theme = {
 
 export class ThemeService {
   static init() {
-    if (localStorage.getItem('isDarkMode') === 'true')
+    setFetchMethod(window.fetch);
+    
+    if (this.isDarkModeEnabled())
       enable(theme);
     else
       disable()
@@ -28,9 +31,13 @@ export class ThemeService {
   }
   
   static toggle() {
-    if (localStorage.getItem('isDarkMode') === 'true')
+    if (this.isDarkModeEnabled())
       this.disableDarkMode();
     else
       this.enableDarkMode();
+  }
+  
+  static isDarkModeEnabled() {
+    return localStorage.getItem('isDarkMode') === 'true';
   }
 }

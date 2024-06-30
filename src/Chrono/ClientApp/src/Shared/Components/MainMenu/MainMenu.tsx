@@ -49,7 +49,7 @@ const MainMenu = () => {
     const isActiveItem = (item: string) => {
         return item.toLowerCase() === activeItem.toLowerCase();
     };
-
+    
     const renderLinks = () => {
         const isLoggedIn = userInfo?.isAuthenticated ?? false;
         return MenuItems.filter(
@@ -58,13 +58,13 @@ const MainMenu = () => {
                 (x.displayState === "loggedIn" && isLoggedIn) ||
                 (x.displayState === "loggedOut" && !isLoggedIn)
         ).map((menuItem, index) => {
-            const {name, disableNavigation, position, element} = menuItem;
+            const {name, disableClickHandler, position, element, clickHandler} = menuItem;
             return (
                 <Menu.Item
                     key={index}
                     name={name}
                     active={isActiveItem(name)}
-                    onClick={!disableNavigation ? handleItemClick : undefined}
+                    onClick={!disableClickHandler ? clickHandler || handleItemClick : undefined}
                     position={position}
                 >
                     {element}
