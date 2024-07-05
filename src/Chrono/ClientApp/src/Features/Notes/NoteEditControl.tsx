@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
 import {Note} from "../../Entities/Note";
 
@@ -146,7 +146,7 @@ const NoteEditControl = (props: {
           </Button.Group>
         </Form.Field>
         <Form.Field>
-          <Button as="a" href="/notes">
+          <Button as={Link} to="/notes">
             <Icon name="list ul"/>
             Back to the list
           </Button>

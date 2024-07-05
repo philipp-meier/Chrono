@@ -1,6 +1,6 @@
 import "./TaskEditControl.less";
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Button, Confirm, Container, Dropdown, Form, Icon, Input} from "semantic-ui-react";
 import TaskCategoryEditControl from "./TaskCategoryEditControl";
 import {Task} from "../../Entities/Task";
@@ -240,7 +240,7 @@ const TaskEditControl = (props: {
           </Form.Field>
         )}
         <Form.Field>
-          <Button as="a" href={`/lists/${props.listId}`}>
+          <Button as={Link} to={`/lists/${props.listId}`}>
             <Icon name="list ul"/>
             Back to the list
           </Button>
