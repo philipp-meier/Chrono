@@ -7,6 +7,7 @@ import type {Task} from "../../Entities/Task";
 import type {TaskList, TaskListBrief} from "../../Entities/TaskList";
 import type {Category} from "../../Entities/Category";
 import {UserSettings} from "../../Entities/User";
+import {Link} from "react-router-dom";
 
 // Shared
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
@@ -170,8 +171,8 @@ const TaskListEditControl = (props: { taskListId: number }) => {
         </div>
         <div className="buttons">
           <Button
-            as="a"
-            href={`/lists/${taskList?.id}/tasks/add`}
+            as={Link}
+            to={`/lists/${taskList?.id}/tasks/add`}
             circular={isMobileOptimized}
             size={isMobileOptimized ? "huge" : undefined}
             icon={isMobileOptimized}

@@ -5,6 +5,7 @@ import SyntaxHighlighter from "react-syntax-highlighter"
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {Task} from "../../Entities/Task";
 import {Category} from "../../Entities/Category";
+import {Link} from "react-router-dom";
 
 // Shared
 import IconLabel from "../../Shared/Components/IconLabel";
@@ -31,13 +32,13 @@ const TaskItemViewControl = (props: { task: Task; moveUp?: any; moveDown?: any }
             <IconLabel
               text={(!isMobileOptimized ? "No.: " : "#") + props.task.position}
             />
-            <a
-              href={`/lists/${props.task.listId}/tasks/${props.task.id}`}
+            <Link
+              to={`/lists/${props.task.listId}/tasks/${props.task.id}`}
               className="task-name"
               style={{marginLeft: "0.25em"}}
             >
               {props.task.name}
-            </a>
+            </Link>
           </Container>
           {!props.task.done && (
             <Container className="actions" textAlign="right">

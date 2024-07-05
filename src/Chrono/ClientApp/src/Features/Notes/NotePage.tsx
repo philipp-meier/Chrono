@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {Button, Card, Container, Icon} from "semantic-ui-react";
 import {useMediaQuery} from "react-responsive";
 import {GetMyNotesResponse, NotePreview} from "../../Entities/Note";
+import {Link} from "react-router-dom";
 
 // Shared
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
@@ -52,7 +53,7 @@ const NotePage = () => {
       <Card key={n.id}>
         <Card.Content>
           <Card.Header className="note-header">
-            <a href={`/notes/${n.id}`}>{n.title}</a>
+            <Link to={`/notes/${n.id}`}>{n.title}</Link>
             <Icon name="map pin" color={n.isPinned ? "blue" : "grey"} size="small" title={n.isPinned ? "Unpin" : "Pin"}
                   onClick={() => togglePinned(n)}/>
           </Card.Header>
@@ -74,8 +75,8 @@ const NotePage = () => {
       >
         <div className="buttons">
           <Button
-            as="a"
-            href={`/notes/add`}
+            as={Link}
+            to={`/notes/add`}
             circular={isMobileOptimized}
             size={isMobileOptimized ? "huge" : undefined}
             icon={isMobileOptimized}

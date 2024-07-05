@@ -1,4 +1,5 @@
 import {Button, Header, Icon, Segment} from "semantic-ui-react";
+import {Link} from "react-router-dom";
 
 type NoItemsMessageButton = {
   text: string;
@@ -18,8 +19,8 @@ const NoItemsMessage = (props: {
       {props.buttonOptions &&
           <Button
               primary
-              as="a"
-              href={props.buttonOptions.href}>
+              as={Link}
+              to={props.buttonOptions.href}>
             {props.buttonOptions.text}
           </Button>
       }
