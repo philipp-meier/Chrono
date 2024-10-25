@@ -26,7 +26,6 @@ public static class ConfigureSecurity
                 //options.Cookie.SameSite = SameSiteMode.Strict;
 
                 options.Cookie.Name = configuration["IdentityProvider:CookieName"];
-                options.Events.OnSigningOut = e => e.HttpContext.RevokeUserRefreshTokenAsync();
             })
             .AddOpenIdConnect(options =>
             {
