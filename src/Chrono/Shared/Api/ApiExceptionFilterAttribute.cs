@@ -49,15 +49,17 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         context.ExceptionHandled = true;
     }
 
-    private static void HandleNotFoundException(ExceptionContext context, Exception exception)
+    private static void HandleNotFoundException(ExceptionContext context, NotFoundException notFoundException)
     {
-        context.Result = new NotFoundObjectResult(JSendResponseBuilder.Error<string>(exception.Message));
+        context.Result = new NotFoundObjectResult(JSendResponseBuilder.Error<string>(notFoundException.Message));
         context.ExceptionHandled = true;
     }
 
-    private static void HandleInvalidOperationException(ExceptionContext context, Exception exception)
+    private static void HandleInvalidOperationException(ExceptionContext context,
+        InvalidOperationException invalidOperationException)
     {
-        context.Result = new BadRequestObjectResult(JSendResponseBuilder.Error<string>(exception.Message));
+        context.Result =
+            new BadRequestObjectResult(JSendResponseBuilder.Error<string>(invalidOperationException.Message));
         context.ExceptionHandled = true;
     }
 
