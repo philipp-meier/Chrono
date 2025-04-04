@@ -35,7 +35,7 @@
     "prettier": "3.0.3",
     "react-router-dom": "^6.14.2",
     "typescript": "^5.2.2",
-    "vite": "^6.2.4",
+    "vite": "^6.2.5",
     "vite-plugin-mkcert": "^1.16.0"
   }
 }
