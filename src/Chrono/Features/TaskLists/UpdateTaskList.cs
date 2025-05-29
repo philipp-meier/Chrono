@@ -1,19 +1,17 @@
 ﻿using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
+using FastEndpoints;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.TaskLists;
 
-public record UpdateTaskList : IRequest
+public record UpdateTaskList
 {
     public int TaskListId { get; init; }
     public string Title { get; init; }
@@ -21,7 +19,7 @@ public record UpdateTaskList : IRequest
     public bool? RequireDescription { get; init; }
 }
 
-public class UpdateTaskListValidator : AbstractValidator<UpdateTaskList>
+public class UpdateTaskListValidator : Validator<UpdateTaskList>
 {
     public UpdateTaskListValidator()
     {
@@ -39,10 +37,13 @@ public class UpdateTaskListValidator : AbstractValidator<UpdateTaskList>
     }
 }
 
-public class UpdateTaskListHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<UpdateTaskList>
+[Authorize]
+[HttpPut("api/tasklists/{id:int}")]
+[Tags("Tasklists")]
+public class UpdateTaskListEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<UpdateTaskList>
 {
-    public async Task Handle(UpdateTaskList request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(UpdateTaskList request, CancellationToken cancellationToken)
     {
         var taskList = await context.TaskLists
             .SingleOrDefaultAsync(x => x.Id == request.TaskListId, cancellationToken);
@@ -73,29 +74,6 @@ public class UpdateTaskListHandler(IApplicationDbContext context, ICurrentUserSe
         options.RequireDescription = request.RequireDescription.GetValueOrDefault();
 
         await context.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[Authorize]
-[Route("api/tasklists")]
-[Tags("Tasklists")]
-public class UpdateTaskListController : ApiControllerBase
-{
-    [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTaskList command)
-    {
-        if (id != command.TaskListId)
-        {
-            return BadRequest(JSendResponseBuilder.Fail<string>(null, "ID mismatch"));
-        }
-
-        await Mediator.Send(command);
-
-        return Ok(JSendResponseBuilder.Success<string>(null));
+        await SendOkAsync(cancellationToken);
     }
 }

@@ -1,21 +1,22 @@
-using Chrono.Shared.Api;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Users;
 
-public record GetUserInfo : IRequest<UserInfoDto>;
-
-public class GetUserInfoHandler(ICurrentUserService currentUserService) : IRequestHandler<GetUserInfo, UserInfoDto>
+[AllowAnonymous]
+[HttpGet("api/user")]
+[Tags("User")]
+public class GetUserInfoEndpoint(ICurrentUserService currentUserService) : EndpointWithoutRequest<UserInfoDto>
 {
-    public Task<UserInfoDto> Handle(GetUserInfo request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        return Task.FromResult(new UserInfoDto
+        var response = new UserInfoDto
         {
             Username = currentUserService.UserName, IsAuthenticated = currentUserService.IsAuthenticated
-        });
+        };
+
+        await SendOkAsync(response, cancellationToken);
     }
 }
 
@@ -23,19 +24,4 @@ public class UserInfoDto
 {
     public string Username { get; init; }
     public bool IsAuthenticated { get; init; }
-}
-
-[Authorize]
-[Route("api/user")]
-[Tags("User")]
-public class GetUserInfoController : ApiControllerBase
-{
-    [HttpGet]
-    [AllowAnonymous]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Get()
-    {
-        var result = await Mediator.Send(new GetUserInfo());
-        return Ok(JSendResponseBuilder.Success(result));
-    }
 }

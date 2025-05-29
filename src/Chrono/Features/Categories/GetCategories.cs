@@ -1,19 +1,18 @@
-using Chrono.Shared.Api;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Categories;
 
-public record GetCategories : IRequest<CategoryDto[]>;
-
-public class GetCategoriesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetCategories, CategoryDto[]>
+[Authorize]
+[HttpGet("api/categories")]
+[Tags("Categories")]
+public class GetCategoriesEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : EndpointWithoutRequest<CategoryDto[]>
 {
-    public Task<CategoryDto[]> Handle(GetCategories request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         var result = context.Categories
             .OrderBy(x => x.Name)
@@ -22,19 +21,6 @@ public class GetCategoriesHandler(IApplicationDbContext context, ICurrentUserSer
             .Select(CategoryDto.FromEntity)
             .ToArray();
 
-        return Task.FromResult(result);
-    }
-}
-
-[Authorize]
-[Route("api/categories")]
-[Tags("Categories")]
-public class GetCategoriesController : ApiControllerBase
-{
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        var result = await Mediator.Send(new GetCategories());
-        return Ok(JSendResponseBuilder.Success(result));
+        await SendOkAsync(result, ct);
     }
 }

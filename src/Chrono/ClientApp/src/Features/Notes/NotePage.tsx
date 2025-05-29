@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 
 // Shared
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
-import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import ApiClient, {API_ENDPOINTS} from "../../Shared/ApiClient.ts";
 import DateUtil from "../../Shared/DateUtil.ts";
 
 const NotePage = () => {
@@ -17,7 +17,7 @@ const NotePage = () => {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const response = await JSendApiClient.get<GetMyNotesResponse>(API_ENDPOINTS.Notes);
+      const response = await ApiClient.get<GetMyNotesResponse>(API_ENDPOINTS.Notes);
       setNotes(response?.notes ?? []);
       setIsLoaded(true);
     };
@@ -25,7 +25,7 @@ const NotePage = () => {
   }, []);
 
   const togglePinned = (note: NotePreview) => {
-    JSendApiClient.update(`${API_ENDPOINTS.Notes}/${note.id}`, {
+    ApiClient.update(`${API_ENDPOINTS.Notes}/${note.id}`, {
       id: note.id,
       title: note.title,
       isPinned: !note.isPinned

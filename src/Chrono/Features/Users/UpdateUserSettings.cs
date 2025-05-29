@@ -1,23 +1,24 @@
 ﻿using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Users;
 
-public record UpdateUserSettings(int? DefaultTaskListId) : IRequest;
+public record UpdateUserSettings(int? DefaultTaskListId);
 
+[Authorize]
+[HttpPut("api/user/settings")]
+[Tags("User")]
 public class UpdateUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<UpdateUserSettings>
+    : Endpoint<UpdateUserSettings>
 {
-    public async Task Handle(UpdateUserSettings request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(UpdateUserSettings request, CancellationToken cancellationToken)
     {
         var currentUser = await context.Users
             .Include(x => x.UserSettings)
@@ -59,22 +60,6 @@ public class UpdateUserSettingsHandler(IApplicationDbContext context, ICurrentUs
         }
 
         await context.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[Authorize]
-[Route("api/user")]
-[Tags("User")]
-public class UpdateUserSettingsController : ApiControllerBase
-{
-    [HttpPut("settings")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(UpdateUserSettings command)
-    {
-        await Mediator.Send(command);
-        return Ok(JSendResponseBuilder.Success<string>(null));
+        await SendOkAsync(cancellationToken);
     }
 }

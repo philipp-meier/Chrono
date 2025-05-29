@@ -1,21 +1,22 @@
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Tasks;
 
-public record GetTask(int Id) : IRequest<TaskDto>;
+public record GetTask(int Id);
 
-public class GetTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetTask, TaskDto>
+[Authorize]
+[HttpGet("api/tasks/{id:int}")]
+[Tags("Tasks")]
+public class GetTaskEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<GetTask, TaskDto>
 {
-    public async Task<TaskDto> Handle(GetTask request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(GetTask request, CancellationToken cancellationToken)
     {
         var task = await context.Tasks
             .Include(x => x.Categories)
@@ -32,22 +33,6 @@ public class GetTaskHandler(IApplicationDbContext context, ICurrentUserService c
             throw new ForbiddenAccessException();
         }
 
-        return TaskDto.FromEntity(task);
-    }
-}
-
-[Authorize]
-[Route("api/tasks")]
-[Tags("Tasks")]
-public class GetTaskController : ApiControllerBase
-{
-    [HttpGet("{id:int}", Name = "GetTask")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
-    {
-        var result = await Mediator.Send(new GetTask(id));
-        return Ok(JSendResponseBuilder.Success(result));
+        await SendOkAsync(TaskDto.FromEntity(task), cancellationToken);
     }
 }

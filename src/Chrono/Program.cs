@@ -1,4 +1,5 @@
 using Chrono.Infrastructure.Persistence;
+using FastEndpoints;
 using Serilog;
 
 namespace Chrono;
@@ -19,7 +20,7 @@ public class Program
         await app.RunAsync();
     }
 
-    internal static WebApplicationBuilder CreateBuilder(string[] args = default)
+    internal static WebApplicationBuilder CreateBuilder(string[] args = null)
     {
         var builder = WebApplication.CreateBuilder(args!);
         builder.Configuration.AddEnvironmentVariables();
@@ -27,7 +28,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddInfrastructureServices(builder.Configuration);
-        builder.Services.AddApplicationServices(builder.Environment.IsDevelopment());
+        builder.Services.AddApplicationServices();
         builder.Services.AddWebUiServices(builder.Configuration);
 
         // Logging
@@ -62,6 +63,7 @@ public class Program
         app.UseHsts();
 
         app.UseStaticFiles();
+        app.UseFastEndpoints();
         app.UseRouting();
 
         app.UseAuthentication();

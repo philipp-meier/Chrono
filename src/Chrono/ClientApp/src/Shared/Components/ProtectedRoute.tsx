@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Navigate} from "react-router-dom";
-import JSendApiClient, {API_ENDPOINTS} from "../JSendApiClient";
+import ApiClient, {API_ENDPOINTS} from "../ApiClient.ts";
 import {User} from "../../Entities/User";
 
 interface ProtectedRouteProps {
@@ -38,7 +38,7 @@ class ProtectedRoute extends Component<
   }
 
   async populateAuthenticationState() {
-    const userInfo = await JSendApiClient.get<User>(API_ENDPOINTS.User);
+    const userInfo = await ApiClient.get<User>(API_ENDPOINTS.User);
     this.setState({ready: true, authenticated: userInfo?.isAuthenticated ?? false});
   }
 }

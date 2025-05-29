@@ -1,19 +1,17 @@
 using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
+using FastEndpoints;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Tasks;
 
-public record UpdateTask : IRequest
+public record UpdateTask
 {
     public int Id { get; init; }
     public int Position { get; init; }
@@ -24,7 +22,7 @@ public record UpdateTask : IRequest
     public CategoryDto[] Categories { get; init; }
 }
 
-public class UpdateTaskValidator : AbstractValidator<UpdateTask>
+public class UpdateTaskValidator : Validator<UpdateTask>
 {
     public UpdateTaskValidator(IApplicationDbContext dbContext)
     {
@@ -59,10 +57,13 @@ public class UpdateTaskValidator : AbstractValidator<UpdateTask>
     }
 }
 
-public class UpdateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<UpdateTask>
+[Authorize]
+[HttpPut("api/tasks/{id:int}")]
+[Tags("Tasks")]
+public class UpdateTaskEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<UpdateTask>
 {
-    public async Task Handle(UpdateTask request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(UpdateTask request, CancellationToken cancellationToken)
     {
         var task = await context.Tasks
             .Include(x => x.List)
@@ -114,29 +115,6 @@ public class UpdateTaskHandler(IApplicationDbContext context, ICurrentUserServic
         }
 
         await context.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[Authorize]
-[Route("api/tasks")]
-[Tags("Tasks")]
-public class UpdateTaskController : ApiControllerBase
-{
-    [HttpPut("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Update(int id, UpdateTask command)
-    {
-        if (id != command.Id)
-        {
-            return BadRequest(JSendResponseBuilder.Fail<string>(null, "ID mismatch"));
-        }
-
-        await Mediator.Send(command);
-
-        return Ok(JSendResponseBuilder.Success<string>(null));
+        await SendOkAsync(cancellationToken);
     }
 }

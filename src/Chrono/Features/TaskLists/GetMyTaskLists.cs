@@ -1,21 +1,22 @@
 using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.TaskLists;
 
-public record GetMyTaskLists : IRequest<TaskListBriefDto[]>;
+public record GetMyTaskLists;
 
-public class GetMyTaskListsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetMyTaskLists, TaskListBriefDto[]>
+[Authorize]
+[HttpGet("api/tasklists")]
+[Tags("Tasklists")]
+public class GetMyTaskListsEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : EndpointWithoutRequest<TaskListBriefDto[]>
 {
-    public Task<TaskListBriefDto[]> Handle(GetMyTaskLists request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var result = context.TaskLists
             .OrderBy(x => x.Title)
@@ -24,7 +25,7 @@ public class GetMyTaskListsHandler(IApplicationDbContext context, ICurrentUserSe
             .Select(TaskListBriefDto.FromEntity)
             .ToArray();
 
-        return Task.FromResult(result);
+        await SendOkAsync(result, cancellationToken);
     }
 }
 
@@ -36,18 +37,5 @@ public class TaskListBriefDto
     public static TaskListBriefDto FromEntity(TaskList task)
     {
         return new TaskListBriefDto { Id = task.Id, Title = task.Title };
-    }
-}
-
-[Authorize]
-[Route("api/tasklists")]
-[Tags("Tasklists")]
-public class GetMyTaskListsController : ApiControllerBase
-{
-    [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        var result = await Mediator.Send(new GetMyTaskLists());
-        return Ok(JSendResponseBuilder.Success(result));
     }
 }

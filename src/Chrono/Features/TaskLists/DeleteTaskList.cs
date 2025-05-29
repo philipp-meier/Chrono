@@ -1,21 +1,22 @@
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.TaskLists;
 
-public record DeleteTaskList(int Id) : IRequest;
+public record DeleteTaskList(int Id);
 
-public class DeleteTaskListHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<DeleteTaskList>
+[Authorize]
+[HttpDelete("api/tasklists/{id:int}")]
+[Tags("Tasklists")]
+public class DeleteTaskListEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<DeleteTaskList>
 {
-    public async Task Handle(DeleteTaskList request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(DeleteTaskList request, CancellationToken cancellationToken)
     {
         var entity = await context.TaskLists
             .Include(x => x.Tasks)
@@ -35,21 +36,6 @@ public class DeleteTaskListHandler(IApplicationDbContext context, ICurrentUserSe
         context.TaskLists.Remove(entity);
 
         await context.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[Authorize]
-[Route("api/tasklists")]
-[Tags("Tasklists")]
-public class DeleteTaskListsController : ApiControllerBase
-{
-    [HttpDelete("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await Mediator.Send(new DeleteTaskList(id));
-        return Ok(JSendResponseBuilder.Success<string>(null));
+        await SendOkAsync(cancellationToken);
     }
 }

@@ -11,7 +11,7 @@ public sealed class FakePolicyEvaluator : IPolicyEvaluator
     public async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
     {
         var principal = new ClaimsPrincipal();
-        principal.AddIdentity(new ClaimsIdentity(Array.Empty<Claim>(), "FakeScheme"));
+        principal.AddIdentity(new ClaimsIdentity([], "FakeScheme"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
             new AuthenticationProperties(), "FakeScheme")));

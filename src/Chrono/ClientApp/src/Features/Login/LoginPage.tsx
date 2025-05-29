@@ -13,9 +13,7 @@ class LoginPage extends Component<ILoginProps, any> {
   }
 
   componentDidMount() {
-    window.location.href = `/api/login?redirectUrl=${encodeURI(
-      window.location.protocol + "//" + window.location.host
-    )}&sign=${this._sign}`;
+    window.location.href = `/api/login?sign=${this._sign}`;
   }
 
   render() {

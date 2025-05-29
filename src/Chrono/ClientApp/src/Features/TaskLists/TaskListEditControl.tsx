@@ -11,7 +11,7 @@ import {Link} from "react-router-dom";
 
 // Shared
 import NoItemsMessage from "../../Shared/Components/NoItemsMessage";
-import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import ApiClient, {API_ENDPOINTS} from "../../Shared/ApiClient.ts";
 
 const TaskListEditControl = (props: { taskListId: number }) => {
   const [taskList, setTaskList] = useState<TaskList | null>(null);
@@ -24,10 +24,10 @@ const TaskListEditControl = (props: { taskListId: number }) => {
 
   useEffect(() => {
     const dataFetch = async () => {
-      const taskLists = (await JSendApiClient.get<TaskListBrief[]>(API_ENDPOINTS.TaskLists) ?? [])
+      const taskLists = (await ApiClient.get<TaskListBrief[]>(API_ENDPOINTS.TaskLists) ?? [])
         .sort((a, b) => a.title.localeCompare(b.title))
 
-      const categories = (await JSendApiClient.get<Category[]>(API_ENDPOINTS.Categories) ?? [])
+      const categories = (await ApiClient.get<Category[]>(API_ENDPOINTS.Categories) ?? [])
         .sort((a, b) => a.name.localeCompare(b.name))
 
       setAvailableTaskLists(taskLists ?? []);
@@ -38,12 +38,12 @@ const TaskListEditControl = (props: { taskListId: number }) => {
         return;
       }
 
-      const userSettings = await JSendApiClient.get<UserSettings>(API_ENDPOINTS.UserSettings);
+      const userSettings = await ApiClient.get<UserSettings>(API_ENDPOINTS.UserSettings);
 
       const selectedTaskList = props.taskListId >= 0 ?
         props.taskListId : userSettings?.defaultTaskListId;
 
-      const taskList = await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedTaskList ?? taskLists[0].id}`);
+      const taskList = await ApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedTaskList ?? taskLists[0].id}`);
       setTaskList(taskList);
       setIsLoaded(true);
     };
@@ -59,7 +59,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
 
   const [, setTasks] = useState(filteredTasks);
   const handleTaskMove = (task: Task, direction: number) => {
-    JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, {
+    ApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, {
       id: task.id,
       position: task.position + direction,
       name: task.name,
@@ -152,7 +152,7 @@ const TaskListEditControl = (props: { taskListId: number }) => {
                 (x) => x.title === e.target.innerText
               )?.id;
               if (selectedId && selectedId !== taskList?.id) {
-                setTaskList(await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedId}`));
+                setTaskList(await ApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${selectedId}`));
               }
             }}
           />

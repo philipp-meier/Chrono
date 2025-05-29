@@ -5,7 +5,7 @@ import {Note} from "../../Entities/Note";
 
 // Shared
 import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
-import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import ApiClient, {API_ENDPOINTS} from "../../Shared/ApiClient.ts";
 import DateUtil from "../../Shared/DateUtil.ts";
 
 enum NoteEditControlMode {
@@ -27,7 +27,7 @@ const NoteEditControl = (props: {
   useEffect(() => {
     const dataFetch = async () => {
       if (props.mode === NoteEditControlMode.Edit && props.id) {
-        const context = await JSendApiClient.get<Note>(`${API_ENDPOINTS.Notes}/${props.id}`);
+        const context = await ApiClient.get<Note>(`${API_ENDPOINTS.Notes}/${props.id}`);
         if (context) {
           setNote(context);
           setTitle(context.title);
@@ -72,7 +72,7 @@ const NoteEditControl = (props: {
         text: text
       };
 
-      JSendApiClient.create(API_ENDPOINTS.Notes, {
+      ApiClient.create(API_ENDPOINTS.Notes, {
         title: newNote.title,
         text: newNote.text
       }).then((id) => {
@@ -87,7 +87,7 @@ const NoteEditControl = (props: {
       note.title = title;
       note.text = text;
 
-      JSendApiClient.update(`${API_ENDPOINTS.Notes}/${note.id}`, {
+      ApiClient.update(`${API_ENDPOINTS.Notes}/${note.id}`, {
         id: note.id,
         title: note.title,
         text: note.text,
@@ -157,7 +157,7 @@ const NoteEditControl = (props: {
         content={`Do you really want to delete the note "${title}"?`}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
-          JSendApiClient.delete(`${API_ENDPOINTS.Notes}/${props.id!}`).then((isDeleted) => {
+          ApiClient.delete(`${API_ENDPOINTS.Notes}/${props.id!}`).then((isDeleted) => {
             if (isDeleted) {
               setShowDeleteConfirm(false);
               navigate("/notes");

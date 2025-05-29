@@ -1,22 +1,21 @@
 using System.Globalization;
-using Chrono.Shared.Api;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Chrono.Features.Notes;
 
-public record GetMyNotes : IRequest<GetMyNotesResponse>;
-
-public class GetMyNotesHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetMyNotes, GetMyNotesResponse>
+[Authorize]
+[HttpGet("api/notes")]
+[Tags("Notes")]
+public class GetMyNotesEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : EndpointWithoutRequest<GetMyNotesResponse>
 {
     private const int MaxTextPreviewLength = 80;
 
-    public Task<GetMyNotesResponse> Handle(GetMyNotes request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         var result = context.Notes
             .OrderByDescending(n => n.Created)
@@ -33,7 +32,7 @@ public class GetMyNotesHandler(IApplicationDbContext context, ICurrentUserServic
             })
             .ToArray();
 
-        return Task.FromResult(new GetMyNotesResponse { Notes = result });
+        await SendOkAsync(new GetMyNotesResponse { Notes = result }, ct);
     }
 }
 
@@ -49,17 +48,4 @@ public class NotePreview
     public string Preview { get; set; }
     public bool IsPinned { get; set; }
     public string Created { get; set; }
-}
-
-[Authorize]
-[Route("api/notes")]
-[Tags("Notes")]
-public class GetMyNotesController : ApiControllerBase
-{
-    [HttpGet]
-    public async Task<IActionResult> GetMyNotes()
-    {
-        var result = await Mediator.Send(new GetMyNotes());
-        return Ok(JSendResponseBuilder.Success(result));
-    }
 }

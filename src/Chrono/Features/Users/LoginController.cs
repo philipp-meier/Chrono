@@ -1,7 +1,5 @@
-using Chrono.Shared.Api;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using FastEndpoints;
+using FastEndpoints.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +7,18 @@ namespace Chrono.Features.Users;
 
 [Authorize]
 [ApiExplorerSettings(IgnoreApi = true)]
-public class LoginController : ApiControllerBase
+[FastEndpoints.HttpGet("api/login")]
+public class LoginEndpoint : EndpointWithoutRequest
 {
-    [HttpGet]
-    public ActionResult Get([FromQuery] string redirectUrl, [FromQuery] string sign = "in")
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        if (sign == "in")
+        var sign = Query<string>("sign") ?? "in";
+
+        if (sign == "out")
         {
-            return Redirect(redirectUrl);
+            await CookieAuth.SignOutAsync();
         }
 
-        return SignOut(new AuthenticationProperties { RedirectUri = redirectUrl },
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            OpenIdConnectDefaults.AuthenticationScheme);
+        await SendRedirectAsync("/");
     }
 }

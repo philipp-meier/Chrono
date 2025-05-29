@@ -1,19 +1,17 @@
 using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
+using FastEndpoints;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task = Chrono.Entities.Task;
 
 namespace Chrono.Features.Tasks;
 
-public record CreateTask : IRequest<int>
+public record CreateTask
 {
     public int ListId { get; init; }
     public int Position { get; init; }
@@ -23,7 +21,7 @@ public record CreateTask : IRequest<int>
     public CategoryDto[] Categories { get; init; }
 }
 
-public class CreateTaskValidator : AbstractValidator<CreateTask>
+public class CreateTaskValidator : Validator<CreateTask>
 {
     public CreateTaskValidator(IApplicationDbContext dbContext)
     {
@@ -57,10 +55,14 @@ public class CreateTaskValidator : AbstractValidator<CreateTask>
     }
 }
 
-public class CreateTaskHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<CreateTask, int>
+[Authorize]
+[HttpPost("api/tasks")]
+[Tags("Tasks")]
+public class CreateTaskEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<CreateTask, int>
 {
-    public async Task<int> Handle(CreateTask request, CancellationToken cancellationToken)
+    public override async System.Threading.Tasks.Task HandleAsync(CreateTask request,
+        CancellationToken cancellationToken)
     {
         var taskList = await context.TaskLists
             .Include(x => x.Tasks)
@@ -98,23 +100,6 @@ public class CreateTaskHandler(IApplicationDbContext context, ICurrentUserServic
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return task.Id;
-    }
-}
-
-[Authorize]
-[Route("api/tasks")]
-[Tags("Tasks")]
-public class CreateTaskController : ApiControllerBase
-{
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Create(CreateTask command)
-    {
-        var result = await Mediator.Send(command);
-
-        return CreatedAtRoute("GetTask", new { id = result }, JSendResponseBuilder.Success(result));
+        await SendCreatedAtAsync<GetTaskEndpoint>(new { id = task.Id }, task.Id, cancellation: cancellationToken);
     }
 }

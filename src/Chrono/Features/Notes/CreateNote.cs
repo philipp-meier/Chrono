@@ -1,16 +1,31 @@
 ﻿using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Interfaces;
+using FastEndpoints;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Notes;
 
-public record CreateNote(string Title, string Text) : IRequest<int>;
+public record CreateNote(string Title, string Text);
 
-public class CreateNoteValidator : AbstractValidator<CreateNote>
+[Authorize]
+[HttpPost("api/notes")]
+[Tags("Notes")]
+public class CreateNoteEndpoint(IApplicationDbContext context) : Endpoint<CreateNote, int>
+{
+    public override async Task HandleAsync(CreateNote request, CancellationToken ct)
+    {
+        var entity = new Note { Title = request.Title, Text = request.Text };
+        context.Notes.Add(entity);
+
+        await context.SaveChangesAsync(ct);
+
+        await SendCreatedAtAsync<GetNoteEndpoint>(new { id = entity.Id }, entity.Id, cancellation: ct);
+    }
+}
+
+public class CreateNoteValidator : Validator<CreateNote>
 {
     public CreateNoteValidator()
     {
@@ -20,32 +35,5 @@ public class CreateNoteValidator : AbstractValidator<CreateNote>
 
         RuleFor(v => v.Text)
             .NotEmpty();
-    }
-}
-
-public class CreateNoteHandler(IApplicationDbContext context) : IRequestHandler<CreateNote, int>
-{
-    public async Task<int> Handle(CreateNote request, CancellationToken cancellationToken)
-    {
-        var entity = new Note { Title = request.Title, Text = request.Text };
-        context.Notes.Add(entity);
-
-        await context.SaveChangesAsync(cancellationToken);
-
-        return entity.Id;
-    }
-}
-
-[Authorize]
-[Route("api/notes")]
-[Tags("Notes")]
-public class CreateNoteController : ApiControllerBase
-{
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Create(CreateNote command)
-    {
-        var result = await Mediator.Send(command);
-        return CreatedAtRoute("GetNote", new { id = result }, JSendResponseBuilder.Success(result));
     }
 }

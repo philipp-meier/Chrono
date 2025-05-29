@@ -1,21 +1,22 @@
-using Chrono.Shared.Api;
 using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Notes;
 
-public record GetNote(int Id) : IRequest<NoteDto>;
+public record GetNote(int Id);
 
-public class GetNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetNote, NoteDto>
+[Authorize]
+[HttpGet("api/notes/{id:int}")]
+[Tags("Notes")]
+public class GetNoteEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<GetNote, NoteDto>
 {
-    public async Task<NoteDto> Handle(GetNote request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(GetNote request, CancellationToken cancellationToken)
     {
         var note = await context.Notes
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
@@ -30,14 +31,15 @@ public class GetNoteHandler(IApplicationDbContext context, ICurrentUserService c
             throw new ForbiddenAccessException();
         }
 
-        return new NoteDto
-        {
-            Id = note.Id,
-            Title = note.Title,
-            Text = note.Text,
-            LastModified = DateTime.SpecifyKind(note.LastModified, DateTimeKind.Utc),
-            LastModifiedBy = note.LastModifiedBy.Name
-        };
+        await SendOkAsync(
+            new NoteDto
+            {
+                Id = note.Id,
+                Title = note.Title,
+                Text = note.Text,
+                LastModified = DateTime.SpecifyKind(note.LastModified, DateTimeKind.Utc),
+                LastModifiedBy = note.LastModifiedBy.Name
+            }, cancellationToken);
     }
 }
 
@@ -48,20 +50,4 @@ public class NoteDto
     public string Text { get; set; }
     public string LastModifiedBy { get; init; }
     public DateTime LastModified { get; init; }
-}
-
-[Authorize]
-[Route("api/notes")]
-[Tags("Notes")]
-public class GetNoteController : ApiControllerBase
-{
-    [HttpGet("{id:int}", Name = "GetNote")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get(int id)
-    {
-        var result = await Mediator.Send(new GetNote(id));
-        return Ok(JSendResponseBuilder.Success(result));
-    }
 }

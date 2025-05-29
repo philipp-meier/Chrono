@@ -1,37 +1,25 @@
 ﻿using Chrono.Entities;
-using Chrono.Shared.Api;
 using Chrono.Shared.Interfaces;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Task = System.Threading.Tasks.Task;
 
 namespace Chrono.Features.Categories;
 
-public record CreateCategory(string Name) : IRequest<int>;
+public record CreateCategory(string Name);
 
-public class CreateCategoryHandler(IApplicationDbContext context) : IRequestHandler<CreateCategory, int>
+[Authorize]
+[HttpPost("api/categories")]
+[Tags("Categories")]
+public class CreateCategoryEndpoint(IApplicationDbContext context) : Endpoint<CreateCategory, int>
 {
-    public async Task<int> Handle(CreateCategory request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CreateCategory request, CancellationToken ct)
     {
         var entity = new Category { Name = request.Name };
         context.Categories.Add(entity);
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
 
-        return entity.Id;
-    }
-}
-
-[Authorize]
-[Route("api/categories")]
-[Tags("Categories")]
-public class CreateCategoryController : ApiControllerBase
-{
-    [HttpPost]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> Create(CreateCategory command)
-    {
-        var result = await Mediator.Send(command);
-        return CreatedAtRoute(null, JSendResponseBuilder.Success(result));
+        await SendCreatedAtAsync<GetCategoriesEndpoint>(null, entity.Id, cancellation: ct);
     }
 }

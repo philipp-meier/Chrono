@@ -10,7 +10,7 @@ import {TaskListOptions} from "../../Entities/TaskListOptions";
 
 // Shared
 import {MarkdownEditor} from "../../Shared/Components/MarkdownEditor/MarkdownEditor";
-import JSendApiClient, {API_ENDPOINTS} from "../../Shared/JSendApiClient";
+import ApiClient, {API_ENDPOINTS} from "../../Shared/ApiClient.ts";
 import DateUtil from "../../Shared/DateUtil.ts";
 
 enum TaskControlMode {
@@ -37,13 +37,13 @@ const TaskEditControl = (props: {
   useEffect(() => {
     const dataFetch = async () => {
       const options = props.listId ?
-        await JSendApiClient.get<TaskListOptions>(`${API_ENDPOINTS.TaskLists}/${props.listId}/options`) :
+        await ApiClient.get<TaskListOptions>(`${API_ENDPOINTS.TaskLists}/${props.listId}/options`) :
         null;
 
       setTaskListOptions(options);
 
       if (props.mode === TaskControlMode.Edit && props.id) {
-        const task = await JSendApiClient.get<Task>(`${API_ENDPOINTS.Tasks}/${props.id}`);
+        const task = await ApiClient.get<Task>(`${API_ENDPOINTS.Tasks}/${props.id}`);
         if (task) {
           setTask(task);
           setName(task.name);
@@ -57,7 +57,7 @@ const TaskEditControl = (props: {
           navigate(`/lists/${props.listId}/tasks/add`);
         }
       } else if (props.mode === TaskControlMode.Add && props.listId) {
-        const taskList = await JSendApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${props.listId}`);
+        const taskList = await ApiClient.get<TaskList>(`${API_ENDPOINTS.TaskLists}/${props.listId}`);
         if (taskList) {
           const maxPosition = Math.max(
             0,
@@ -98,7 +98,7 @@ const TaskEditControl = (props: {
       onClick: () => {
         if (task && !task.done) {
           task.done = true;
-          JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isDone) => {
+          ApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isDone) => {
             if (isDone) {
               navigate(`/lists/${task.listId}`);
             } else {
@@ -125,7 +125,7 @@ const TaskEditControl = (props: {
         categories: categories,
       };
 
-      JSendApiClient.create(API_ENDPOINTS.Tasks, newTask).then((id) => {
+      ApiClient.create(API_ENDPOINTS.Tasks, newTask).then((id) => {
         if (id !== -1) {
           if (closeOnSave)
             navigate(`/lists/${props.listId}`);
@@ -140,7 +140,7 @@ const TaskEditControl = (props: {
       task.position = parseInt(position);
       task.categories = categories;
 
-      JSendApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isUpdated) => {
+      ApiClient.update(`${API_ENDPOINTS.Tasks}/${task.id}`, task).then((isUpdated) => {
         if (isUpdated) {
           if (!closeOnSave) {
             setLastModifiedText(new Date().toISOString());
@@ -251,7 +251,7 @@ const TaskEditControl = (props: {
         content={`Do you really want to delete the task "${name}"?`}
         onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
-          JSendApiClient.delete(`${API_ENDPOINTS.Tasks}/${props.id!}`).then((isDeleted) => {
+          ApiClient.delete(`${API_ENDPOINTS.Tasks}/${props.id!}`).then((isDeleted) => {
             if (isDeleted) {
               setShowDeleteConfirm(false);
               navigate(`/lists/${props.listId}`);

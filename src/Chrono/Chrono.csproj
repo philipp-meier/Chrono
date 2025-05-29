@@ -17,20 +17,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.35.0"/>
+    <PackageReference Include="FastEndpoints.Security" Version="5.35.0"/>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0"/>
     <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0"/>
-    <PackageReference Include="MediatR" Version="12.4.1"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,8 @@
 using System.Reflection;
 using Chrono;
-using Chrono.Shared.Behaviors;
 using Chrono.Shared.Services;
+using FastEndpoints;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -12,19 +11,10 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static partial class ConfigureServices
 {
-    public static void AddApplicationServices(this IServiceCollection services, bool isDevelopment)
+    public static void AddApplicationServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-            if (isDevelopment)
-            {
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
-            }
-        });
+        services.AddFastEndpoints();
     }
 
     public static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
@@ -32,7 +22,7 @@ public static partial class ConfigureServices
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddHttpContextAccessor();
 
-        // Only add the user service, if there is no other user service (e.g., "FakeCurrentUserService") registered.
+        // Only add the user service if there is no other user service (e.g., "FakeCurrentUserService") registered.
         services.TryAddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddControllers()

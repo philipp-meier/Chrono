@@ -7,10 +7,10 @@ export const API_ENDPOINTS = {
   User: "/api/user"
 }
 
-class JSendApiClient {
+class ApiClient {
 
   static async get<T>(uri: string): Promise<T | null> {
-    return await this.handleJSendResponseData(await fetch(uri));
+    return await this.handleResponse(await fetch(uri));
   }
 
   static async create(uri: string, data: any): Promise<number> {
@@ -20,7 +20,7 @@ class JSendApiClient {
       body: JSON.stringify(data),
     };
 
-    return await this.handleJSendResponseData(await fetch(uri, init)) ?? -1;
+    return await this.handleResponse(await fetch(uri, init)) ?? -1;
   }
 
   static async update(uri: string, data: any): Promise<boolean> {
@@ -47,17 +47,16 @@ class JSendApiClient {
     }
   }
 
-  private static async handleJSendResponseData<T>(response: Response): Promise<T | null> {
+  private static async handleResponse<T>(response: Response): Promise<T | null> {
     try {
       if (!response.ok)
         return null;
 
-      const responseBody = await response.json();
-      return responseBody.data;
+      return await response.json();
     } catch {
       return null;
     }
   }
 }
 
-export default JSendApiClient;
+export default ApiClient;

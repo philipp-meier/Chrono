@@ -1,24 +1,25 @@
-﻿using Chrono.Shared.Api;
-using Chrono.Shared.Exceptions;
+﻿using Chrono.Shared.Exceptions;
 using Chrono.Shared.Extensions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Notes;
 
-public record DeleteNote(int Id) : IRequest;
+public record DeleteNote(int Id);
 
-public class DeleteNoteHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<DeleteNote>
+[Authorize]
+[HttpDelete("api/notes/{id:int}")]
+[Tags("Notes")]
+public class DeleteNoteEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : Endpoint<DeleteNote, EmptyResponse>
 {
-    public async Task Handle(DeleteNote request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(DeleteNote request, CancellationToken ct)
     {
         var entity = await context.Notes
-            .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            .SingleOrDefaultAsync(x => x.Id == request.Id, ct);
 
         if (entity == null)
         {
@@ -32,23 +33,7 @@ public class DeleteNoteHandler(IApplicationDbContext context, ICurrentUserServic
 
         context.Notes.Remove(entity);
 
-        await context.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[Authorize]
-[Route("api/notes")]
-[Tags("Notes")]
-public class DeleteNoteController : ApiControllerBase
-{
-    [HttpDelete("{id:int}")]
-    [ProducesDefaultResponseType]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await Mediator.Send(new DeleteNote(id));
-        return Ok(JSendResponseBuilder.Success<string>(null));
+        await context.SaveChangesAsync(ct);
+        await SendOkAsync(ct);
     }
 }

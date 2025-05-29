@@ -1,20 +1,19 @@
-﻿using Chrono.Shared.Api;
-using Chrono.Shared.Exceptions;
+﻿using Chrono.Shared.Exceptions;
 using Chrono.Shared.Interfaces;
 using Chrono.Shared.Services;
-using MediatR;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrono.Features.Users;
 
-public record GetUserSettings : IRequest<UserSettingsDto>;
-
-public class GetUserSettingsHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
-    : IRequestHandler<GetUserSettings, UserSettingsDto>
+[Authorize]
+[HttpGet("api/user/settings")]
+[Tags("User")]
+public class GetUserSettingsEndpoint(IApplicationDbContext context, ICurrentUserService currentUserService)
+    : EndpointWithoutRequest<UserSettingsDto>
 {
-    public async Task<UserSettingsDto> Handle(GetUserSettings request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var currentUser = await context.Users
             .Include(x => x.UserSettings)
@@ -25,25 +24,12 @@ public class GetUserSettingsHandler(IApplicationDbContext context, ICurrentUserS
             throw new NotFoundException($"User \"{currentUserService.UserId}\" not found.");
         }
 
-        return new UserSettingsDto { DefaultTaskListId = currentUser.UserSettings?.DefaultTaskList?.Id };
+        await SendOkAsync(new UserSettingsDto { DefaultTaskListId = currentUser.UserSettings?.DefaultTaskList?.Id },
+            cancellationToken);
     }
 }
 
 public class UserSettingsDto
 {
     public int? DefaultTaskListId { get; init; }
-}
-
-[Authorize]
-[Route("api/user")]
-[Tags("User")]
-public class GetUserSettingsController : ApiControllerBase
-{
-    [HttpGet("settings")]
-    [ProducesDefaultResponseType]
-    public async Task<IActionResult> GetSettings()
-    {
-        var result = await Mediator.Send(new GetUserSettings());
-        return Ok(JSendResponseBuilder.Success(result));
-    }
 }
