@@ -5,6 +5,11 @@ import mkcert from 'vite-plugin-mkcert'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), mkcert()],
+  css: {
+    lightningcss: {
+      errorRecovery: true,
+    },
+  },
   server: {
     port: 44463,
     https: true,
