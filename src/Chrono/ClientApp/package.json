@@ -33,7 +33,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "less": "^4.2.0",
     "prettier": "3.0.3",
-    "react-router-dom": "^7.16.0",
+    "react-router-dom": "^7.18.2",
     "typescript": "^5.2.2",
     "vite": "^8.0.16",
     "vite-plugin-mkcert": "^1.16.0"
